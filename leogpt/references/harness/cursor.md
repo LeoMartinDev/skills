@@ -34,7 +34,7 @@ There is no worktree parameter on `Task`. Before spawning each candidate, create
 
 ## 6. Native config written by setup
 
-Setup also writes `~/.cursor/rules/leogpt-models.mdc`, with frontmatter `description: leogpt model choices` and `alwaysApply: true`, and one line per role (`explorer: <slug>`, ...). The memory stays the source of truth: the rule mirrors it for Cursor sessions that do not load this skill.
+Setup also writes `~/.cursor/rules/leogpt-models.mdc`, with frontmatter `description: leogpt model choices` and `alwaysApply: true`, and one line per tier (`smart: <slug>`, `code: <slug>`, `fast: <slug>`), plus any per-role override. The memory stays the source of truth: the rule mirrors it for Cursor sessions that do not load this skill.
 
 ## 7. Limits
 

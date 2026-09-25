@@ -26,9 +26,9 @@ Without a choice UI, use the text format in `bricks/grill.md`: numbered question
 
 ## 5. Isolate an arena candidate
 
-Arenas need subagents and at least 2 distinct selectable models. Without either, skip every arena and say so in one line. `architect` then asks one designer, or you yourself, for two structurally distinct designs, and you pick.
+Arenas need subagents. Without them, skip every arena and say so in one line: `architect` then drafts one design itself and still runs its challenge step. With subagents, the arena gate in `references/memory.md` applies: the design arena runs even on one model, the implementation arena needs at least 2 distinct selectable models.
 
-With both, isolate each implementation candidate yourself: `git worktree add ../<repo>-arena-<n> -b arena/<slug>-<n>`, pass the path in the brief, and `git worktree remove` it after the graft.
+When an implementation arena runs, isolate each candidate yourself: `git worktree add ../<repo>-arena-<n> -b arena/<slug>-<n>`, pass the path in the brief, and `git worktree remove` it after the graft.
 
 ## 6. Native config written by setup
 

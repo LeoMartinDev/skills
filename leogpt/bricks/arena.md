@@ -4,7 +4,7 @@ N candidates on distinct models attempt the same task in parallel. A judge score
 
 ## 0. Gate
 
-Resolve the runners for `arena.design` or `arena.implementation` per `references/memory.md#models`. Take `arena.candidates` runners, from different vendors when possible. Fewer than 2 distinct selectable models: do not run. Return to the caller, which falls back.
+Apply the arena gate in `references/memory.md#models` for `arena.design` or `arena.implementation`. If it fails, do not run: return to the caller, which falls back. If it passes, take the runners it gives, from different vendors when possible. A same-model arena is noted in the final reply.
 
 ## 1. Frame
 
@@ -30,9 +30,9 @@ Score against the rubric yourself, then compare with the judge. If you disagree,
 
 ## 5. Graft
 
-Take the one or two ideas per losing candidate that are worth porting, and fold them into the base so it stays one coherent design. Never paste mechanically.
+Take at most one or two ideas per losing candidate that are worth porting, and fold them into the base so it stays one coherent design. Never paste mechanically.
 
-- Implementation: bring the base's commits onto the working branch, then an `implementer` applies the grafts there. Remove every arena worktree.
+- Implementation: bring the base's commits onto the working branch, then an `implementer` applies the grafts there. Review the graft diff first; remove every arena worktree only after the graft reads clean. Full verification stays with the caller's next step.
 - All candidates converged: ship the consensus shape, no graft needed.
 - Candidates diverged wildly: the frame was underspecified. Reframe and rerun once, then pick.
 

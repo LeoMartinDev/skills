@@ -11,7 +11,7 @@ When in doubt, take the simple path.
 
 ## 2. Brief the explorers
 
-Use `references/subagent-brief.md`, read-only, role `explorer`. Each explorer returns:
+Use `references/subagent-brief.md`, read-only, role `explorer`. Give each explorer its output path `/tmp/leogpt-how-<slug>/angle-<n>.md`: it writes the full report there and returns the digest. Each explorer returns:
 
 - **Entry points**: where the flow starts (route, command, job, UI event), as `path:line`.
 - **Flow**: the runtime path in 3 to 8 steps.
@@ -25,7 +25,7 @@ Use `references/subagent-brief.md`, read-only, role `explorer`. Each explorer re
 
 Merge the reports yourself. When two explorers disagree, send one targeted follow-up rather than reading the code.
 
-- **In a playbook**: keep a mental model of at most 20 lines (entry points, flow, key types, conventions, test commands, gotchas). Pass it to every later brief.
+- **In a playbook**: keep a mental model of at most 20 lines (entry points, flow, key types, conventions, test commands, gotchas) plus the report paths. Pass both to every later brief; a subagent that doubts the digest re-reads the file.
 - **In the how route**: present the explanation to the user with the sections Overview, Key concepts, How it works, Where things live, and Gotchas. Drop any that are empty. Give `path:line` references, not code dumps.
 
 ## Rules

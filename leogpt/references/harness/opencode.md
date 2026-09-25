@@ -29,19 +29,19 @@ There is no built-in worktree isolation. Before spawning each candidate, create 
 
 ## 6. Native config written by setup
 
-Setup writes one agent file per chosen model and role in `~/.config/opencode/agents/`, then maps the role to `agent:<id>` in memory. Show the files to the user before writing them.
+Setup writes one agent file per tier in `~/.config/opencode/agents/`, then maps the tier to `agent:<id>` in memory. Show the files to the user before writing them.
 
 ```markdown
 ---
-description: leogpt <role> (<provider/model>)
+description: leogpt <tier> (<provider/model>)
 mode: subagent
 model: <provider/model#variant>
 hidden: true
 ---
-You are a leogpt <role>. Follow the brief you receive exactly, including its return format.
+You are a leogpt <tier>. Follow the brief you receive exactly, including its return format.
 ```
 
-Name the files `leogpt-<role>.md`. Arena roles get one file per model: `leogpt-arena-design-1.md`, `leogpt-arena-design-2.md`, and so on.
+Name the files `leogpt-<tier>.md`. Arena tiers get one file per model: `leogpt-arena-design-1.md`, `leogpt-arena-design-2.md`, and so on.
 
 ## 7. Limits
 

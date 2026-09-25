@@ -7,7 +7,7 @@
 ## Do
 - Make the alternatives differ in structure (where the state lives, who owns what), not only in details.
 - Compare them on the same criteria: diff size, public surface, fit with existing patterns, and future change.
-- Use an arena when the harness offers distinct models. Otherwise, one designer writes both designs.
+- Use an arena when the arena gate allows it. Otherwise, one designer writes the design and a fresh reviewer attacks it.
 
 ## Don't
 - Commit to the first shape that works.

@@ -1,6 +1,6 @@
 # Brick: architect
 
-Settle the shape before any code: data shape, types, signatures, and module boundaries. Always compare at least two structurally distinct designs, not variations of one.
+Settle the shape before any code: data shape, types, signatures, and module boundaries. Produce designs, pick one, then have a fresh reviewer challenge it.
 
 ## Input
 
@@ -8,8 +8,8 @@ The goal, the mental model from `bricks/how.md`, and the user's decisions from `
 
 ## 1. Produce candidate designs
 
-- **Arena gate passes** for `arena.design` and `arena.design` is `auto`: run `bricks/arena.md` with the design task. Each candidate writes one design package.
-- **Otherwise**: one `designer` subagent produces two structurally distinct design packages and states which it prefers. Say in one line that the arena was skipped, and why.
+- **The arena gate passes** for `arena.design`: run `bricks/arena.md` with the design task. Each candidate writes one design package.
+- **Otherwise**: one `designer` subagent produces one design package. Say in one line that the arena was skipped, and why.
 
 Brief the designers with the principle files `foundational-thinking`, `model-the-domain`, `type-system-discipline`, `boundary-discipline`, `redesign-from-first-principles`, and `exhaust-the-design-space`.
 
@@ -34,10 +34,16 @@ Reject or revise any design with:
 - temporal decomposition, split by "what runs first" instead of by knowledge;
 - a new pattern where the codebase already has one that fits.
 
-Pick the design that hides the most complexity behind the smallest public surface, and fits the existing patterns. When two tie, pick the smaller diff.
+Pick the design that hides the most complexity behind the smallest public surface, and fits the existing patterns. When two tie, pick the smaller diff. With a single package, screen it and revise it.
+
+## 4. Challenge
+
+One read-only `reviewer`, on a different model from the designers when possible, challenges the chosen sketch. It always runs after a single designer. After an arena, it runs only when the sketch has a `major` open choice, a new public surface, or a cross-boundary change; otherwise skip it in one line.
+
+The reviewer gets the sketch location, the mental model, and the allowed paths, never the designers' reasoning. At most 15 lines: the weakest choice, one concrete failure scenario per risk, what to change, and whether each `major`/`minor` tag is right. Accept or reject each point in one line and revise the sketch.
 
 ## Output
 
-One sketch, the chosen package plus any grafts, and its open choices. The open choices decide whether the implementation goes to an arena (see `playbooks/feature.md`).
+One sketch, the chosen package plus any grafts and review fixes, and its open choices. The open choices decide whether the implementation goes to an arena (see `playbooks/feature.md`).
 
 If implementation proves the sketch wrong, redo this brick with that evidence. Do not patch around it.

@@ -23,6 +23,7 @@ You are the lead. You decide, synthesize, and verify. Subagents read bulk code, 
 | New or changed behavior | `playbooks/feature.md` |
 | A defect: wrong behavior observable today | `playbooks/bugfix.md` |
 | Plan, spec, break down a feature | `playbooks/plan.md` |
+| Run a slice of a saved plan | `playbooks/feature.md`, the slice as a clear ticket |
 | Setup, configure models | `playbooks/setup.md` |
 | How does X work, where should X live | `bricks/how.md`, then present |
 | Review a PR, branch, or diff | `bricks/interrogate.md`, then present |
@@ -33,8 +34,7 @@ You are the lead. You decide, synthesize, and verify. Subagents read bulk code, 
 
 - **Clarity gate** before feature, bugfix, or plan. Grill (`bricks/grill.md`) when the request does not state the observable expected behavior, or leaves the scope open, or has two plausible readings that lead to different code. A ticket that states behavior and scope runs autonomously. Lean toward deciding alone on everything else.
 - **Delegate** with `references/subagent-brief.md`. Pick each subagent's model per `references/memory.md#models`.
-- **Decide** reversible choices yourself and record them. Ask the user only through `bricks/grill.md`, or the one-time setup prompt.
-- **Unrelated uncommitted changes**: never touch them. Stop and tell the user.
+- **Decide** reversible choices yourself and record them. Ask the user only where a step says to: the grill, the setup prompt, and the few one-time questions the steps name.
 - **Stuck** (verification still fails after `verify.max-rounds`, or the bug won't reproduce): stop without a PR. Report what you tried, where it blocks, and the remaining hypotheses.
 - **Final reply**, in the user's language: what you did, each decision (choice, alternatives, why), verification evidence, what stays unverified, and the models used.
 
