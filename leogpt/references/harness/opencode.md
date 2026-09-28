@@ -1,10 +1,10 @@
 # Harness: opencode
 
-You are in opencode when your tools include `subagent` (v2) or `task` (v1), `skill`, and `question`. Resolve this skill's relative paths against the base directory returned by the `skill` tool.
+You are in opencode when your tools include `subagent`, `skill`, and `question`. Resolve this skill's relative paths against the base directory returned by the `skill` tool.
 
 ## 1. Spawn a subagent
 
-Tool `subagent` (v2), with the parameters: the agent ID, `description`, `prompt` (the brief), and optionally `background` and `sessionID`. In v1, the tool is `task`, with `subagent_type` and `session_id`. Use whichever your tool list shows.
+Tool `subagent`, with the parameters: `agent` (the agent ID), `description`, `prompt` (the brief), and optionally `model`, `background` and `sessionID`.
 
 - Only `mode: subagent` agents can be targeted. Built-ins: `explore` (read-only) and `general` (full tools).
 - With `background: true`, the call returns at once and you are notified on completion. Pass the returned `sessionID` to continue that child, for example with counterexamples.
@@ -13,7 +13,7 @@ Tool `subagent` (v2), with the parameters: the agent ID, `description`, `prompt`
 
 ## 2. Pick the model
 
-There is no per-call model parameter. The model is fixed in the agent definition. A role mapped to `agent:<id>` in memory means: spawn agent `<id>`. A role left unset uses `explore` (read-only roles) or `general` (writing roles), on the session's model.
+Parameter `model` on the `subagent` call, as `provider/model` or `provider/model#variant`. It overrides the agent's own model, which overrides the session's model. Omit it to inherit. Spawn `explore` for read-only roles and `general` for writing roles.
 
 ## 3. List available models
 
@@ -29,22 +29,8 @@ There is no built-in worktree isolation. Before spawning each candidate, create 
 
 ## 6. Native config written by setup
 
-Setup writes one agent file per tier in `~/.config/opencode/agents/`, then maps the tier to `agent:<id>` in memory. Show the files to the user before writing them.
-
-```markdown
----
-description: leogpt <tier> (<provider/model>)
-mode: subagent
-model: <provider/model#variant>
-hidden: true
----
-You are a leogpt <tier>. Follow the brief you receive exactly, including its return format.
-```
-
-Name the files `leogpt-<tier>.md`. Arena tiers get one file per model: `leogpt-arena-design-1.md`, `leogpt-arena-design-2.md`, and so on.
+None needed: the model is chosen per call. Setup writes only `models.opencode` in memory.
 
 ## 7. Limits
 
-- The arena gate counts distinct models across the arena role's agents, not distinct agent files.
-- Read-only is not enforced for custom agents: the brief's scope line carries it.
 - The `skill` tool lists at most 10 supporting files. Read any other file of this skill by its path.
