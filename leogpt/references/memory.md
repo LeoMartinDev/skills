@@ -32,22 +32,34 @@ When the user states a lasting preference ("from now on", "remember", "always", 
 
 ## Models
 
-Roles: `explorer`, `designer`, `implementer`, `verifier`, `reviewer`, `judge`, `arena.design`, `arena.implementation`. The two arena roles take a list.
+Tiers: `smart`, `code`, `fast`. Roles map to tiers:
 
-A value is a model slug as the harness spells it, or `agent:<id>` for harnesses that fix the model per agent definition (opencode).
+| Tier | Roles |
+|---|---|
+| `smart` | `designer`, `judge`, `reviewer`, `arena.design` |
+| `code` | `implementer`, `verifier`, `arena.implementation` |
+| `fast` | `explorer` |
+
+A value is a model slug as the harness spells it, or `agent:<id>` for harnesses that fix the model per agent definition (opencode), or a profile model for Delta. An arena role takes a list of models, e.g. `[opus, fable]`.
 
 Resolve a role's model in this order:
 
-1. `models.<harness>` in the repo section.
-2. `models.<harness>` in the global section.
-3. The harness-native config named in its harness file.
-4. Your own judgment, using the tier rules in `playbooks/setup.md`.
+1. Its explicit role key in `models.<harness>` in the repo section (e.g. `reviewer=...` overrides the tier).
+2. Its tier key in `models.<harness>` in the repo section.
+3. Same two keys in the global section.
+4. The harness-native config named in its harness file.
+5. Your own judgment, using the tier rules in `playbooks/setup.md`.
 
 An explicit `none` stops the resolution: that role has no model, and for an arena role, no arena.
 
 If the harness rejects a model, fall back to the inherited model and say so in one line. For an arena role, drop the rejected model instead of replacing it.
 
-**Arena gate.** An arena runs only when its role resolves to at least 2 distinct models the harness can actually select. Run as many candidates as `arena.candidates` allows, but never more than the number of distinct models. Recheck the gate after any fallback. Otherwise skip the arena and say so in one line. The same model twice is not an arena.
+**Arena gate.** The one place that decides whether an arena runs. It fails when the arena key is `never`, the role resolves to `none`, or the harness has no subagents. Otherwise, count the distinct models the harness can actually select for the role:
+
+- 2 or more: standard arena, `arena.candidates` candidates, never more than the distinct models.
+- Exactly 1: `arena.design` runs a same-model arena, one distinct angle per candidate. `arena.implementation` fails: two full implementations on one model cost a lot and differ little.
+
+Say in one line when an arena is skipped or runs on a single model. Recheck the gate after any fallback.
 
 ## Example
 
@@ -57,7 +69,7 @@ If the harness rejects a model, fall back to the inherited model and say so in o
 ## global
 - finish: pr
 - setup.claude-code: done 2026-09-24
-- models.claude-code: explorer=haiku, designer=opus, judge=opus, reviewer=opus, implementer=sonnet, verifier=sonnet, arena.design=[opus, fable], arena.implementation=none
+- models.claude-code: smart=opus, code=sonnet, fast=haiku, arena.design=[opus, fable], arena.implementation=none
 - setup.zed: never
 
 ## repo: georges-tech/georges

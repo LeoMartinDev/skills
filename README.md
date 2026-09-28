@@ -1,6 +1,6 @@
 # leogpt
 
-A personal, harness-agnostic Agent Skill that implements features, fixes bugs, and writes plans with the rigor of [pstack](https://github.com/cursor/plugins/tree/main/pstack), in a minimal form. It runs in Claude Code, Cursor, opencode, and Zed, and degrades gracefully anywhere else.
+A personal, harness-agnostic Agent Skill that implements features, fixes bugs, and writes plans with the rigor of [pstack](https://github.com/cursor/plugins/tree/main/pstack), in a minimal form. It runs in Claude Code, Cursor, Delta, opencode, and Zed, and degrades gracefully anywhere else.
 
 Its core idea comes from pstack: **the main agent is a lead, not a typist.** It decides, synthesizes, and verifies. Subagents explore, design, write code, verify, and review, and each returns a short report. The main context stays small, so long tasks stay sharp.
 
@@ -11,7 +11,7 @@ This README is the design document. It records every decision and why, so the sk
 The skill lives in `leogpt/`. During iteration, symlink it so edits apply everywhere at once:
 
 ```bash
-ln -s ~/Documents/dev/skills/leogpt ~/.agents/skills/leogpt    # Zed, opencode, Cursor
+ln -s ~/Documents/dev/skills/leogpt ~/.agents/skills/leogpt    # Zed, opencode, Cursor, Delta (personal skills share this folder)
 ln -s ~/.agents/skills/leogpt ~/.claude/skills/leogpt          # Claude Code
 ```
 
@@ -60,20 +60,20 @@ Legend: 🧠 lead (main thread) · 🤖 subagent · 🤖×N parallel subagents �
 
 ```
 FEATURE
- 🧠 branch → 🧠/👤 clarity gate (grill if needed)
+ 🧠 check the tree → 🧠/👤 clarity gate (grill if needed)
  🤖×2-4 how: explorers → 🧠 mental model (<= 20 lines)
- architect: arena of 2 designs (🤖×2 + 🤖 judge) or 🤖 one designer with 2 designs → 🧠 sketch
- 🤖 implementer  |  arena of implementations in worktrees (🤖×2 + 🤖 judge → 🧠 graft)
+ architect: arena of 2 designs (🤖×2 + 🤖 judge) or 🤖 designer → 🧠 sketch → 🤖 reviewer challenges it
+ 🧠 branch → 🤖 implementer  |  arena of implementations in worktrees (🤖×2 + 🤖 judge → 🧠 graft)
  🤖 verifier (fresh, never sees implementer reasoning) → fail: counterexamples back, max 3 rounds
- 🤖×1-2 interrogate (1 if diff <= 700 lines) → 🧠 synthesis → fixes → verify again
+ 🤖×1-2 interrogate once (1 if diff <= 700 lines) → 🧠 synthesis → fixes → verify again, same round counter
  🧠 ship (PR / draft PR / stop) → 🧠 final reply
 
 BUGFIX
- 🧠 branch → clarity gate
- 🤖 reproduce (failing test or script, verbatim output) — no repro, no fix
+ 🧠 check the tree → clarity gate → how → 🧠 branch
+ 🤖 reproduce (failing test committed first, or a script; verbatim output) — no repro, no fix
  🧠 hypotheses → 🤖×N one per hypothesis → eliminate → 🧠 confirm mechanism
  🤖 smallest fix the evidence justifies (architect if it crosses a boundary)
- 🤖 verify: same repro now passes; failing test committed before the fix
+ 🤖 verify: same repro now passes
  review → ship → reply
 
 PLAN
@@ -82,8 +82,8 @@ PLAN
  save per plan.destination → stop
 
 SETUP
- list available models → fetch Artificial Analysis data → propose one model per role
- 👤 confirm per role → write memory (+ native config: opencode agents, Cursor rule, Zed setting)
+ list available models → fetch Artificial Analysis data → propose one model per tier (`smart`, `code`, `fast`) and the arena lists
+ 👤 confirm per tier and arena role (+ review threshold) → write memory (+ native config: opencode agents, Cursor rule, Zed setting)
 ```
 
 **Stuck** (verification still failing after the max rounds, or a bug that won't reproduce): stop, no PR, report what was tried, where it blocks, and what remains.
@@ -94,7 +94,7 @@ SETUP
 |---|---|
 | `grill` | Rounds of questions through the harness's choice UI, each with a recommendation. The agent looks facts up itself and asks only for decisions. Caps per round and per flow |
 | `how` | Parallel read-only explorers, then one synthesized mental model |
-| `architect` | Types, signatures, and module boundaries with empty bodies. Always at least two structurally distinct designs |
+| `architect` | Types, signatures, and module boundaries with empty bodies. Arena of designs, or one designer; then a fresh reviewer challenges the pick |
 | `arena` | Frame a rubric → N candidates on distinct models → judge → pick a base → graft the best ideas → verify |
 | `interrogate` | Adversarial review. Angles: blast radius, simplicity and comments, domain and tests. Synthesis of consensus and single-reviewer findings |
 | `verify` | Fresh subagent. Tests, lint, and typecheck on the smallest useful scope, plus a real run when cheap. Verbatim output. Explicit "unverified: …" when impossible |
@@ -126,27 +126,27 @@ Each role gets a tier. The rule is **the best quality for the price, biased towa
 
 | Role | Rule |
 |---|---|
-| designer, judge, reviewer, design-arena candidates | Cheapest model with an intelligence index at least 90 % of the best available |
-| implementer, verifier, implementation-arena candidates | Best coding-index-per-dollar among models at least 75 % of the best coding index |
-| explorer | Fastest and cheapest model at least 50 % of the best coding index |
+| `smart`: designer, judge, reviewer, design-arena candidates | Cheapest model with an intelligence index at least 90 % of the best available |
+| `code`: implementer, verifier, implementation-arena candidates | Best coding-index-per-dollar among models at least 75 % of the best coding index |
+| `fast`: explorer | Fastest model at least 50 % of the best coding index, then cheapest |
 | arena | The top 2 for the role, from different vendors when possible |
 
 Resolution order: repo memory > global memory > harness-native config > the agent's own judgment with the same rules.
 
-**Arena gate.** An arena runs only when its role resolves to at least 2 distinct selectable models. The same model twice brings no diversity, so the arena is skipped and the agent says so.
+**Arena gate.** A standard arena needs at least 2 distinct selectable models. With a single model, the design arena still runs (same model, one distinct angle per candidate), but the implementation arena is skipped. With none, every arena is skipped and the agent says so.
 
 Setup uses the [Artificial Analysis](https://artificialanalysis.ai/) API when `ARTIFICIAL_ANALYSIS_API_KEY` is set, and otherwise its public leaderboard page. Attribution is required by their terms.
 
 ### Harness support
 
-| | Claude Code | Cursor | opencode | Zed | generic |
-|---|---|---|---|---|---|
-| Subagents | `Agent` | `Task` | `subagent` | `spawn_agent` | sequential fallback |
-| Model per role | per call (`model`) | per call (`model`) | per agent file | one `subagent_model` | no |
-| Arena | ✅ | ✅ | ✅ with ≥ 2 agent files on distinct models | ❌ | only with subagents and ≥ 2 selectable models |
-| Choice UI | `AskUserQuestion` | `AskQuestion` | `question` | text | text |
-| Worktrees | `isolation: "worktree"` | manual `git worktree` | manual | manual | manual |
-| Setup writes | memory | memory + `~/.cursor/rules/leogpt-models.mdc` | memory + `~/.config/opencode/agents/leogpt-*.md` | memory + `agent.subagent_model` | memory |
+| | Claude Code | Cursor | Delta | opencode | Zed | generic |
+|---|---|---|---|---|---|---|
+| Subagents | `Agent` | `Task` | Worker / Scout / Reviewer profiles | `subagent` | `spawn_agent` | sequential fallback |
+| Model per tier | per call (`model`) | per call (`model`) | per profile (Settings) | per agent file | one `subagent_model` | no |
+| Arena | ✅ | ✅ | ✅ design; implementation with ≥ 2 selectable profile models | ✅ design; implementation with ≥ 2 agent files on distinct models | design only, same model | design with subagents; implementation also needs ≥ 2 selectable models |
+| Choice UI | `AskUserQuestion` | `AskQuestion` | text | `question` | text | text |
+| Worktrees | `isolation: "worktree"` | manual `git worktree` | managed isolated copies | manual | manual | manual |
+| Setup writes | memory | memory + `~/.cursor/rules/leogpt-models.mdc` | memory + profile models / `<id>.toml` | memory + `~/.config/opencode/agents/leogpt-*.md` | memory + `agent.subagent_model` | memory |
 
 Each harness file answers the same 7 questions in the same order: spawn, model, list models, questions, isolation, native config, limits.
 
@@ -157,14 +157,13 @@ Each harness file answers the same 7 questions in the same order: spawn, model, 
 | `leogpt/SKILL.md` | Router, lead rules, principles index | ✅ |
 | `leogpt/references/memory.md` | Memory schema, defaults, model resolution, arena gate | ✅ |
 | `leogpt/references/subagent-brief.md` | Delegation template and return format | ✅ |
-| `leogpt/references/harness/*.md` | Claude Code, Cursor, opencode, Zed, generic | ✅ |
+| `leogpt/references/harness/*.md` | Claude Code, Cursor, Delta, opencode, Zed, generic | ✅ |
 | `leogpt/playbooks/feature.md` | Feature flow | ✅ |
 | `leogpt/playbooks/bugfix.md` | Bugfix flow | ✅ |
 | `leogpt/playbooks/plan.md` | Plan flow and plan template | ✅ |
 | `leogpt/playbooks/setup.md` | Model setup and tier rules | ✅ |
 | `leogpt/bricks/*.md` | grill, how, architect, arena, interrogate, verify, ship | ✅ |
 | `leogpt/principles/*.md` | 20 principle files | ✅ |
-| `scripts/check.sh` | Structural checks | ✅ |
 
 ## Design decisions
 
@@ -176,7 +175,7 @@ Each harness file answers the same 7 questions in the same order: spawn, model, 
 | Size | 80 lines max per file; details loaded on demand | Large files: they cost context on every run |
 | Autonomy | No human stop by default, until the PR opens | Checkpoints before implementation: the grill already covers the risky case, a vague request |
 | Grilling | Only when the request is vague or ambiguous; capped; biased to decide alone | Always grilling: too slow for detailed tickets |
-| Arena | Design, whenever ≥ 2 distinct models exist. Implementation, only when the sketch has a `major` open choice (public surface or data flow) | Same model twice: no diversity. pstack's mandatory arena on any open choice: too expensive by default |
+| Arena | Design, always, even on one model with distinct angles: two 60-line designs are cheap. Implementation, only with ≥ 2 distinct models and a `major` open choice (public surface or data flow) | Same-model implementation arena: two full implementations for little diversity. pstack's mandatory arena on any open choice: too expensive by default |
 | Review | 1 reviewer ≤ 700 changed lines, 2 above | pstack's 3 models every time: too expensive |
 | Verification | A fresh verifier; tests plus a cheap real run; explicit "unverified" | Tests only: pstack's `prove-it-works` requires the real artifact |
 | Stuck | Stop without a PR and report | Draft PR marked unverified: contradicts `prove-it-works` |
@@ -197,11 +196,11 @@ Each harness file answers the same 7 questions in the same order: spawn, model, 
   - `poteto-mode` and `poteto-agent`: replaced by the router.
   - `teach`, `recall`, `bro`, `swarm`, `figure-it-out`, `automate-me`, `make-bot-ui`, `typescript-best-practices`: out of scope.
   - Verification-skill generators and `reflect`: maybe later.
-- **Principles dropped:** `outcome-oriented-execution` (long migrations only), `separate-before-serializing-shared-state` (reduced to "one worktree per arena candidate"), `encode-lessons-in-structure` (meta; see `scripts/check.sh`).
+- **Principles dropped:** `outcome-oriented-execution` (long migrations only), `separate-before-serializing-shared-state` (reduced to "one worktree per arena candidate"), `encode-lessons-in-structure` (meta).
 
 ## Review guide
 
-1. Run `scripts/check.sh`. It fails on a file over 80 lines, a referenced path that does not exist, and a principle indexed without its file, or the reverse.
+1. Check file sizes (80 lines max per skill file) and that every referenced path exists.
 2. Read `leogpt/SKILL.md` as the agent would, then follow one route end to end. Every step must name either a file that exists or a concrete action.
 3. Check every delegation against `references/subagent-brief.md`: role, scope, principles to read, success criteria, short return.
 4. Check each harness file for the same 7 sections, and that none relies on a tool another harness file says is missing.

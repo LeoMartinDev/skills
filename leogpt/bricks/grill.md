@@ -42,6 +42,8 @@ Without a choice tool, use this text format:
 
 The session ends when the frontier is empty or a cap is reached. Recap one line per decision: the decision, then who took it (user or you).
 
-- Called from feature or bugfix: continue the playbook without asking for confirmation.
+- Called from feature or bugfix: present the recap. Ask once for confirmation only when you decided alone on at least one structural choice (scope, behavior, data shape), or when a cap left open decisions. Otherwise continue without asking.
 - Called from plan: ask once whether the recap matches the user's understanding, then continue the plan.
 - In the grill route: ask once whether the recap matches, then stop. Suggest the next step in one line (plan or feature), without starting it.
+
+When the input came from a ticket (GitHub issue, Notion page): after the recap is settled, append it to the ticket as a comment (`gh issue comment`, Notion comment), never by rewriting the original request. The comment lists each decision, who took it, and the open points still flagged. Give its link in the final reply.

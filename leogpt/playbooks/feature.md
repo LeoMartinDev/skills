@@ -4,18 +4,19 @@ New or changed behavior. You own the design, the review, and the verification. S
 
 Copy these steps into your todo list verbatim.
 
-1. **Branch.** Follow `bricks/ship.md#branch`.
-2. **Clarify.** Apply the clarity gate from `SKILL.md`. Grill if needed (`bricks/grill.md`, feature caps).
+1. **Check the tree.** Per `bricks/ship.md#branch`: unrelated uncommitted changes stop the run.
+2. **Clarify.** Apply the clarity gate from `SKILL.md`. If it fails, run `bricks/grill.md` with the feature caps.
 3. **Ground.** Run `bricks/how.md` over the subsystems the feature touches. Keep its model (<= 20 lines) for every later brief.
 4. **Design.** Run `bricks/architect.md`. It returns one sketch: types, signatures, module boundaries, `not implemented` bodies, the named data shape (per `principles/model-the-domain.md`), and the open implementation choices.
-5. **Implement.**
-   - Run `bricks/arena.md` with the implementation task, one worktree per candidate, only when all three hold: the sketch has at least one `major` open choice, `arena.implementation` is `auto`, and the arena gate passes. `minor` choices go to a single implementer.
-   - Otherwise, one `implementer` subagent. Its brief contains the sketch, the allowed paths, the success criteria, and the principle files `laziness-protocol`, `test-behavior-not-implementation`, and `sequence-verifiable-units`.
+5. **Branch.** Follow `bricks/ship.md#branch`.
+6. **Implement.**
+   - When the sketch has at least one `major` open choice, run `bricks/arena.md` with the implementation task, one worktree per candidate. If its gate fails, fall back to the next bullet.
+   - Otherwise, one `implementer` subagent, which also settles the `minor` choices. Its brief contains the sketch, the allowed paths, the success criteria, and the principle files `laziness-protocol`, `test-behavior-not-implementation`, and `sequence-verifiable-units`.
    - The implementer commits in small units, each ending in a passing check.
-6. **Verify.** Run `bricks/verify.md`. On fail, send only the counterexamples back to the implementer (see `references/subagent-brief.md#continuing`), then verify again, up to `verify.max-rounds`. Still failing: stop per the Stuck rule in `SKILL.md`.
-7. **Review.** Run `bricks/interrogate.md` on the branch diff. Send the accepted findings to the implementer, then rerun step 6.
-8. **Ship.** Run `bricks/ship.md` per `finish`.
-9. **Reply.** Follow the Final reply rule in `SKILL.md`. Add a table when you weighed design alternatives.
+7. **Verify.** Run `bricks/verify.md`. On fail, send only the counterexamples back to the implementer (see `references/subagent-brief.md#continuing`), then verify again. One round counter, `verify.max-rounds`, covers the whole run, review fixes included. Still failing: stop per the Stuck rule in `SKILL.md`.
+8. **Review.** Run `bricks/interrogate.md` once on the branch diff. Send the accepted findings to the implementer, then rerun step 7. No second review.
+9. **Ship.** Run `bricks/ship.md` per `finish`.
+10. **Reply.** Follow the Final reply rule in `SKILL.md`. Add a table when you weighed design alternatives.
 
 ## Scope rules
 

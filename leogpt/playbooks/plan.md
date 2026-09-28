@@ -2,11 +2,13 @@
 
 Write an implementation plan for a feature. You own the plan, not the code: do not implement. The plan is a checklist that `/leogpt` later runs slice by slice.
 
+Coming from the feature playbook: step 1 is settled, step 2 asks only what is still open, and step 3 reuses the mental model already built.
+
 Copy these steps into your todo list verbatim.
 
-1. **Size.** If the work fits one PR with an obvious approach, say that no plan is needed, offer to run the feature playbook directly, and stop.
-2. **Clarify.** Run `bricks/grill.md` with the plan caps. A plan almost always needs it.
-3. **Ground.** Run `bricks/how.md`, usually the complex path. Collect the test commands and the conventions.
+1. **Size.** If the request clearly fits one PR with an obvious approach, say that no plan is needed, offer to run the feature playbook directly, and stop.
+2. **Clarify.** Apply the clarity gate from `SKILL.md`; a plan almost always fails it. Run `bricks/grill.md` with the plan caps.
+3. **Ground.** Run `bricks/how.md`, usually the complex path. Collect the test commands and the conventions. If the code shows the work fits one PR after all, stop per step 1.
 4. **Design.** Run `bricks/architect.md`. Its sketch is the plan's target shape.
 5. **Slice.** Cut the work into vertical slices per `principles/sequence-verifiable-units.md`:
    - Each slice is one PR that works end to end and can be checked by hand, or better, by running it.
@@ -20,8 +22,6 @@ Copy these steps into your todo list verbatim.
    - `home`: write `~/.agents/plans/<repo>/<slug>.md`.
    - `github-issue`: `gh issue create`, with the plan as the body.
 8. **Stop.** Reply with the plan's location, the slices in order, and the decisions to validate. Explain how to run a slice: `/leogpt implement slice <n> of <plan location>`. With `none`, a slice can run only in this conversation: offer once to save the plan (repo, home, or issue) so another session can pick it up.
-
-Coming from the feature playbook: keep the grill decisions already taken and ask only what is still open. Delete the feature branch if it has no commits.
 
 ## Template
 

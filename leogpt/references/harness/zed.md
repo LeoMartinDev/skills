@@ -25,13 +25,13 @@ There is no choice UI. Use the text format in `bricks/grill.md`.
 
 ## 5. Isolate an arena candidate
 
-Arenas never run in Zed: all subagents share one model, so the arena gate fails. Say so in one line. `architect` asks one designer for two structurally distinct designs, and you pick.
+All subagents share one model (see the arena gate in `references/memory.md`). The design arena runs as a same-model arena: its candidates write files, so no worktree is needed. The implementation arena never runs in Zed: say so in one line, and one implementer takes the task.
 
 ## 6. Native config written by setup
 
-Setup proposes one value for `agent.subagent_model`: the implementer pick, since implementation is the heaviest delegated work. Show the JSON change and write it only after the user confirms. Memory records `models.zed: subagent=<model>`.
+Setup proposes one value for `agent.subagent_model`: the `code` pick, since implementation is the heaviest delegated work. Show the JSON change and write it only after the user confirms. Memory records `models.zed: subagent=<model>`.
 
 ## 7. Limits
 
 - Zed loads global skills from `~/.agents/skills/` only, one level deep: the `leogpt` folder must sit directly in it.
-- There is no choice UI, and no model per role.
+- There is no choice UI, and no model per tier.
