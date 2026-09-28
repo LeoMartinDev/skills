@@ -40,7 +40,7 @@ Tiers: `smart`, `code`, `fast`. Roles map to tiers:
 | `code` | `implementer`, `verifier`, `arena.implementation` |
 | `fast` | `explorer` |
 
-A value is a model slug as the harness spells it, or `agent:<id>` for harnesses that fix the model per agent definition (opencode). An arena role takes a list of models, e.g. `[opus, fable]`.
+A value is a model slug as the harness spells it, or `agent:<id>` for harnesses that fix the model per agent definition (opencode), or a profile model for Delta. An arena role takes a list of models, e.g. `[opus, fable]`.
 
 Resolve a role's model in this order:
 

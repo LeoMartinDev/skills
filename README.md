@@ -1,6 +1,6 @@
 # leogpt
 
-A personal, harness-agnostic Agent Skill that implements features, fixes bugs, and writes plans with the rigor of [pstack](https://github.com/cursor/plugins/tree/main/pstack), in a minimal form. It runs in Claude Code, Cursor, opencode, and Zed, and degrades gracefully anywhere else.
+A personal, harness-agnostic Agent Skill that implements features, fixes bugs, and writes plans with the rigor of [pstack](https://github.com/cursor/plugins/tree/main/pstack), in a minimal form. It runs in Claude Code, Cursor, Delta, opencode, and Zed, and degrades gracefully anywhere else.
 
 Its core idea comes from pstack: **the main agent is a lead, not a typist.** It decides, synthesizes, and verifies. Subagents explore, design, write code, verify, and review, and each returns a short report. The main context stays small, so long tasks stay sharp.
 
@@ -11,7 +11,7 @@ This README is the design document. It records every decision and why, so the sk
 The skill lives in `leogpt/`. During iteration, symlink it so edits apply everywhere at once:
 
 ```bash
-ln -s ~/Documents/dev/skills/leogpt ~/.agents/skills/leogpt    # Zed, opencode, Cursor
+ln -s ~/Documents/dev/skills/leogpt ~/.agents/skills/leogpt    # Zed, opencode, Cursor, Delta (personal skills share this folder)
 ln -s ~/.agents/skills/leogpt ~/.claude/skills/leogpt          # Claude Code
 ```
 
@@ -139,14 +139,14 @@ Setup uses the [Artificial Analysis](https://artificialanalysis.ai/) API when `A
 
 ### Harness support
 
-| | Claude Code | Cursor | opencode | Zed | generic |
-|---|---|---|---|---|---|
-| Subagents | `Agent` | `Task` | `subagent` | `spawn_agent` | sequential fallback |
-| Model per tier | per call (`model`) | per call (`model`) | per agent file | one `subagent_model` | no |
-| Arena | ✅ | ✅ | ✅ design; implementation with ≥ 2 agent files on distinct models | design only, same model | design with subagents; implementation also needs ≥ 2 selectable models |
-| Choice UI | `AskUserQuestion` | `AskQuestion` | `question` | text | text |
-| Worktrees | `isolation: "worktree"` | manual `git worktree` | manual | manual | manual |
-| Setup writes | memory | memory + `~/.cursor/rules/leogpt-models.mdc` | memory + `~/.config/opencode/agents/leogpt-*.md` | memory + `agent.subagent_model` | memory |
+| | Claude Code | Cursor | Delta | opencode | Zed | generic |
+|---|---|---|---|---|---|---|
+| Subagents | `Agent` | `Task` | Worker / Scout / Reviewer profiles | `subagent` | `spawn_agent` | sequential fallback |
+| Model per tier | per call (`model`) | per call (`model`) | per profile (Settings) | per agent file | one `subagent_model` | no |
+| Arena | ✅ | ✅ | ✅ design; implementation with ≥ 2 selectable profile models | ✅ design; implementation with ≥ 2 agent files on distinct models | design only, same model | design with subagents; implementation also needs ≥ 2 selectable models |
+| Choice UI | `AskUserQuestion` | `AskQuestion` | text | `question` | text | text |
+| Worktrees | `isolation: "worktree"` | manual `git worktree` | managed isolated copies | manual | manual | manual |
+| Setup writes | memory | memory + `~/.cursor/rules/leogpt-models.mdc` | memory + profile models / `<id>.toml` | memory + `~/.config/opencode/agents/leogpt-*.md` | memory + `agent.subagent_model` | memory |
 
 Each harness file answers the same 7 questions in the same order: spawn, model, list models, questions, isolation, native config, limits.
 
@@ -157,7 +157,7 @@ Each harness file answers the same 7 questions in the same order: spawn, model, 
 | `leogpt/SKILL.md` | Router, lead rules, principles index | ✅ |
 | `leogpt/references/memory.md` | Memory schema, defaults, model resolution, arena gate | ✅ |
 | `leogpt/references/subagent-brief.md` | Delegation template and return format | ✅ |
-| `leogpt/references/harness/*.md` | Claude Code, Cursor, opencode, Zed, generic | ✅ |
+| `leogpt/references/harness/*.md` | Claude Code, Cursor, Delta, opencode, Zed, generic | ✅ |
 | `leogpt/playbooks/feature.md` | Feature flow | ✅ |
 | `leogpt/playbooks/bugfix.md` | Bugfix flow | ✅ |
 | `leogpt/playbooks/plan.md` | Plan flow and plan template | ✅ |
