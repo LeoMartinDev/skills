@@ -34,7 +34,7 @@ You are the lead. You decide, synthesize, and verify. Subagents read bulk code, 
 
 - **Clarity gate** before feature, bugfix, or plan. Grill (`bricks/grill.md`) when the request does not state the observable expected behavior, or leaves the scope open, or has two plausible readings that lead to different code. A ticket that states behavior and scope runs autonomously. Lean toward deciding alone on everything else.
 - **Delegate** with `references/subagent-brief.md`. Pick each subagent's model per `references/memory.md#models`.
-- **Decide** reversible choices yourself and record them. Ask the user only where a step says to: the grill, the setup prompt, and the few one-time questions the steps name.
+- **Decide** reversible choices yourself and record them. Ask the user only where a step says to: the grill, the setup prompt, and the few one-time questions the steps name. If grounding or design surfaces a decision only the user can make (see the Mindset in `bricks/grill.md`), run one more grill round on it alone, within the same caps.
 - **Stuck** (verification still fails after `verify.max-rounds`, or the bug won't reproduce): stop without a PR. Report what you tried, where it blocks, and the remaining hypotheses.
 - **Final reply**, in the user's language: what you did, each decision (choice, alternatives, why), verification evidence, what stays unverified, and the models used.
 
