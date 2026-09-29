@@ -14,6 +14,7 @@
 - Bring a pattern from elsewhere (a new state library, another error style, a different test runner) into one corner of the repo.
 - Restyle existing code to match your preference.
 - Mix two conventions in the same file.
+- Change a lint rule, a config, or add a disable comment so your code passes. Rename or reshape the code instead.
 
 ## Check
 - Would a reviewer who knows this repo guess the code was written by an agent?
