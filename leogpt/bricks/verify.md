@@ -35,4 +35,4 @@ At most 30 lines:
 - An inconclusive check, or a check run on the wrong surface, is not a pass. Say so.
 - "It compiles" and "the tests I wrote pass" are not enough when a real run is cheap.
 - The lead re-reads every verdict with its exact command. It reruns nothing by default, except one targeted check when an `unverified:` item touches the core of the ticket, or when a verdict lacks its evidence.
-- The unverified items go into the final reply and the PR body as they are.
+- The unverified items go into the final reply as they are, and into the PR body per `bricks/ship.md#pr-body`.
