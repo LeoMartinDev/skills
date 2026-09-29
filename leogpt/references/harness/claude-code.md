@@ -6,8 +6,8 @@ You are in Claude Code when your tools include `Agent` with `subagent_type` and 
 
 Tool `Agent`, with the parameters `description` (3-5 words), `prompt` (the brief), `subagent_type`, and optionally `run_in_background`, `model`, and `isolation`.
 
-- Explorer: `subagent_type: "Explore"`. It has no Edit or Write and is built for search, not judgment.
-- Every other role (designer, implementer, verifier, reviewer, judge, arena candidate): `subagent_type: "general-purpose"`. The brief's scope line keeps the read-only roles read-only.
+- Explorer (lookup): `subagent_type: "Explore"`. It has no Edit or Write and is built for search, not judgment.
+- Every other role (explorer (report), designer, implementer, verifier, reviewer, judge, arena candidate): `subagent_type: "general-purpose"`. The brief's scope line keeps the read-only roles read-only.
 - Parallel: put several `Agent` calls in one message. Subagents run in the background by default and notify you on completion. Never poll them.
 - Continue a subagent that already returned with `SendMessage`, addressed to its agent ID. Its context stays intact.
 - The user does not see a subagent's report. Relay what matters.

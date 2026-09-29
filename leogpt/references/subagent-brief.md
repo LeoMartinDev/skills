@@ -35,6 +35,7 @@ Never paste whole files or long diffs. The lead reads the diff itself if needed.
 ## Rules
 
 - Give absolute paths to the skill files the subagent must read, since its working directory is the repo.
+- An `explorer` runs in one of two cases, each mapped to an agent in section 1 of the harness file. An explorer (report), as in `bricks/how.md`, writes its report to a file and runs shell commands such as `git log`. An explorer (lookup) answers a quick factual question and writes nothing: a fact for the grill, a bugfix hypothesis, setup benchmarks.
 - One subagent, one role. A verifier never sees the implementer's reasoning, only the goal, the diff location, and the success criteria.
 - Guardrails are never in the allowed paths unless the task is about them: lint, type, format, test, and CI config, and disable comments (`eslint-disable`, `@ts-expect-error`, `# noqa`). When a guardrail blocks the code, change the code to satisfy it. If that is truly impossible, the subagent reports it as an open question, and the lead asks the user: a repo rule is the team's call.
 - Independent subagents launch together, in parallel, when the harness allows it.

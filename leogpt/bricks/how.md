@@ -11,11 +11,11 @@ When in doubt, take the simple path.
 
 ## 2. Brief the explorers
 
-Use `references/subagent-brief.md`, read-only, role `explorer`. Give each explorer its output path `/tmp/leogpt-how-<slug>/angle-<n>.md`: it writes the full report there and returns the digest. When the task comes from a ticket, paste into each brief, verbatim, the risks, dependencies, and caveats named in the ticket and its parent. Each explorer returns:
+Use `references/subagent-brief.md`, role `explorer`, as an explorer (report). Its scope allows writes to `/tmp/leogpt-how-<slug>/` only: it writes the full report to `angle-<n>.md` there and returns a digest. The digest overrides the brief's return format: at most about 50 lines. When the task comes from a ticket, paste into each brief, verbatim, the risks, dependencies, and caveats named in the ticket and its parent. Each explorer returns:
 
 - **Entry points**: where the flow starts (route, command, job, UI event), as `path:line`.
 - **Flow**: the runtime path in 3 to 8 steps.
-- **Key types**: the data shapes that carry the domain, with their paths.
+- **Key types**: the data shapes that carry the domain, with their paths. The digest inlines an excerpt of each key definition or signature, at most 10 lines, so the lead designs without opening files.
 - **Where things live**: which package or layer owns what, and the local conventions.
 - **Templates**: for each kind of file the task will add (handler, component, test), the closest existing sibling, as a path. For each data source or service the new code will call, how its existing callers reach it (wrapper, repair step, cache, guard), as `path:line`. The new code takes the same path unless the design says otherwise.
 - **Tests**: where the tests live and the exact command to run them.
@@ -25,7 +25,7 @@ Use `references/subagent-brief.md`, read-only, role `explorer`. Give each explor
 
 ## 3. Synthesize
 
-Merge the reports yourself. When two explorers disagree, send one targeted follow-up rather than reading the code.
+Merge the reports yourself. When a digest is not enough, or two explorers disagree, continue that explorer with a targeted question per `references/subagent-brief.md#continuing`. Read the source yourself only to check a blocker, as in `bricks/interrogate.md` section 5, or a disagreement the follow-up left open.
 
 - **In a playbook**: keep a mental model of at most 20 lines (entry points, flow, key types, conventions, templates, test commands, gotchas, known risks) plus the report paths. Pass both to every later brief; a subagent that doubts the digest re-reads the file.
 - **In the how route**: present the explanation to the user with the sections Overview, Key concepts, How it works, Where things live, and Gotchas. Drop any that are empty. Give `path:line` references, not code dumps.

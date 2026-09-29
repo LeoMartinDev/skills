@@ -6,8 +6,8 @@ You are in Cursor when your tools include `Task` (also named `Agent` since Curso
 
 Tool `Task`, with the parameters `subagent_type` (`generalPurpose`, or the name of a `.cursor/agents/*.md` agent), `prompt` (the brief), and optionally `model`, `readonly`, and `run_in_background`.
 
-- Read-only roles (explorer, reviewer, judge): `readonly: true`. Caution: `readonly` also strips MCP access. Leave it off for a subagent that needs an MCP (Notion, GitHub).
-- Writing roles (implementer, verifier, arena candidate): `readonly` off.
+- Read-only roles (explorer (lookup), reviewer, judge): `readonly: true`. Caution: `readonly` also strips MCP access. Leave it off for a subagent that needs an MCP (Notion, GitHub).
+- Writing roles (explorer (report), implementer, verifier, arena candidate): `readonly` off.
 - Parallel: put several `Task` calls in one message.
 - Nesting stops at one level: a subagent cannot spawn another. Only the lead spawns.
 - Continuing a returned subagent is not documented: spawn a fresh one per `references/subagent-brief.md#continuing`.

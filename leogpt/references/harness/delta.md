@@ -6,7 +6,7 @@ You are in Delta when your thread runs in a Delta worktree with nested subagents
 
 Delegate through the subagent mechanism in your tool list: read its schema and pass the brief as the task. Each subagent works in a separate conversation and reports its final result back to the parent automatically. Map roles to profiles:
 
-- Explorer: `Scout` (shared checkout, gathers information).
+- Explorer, report or lookup: `Scout` (shared checkout, gathers information). An explorer (report) writes its report through terminal commands.
 - Designer, implementer, verifier, arena candidate: `Worker` (full tool access, isolated copy).
 - Judge, reviewer: `Reviewer` (checks changes, isolated copy).
 

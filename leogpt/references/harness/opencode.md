@@ -6,14 +6,15 @@ You are in opencode when your tools include `subagent`, `skill`, and `question`.
 
 Tool `subagent`, with the parameters: `agent` (the agent ID), `description`, `prompt` (the brief), and optionally `model`, `background` and `sessionID`.
 
-- Only `mode: subagent` agents can be targeted. Built-ins: `explore` (read-only) and `general` (full tools).
+- Only `mode: subagent` agents can be targeted. Built-ins: `explore` (glob, grep, and read only) and `general` (full tools).
+- Spawn `explore` for the read-only roles (explorer (lookup), reviewer, judge) when reading files is enough, and `general` for every other role, including the explorer (report). The brief's scope line keeps a read-only role read-only.
 - With `background: true`, the call returns at once and you are notified on completion. Pass the returned `sessionID` to continue that child, for example with counterexamples.
 - Nesting stops at one level by default. Only the lead spawns.
 - Issue independent `subagent` calls in the same turn to run them in parallel.
 
 ## 2. Pick the model
 
-Parameter `model` on the `subagent` call, as `provider/model` or `provider/model#variant`. It overrides the agent's own model, which overrides the session's model. Omit it only when the role has no model per `references/memory.md#models`. Spawn `explore` for read-only roles and `general` for writing roles.
+Parameter `model` on the `subagent` call, as `provider/model` or `provider/model#variant`. It overrides the agent's own model, which overrides the session's model. Omit it only when the role has no model per `references/memory.md#models`.
 
 ## 3. List available models
 
