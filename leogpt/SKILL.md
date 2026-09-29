@@ -44,6 +44,7 @@ Before applying a principle, read its file in `principles/` in full. Name the re
 
 **Core**
 - `laziness-protocol`: sizing a diff, tempted by a new layer. Smallest change that solves it; bias to deletion.
+- `follow-local-conventions`: writing code in an existing area. Imitate the closest sibling; no new pattern where one exists.
 - `foundational-thinking`: before writing logic. Get the types and data structures right first.
 - `redesign-from-first-principles`: a new requirement meets an existing design. Redesign as if it had been there from day one.
 - `attack-the-premise`: two fixes sharing one premise failed. Question the premise, not the fix.

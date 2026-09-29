@@ -11,7 +11,7 @@ Copy these steps into your todo list verbatim.
 5. **Branch.** Follow `bricks/ship.md#branch`.
 6. **Implement.**
    - When the sketch has at least one `major` open choice, run `bricks/arena.md` with the implementation task, one worktree per candidate. If its gate fails, fall back to the next bullet.
-   - Otherwise, one `implementer` subagent, which also settles the `minor` choices. Its brief contains the sketch, the allowed paths, the success criteria, and the principle files `laziness-protocol`, `test-behavior-not-implementation`, and `sequence-verifiable-units`.
+   - Otherwise, one `implementer` subagent, which also settles the `minor` choices. Its brief contains the sketch, the allowed paths, the success criteria, and the principle files `laziness-protocol`, `follow-local-conventions`, `test-behavior-not-implementation`, and `sequence-verifiable-units`.
    - The implementer commits in small units, each ending in a passing check.
 7. **Verify.** Run `bricks/verify.md`. On fail, send only the counterexamples back to the implementer (see `references/subagent-brief.md#continuing`), then verify again. One round counter, `verify.max-rounds`, covers the whole run, review fixes included. Still failing: stop per the Stuck rule in `SKILL.md`.
 8. **Review.** Run `bricks/interrogate.md` once on the branch diff. Send the accepted findings to the implementer, then rerun step 7. No second review. If the review fixes exhaust `verify.max-rounds`, do not stop: revert them, ship the last green commit, and list the unapplied findings in the PR body.
