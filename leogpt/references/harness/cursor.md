@@ -14,7 +14,7 @@ Tool `Task`, with the parameters `subagent_type` (`generalPurpose`, or the name 
 
 ## 2. Pick the model
 
-Parameter `model` on the `Task` call, as a Cursor slug (for example `claude-opus-5-5-max`, `gpt-5.6-sol-max`, `grok-4.7-xhigh-fast`). Omit it to inherit. An invalid slug is rejected, and the error lists the valid slugs.
+Parameter `model` on the `Task` call, as a Cursor slug (for example `claude-opus-5-5-max`, `gpt-5.6-sol-max`, `grok-4.7-xhigh-fast`). Omit it only when the role has no model per `references/memory.md#models`. An invalid slug is rejected, and the error lists the valid slugs.
 
 ## 3. List available models
 

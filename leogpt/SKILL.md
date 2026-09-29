@@ -35,10 +35,10 @@ You are the lead. You decide, synthesize, and verify. Subagents read bulk code, 
 - **Clarity gate** before feature, bugfix, or plan. Grill (`bricks/grill.md`) when the request does not state the observable expected behavior, or leaves the scope open, or has two plausible readings that lead to different code. A ticket that states behavior and scope runs autonomously. Lean toward deciding alone on everything else.
 - **Ticket items** carry over verbatim. When the input lists a Definition of Done, acceptance criteria, or an explicit scope, each item becomes a success criterion, word for word. Add your own criteria where they leave a gap, but never rephrase or drop an item silently: dropping, deferring, or reinterpreting one is a decision, recorded in the final reply and in the PR body's Decisions.
 - **Waived risks**: a design-challenge risk or a review blocker that you reject, or resolve by a tradeoff that leaves its failure scenario possible, is a decision too, recorded the same way. State its residual risk in one line: the user flow it hits, nominal or edge, and the ticket constraint that forces it, if any.
-- **Delegate** with `references/subagent-brief.md`. Pick each subagent's model per `references/memory.md#models`.
+- **Delegate** with `references/subagent-brief.md`. Pick and pass each subagent's model per `references/memory.md#models`.
 - **Decide** reversible choices yourself and record them. Ask the user only where a step says to: the grill, the setup prompt, and the few one-time questions the steps name. If grounding or design surfaces a decision only the user can make (see the Mindset in `bricks/grill.md`), run one more grill round on it alone, within the same caps.
 - **Stuck** (verification still fails after `verify.max-rounds`, or the bug won't reproduce): stop without a PR. Report what you tried, where it blocks, and the remaining hypotheses.
-- **Final reply**, in the user's language: what you did, each decision (choice, alternatives, why), verification evidence, what stays unverified, and the models used.
+- **Final reply**, in the user's language: what you did, each decision (choice, alternatives, why), verification evidence, what stays unverified, and the models used: per role, the model actually passed on its spawns, or `inherited: <session model>`. Every number you cite (tests, lines, errors) comes from the last run of its command.
 
 ## Principles
 

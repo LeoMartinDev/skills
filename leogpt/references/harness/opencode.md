@@ -13,7 +13,7 @@ Tool `subagent`, with the parameters: `agent` (the agent ID), `description`, `pr
 
 ## 2. Pick the model
 
-Parameter `model` on the `subagent` call, as `provider/model` or `provider/model#variant`. It overrides the agent's own model, which overrides the session's model. Omit it to inherit. Spawn `explore` for read-only roles and `general` for writing roles.
+Parameter `model` on the `subagent` call, as `provider/model` or `provider/model#variant`. It overrides the agent's own model, which overrides the session's model. Omit it only when the role has no model per `references/memory.md#models`. Spawn `explore` for read-only roles and `general` for writing roles.
 
 ## 3. List available models
 

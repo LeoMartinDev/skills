@@ -55,6 +55,8 @@ Resolve a role's model in this order:
 
 An explicit `none` stops the resolution: that role has no model, and for an arena role, no arena.
 
+Pass the resolved model explicitly on every spawn, the way section 2 of the harness file says. A subagent inherits its model only when the role has no model or the harness has no per-spawn choice. In a standard arena, each candidate gets a distinct model from the role's list.
+
 If the harness rejects a model, fall back to the inherited model and say so in one line. For an arena role, drop the rejected model instead of replacing it.
 
 **Arena gate.** The one place that decides whether an arena runs. It fails when the arena key is `never`, the role resolves to `none`, or the harness has no subagents. Otherwise, count the distinct models the harness can actually select for the role:

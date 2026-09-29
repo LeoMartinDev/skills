@@ -14,7 +14,7 @@ Tool `Agent`, with the parameters `description` (3-5 words), `prompt` (the brief
 
 ## 2. Pick the model
 
-Parameter `model` on the `Agent` call. It takes the aliases listed in the tool's schema (for example `opus`, `sonnet`, `haiku`, `fable`). Omit it to inherit the lead's model.
+Parameter `model` on the `Agent` call. It takes the aliases listed in the tool's schema (for example `opus`, `sonnet`, `haiku`, `fable`). Omit it only when the role has no model per `references/memory.md#models`: the subagent then inherits the lead's model.
 
 ## 3. List available models
 
