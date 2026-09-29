@@ -24,7 +24,7 @@ With no convention: Conventional Commits (`type(scope): subject`, imperative, no
 ## Commits
 
 - Small ordered commits, each a verifiable unit, per `principles/sequence-verifiable-units.md`. For a bugfix, the repro test comes just before the fix, as the only allowed red commit.
-- Before committing, remove debug leftovers, commented-out code, and comments that narrate the change.
+- Before committing, remove debug leftovers and commented-out code. Then list the comments the branch adds (`git diff <default>...HEAD`, the added lines holding a comment) and keep only those that pass `principles/comment-the-why.md`.
 - Clean up local history if needed. Never rewrite pushed history.
 - Follow the harness or user rules on commit attribution.
 

@@ -10,7 +10,7 @@ Copy these steps into your todo list verbatim.
 4. **Design.** Run `bricks/architect.md`. It returns one sketch: types, signatures, module boundaries, `not implemented` bodies, the named data shape (per `principles/model-the-domain.md`), and the open implementation choices. When the sketch changes an external public surface (published API, CLI, file format) or a persisted data shape, show it to the user and ask once for a go.
 5. **Branch.** Follow `bricks/ship.md#branch`.
 6. **Implement.**
-   - Every implementation brief, arena candidate or single implementer, contains the sketch, the allowed paths, the success criteria, and the principle files `laziness-protocol`, `follow-local-conventions`, `test-behavior-not-implementation`, and `sequence-verifiable-units`.
+   - Every implementation brief, arena candidate or single implementer, contains the sketch, the allowed paths, the success criteria, and the principle files `laziness-protocol`, `follow-local-conventions`, `comment-the-why`, `test-behavior-not-implementation`, and `sequence-verifiable-units`.
    - When the sketch has at least one `major` open choice, run `bricks/arena.md` with the implementation task, one worktree per candidate. If its gate fails, fall back to the next bullet.
    - Otherwise, one `implementer` subagent, which also settles the `minor` choices.
    - The implementer commits in small units, each ending in a passing check.

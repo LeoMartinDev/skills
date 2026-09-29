@@ -23,7 +23,7 @@ Role `reviewer`, read-only. Read the threshold from `review.single-reviewer-max-
 Angles:
 
 - **A. Blast radius**: callers, shared state, data and migrations, concurrency, what breaks elsewhere. Any change to a guardrail (lint, type, test, or CI config, a disable comment) that the task did not ask for is a blocker. Prove the one fact the change's safety rests on with a cheap command, rather than asserting it.
-- **B. Simplicity**: needless layers, one-caller wrappers, dead code, workaround code, comments that restate the code or narrate the change, departures from local conventions. Principle files `laziness-protocol`, `minimize-reader-load`, and `follow-local-conventions`.
+- **B. Simplicity**: needless layers, one-caller wrappers, dead code, workaround code, comments that fail `comment-the-why`, departures from local conventions. Principle files `laziness-protocol`, `minimize-reader-load`, `follow-local-conventions`, and `comment-the-why`.
 - **C. Domain and tests**: domain modeling, types, boundaries, and whether the tests assert observable behavior. Principle files `model-the-domain`, `type-system-discipline`, and `test-behavior-not-implementation`.
 
 Each brief carries the intent, the diff location (not the diff), and the angles.

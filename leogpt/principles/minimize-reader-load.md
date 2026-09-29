@@ -13,7 +13,7 @@
 ## Don't
 - Split code into many tiny files and functions "for cleanliness" when it scatters one idea.
 - Hide control flow in callbacks, events, or magic registration when a direct call works.
-- Write comments that restate the code or narrate the change.
+- Write comments that fail `comment-the-why`.
 
 ## Check
 - Can a newcomer trace the main path without opening more than 2 or 3 files?
