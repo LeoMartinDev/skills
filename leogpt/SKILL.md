@@ -42,7 +42,7 @@ You are the lead. You decide, synthesize, and verify. Subagents read bulk code, 
 
 ## Principles
 
-Before applying a principle, read its file in `principles/` in full. Name the relevant files in every subagent brief.
+Before applying a principle, read its file in `principles/` in full. Name the relevant files in every subagent brief, per `references/subagent-brief.md`.
 
 **Core**
 - `laziness-protocol`: sizing a diff, tempted by a new layer. Smallest change that solves it; bias to deletion.
