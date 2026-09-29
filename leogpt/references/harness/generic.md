@@ -10,7 +10,7 @@ Without one, run each delegated step yourself, in the main thread, in the same o
 
 - Before each role, re-read only the brief you would have sent. Nothing else from earlier steps.
 - Write each step's result in the brief's return format, then continue from that summary only.
-- The verifier step re-derives the success criteria from the goal before reading the diff.
+- The verifier step re-derives the success criteria from the goal and the ticket items before reading the diff.
 
 ## 2. Pick the model
 

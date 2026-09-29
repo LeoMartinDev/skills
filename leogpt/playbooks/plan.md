@@ -48,4 +48,4 @@ Copy these steps into your todo list verbatim.
 - <approach>: <why it lost>
 ```
 
-When `/leogpt` runs a slice, the feature playbook treats that slice as a clear, detailed ticket: no grill unless the code contradicts the plan.
+When `/leogpt` runs a slice, the feature playbook treats that slice as a clear, detailed ticket: no grill unless the code contradicts the plan. Its **You see** and **Verify** lines are its ticket items.

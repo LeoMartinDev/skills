@@ -8,6 +8,7 @@ Use `references/subagent-brief.md`, role `verifier`, with the principle file `pr
 
 - the goal, as the behavior a user observes;
 - the success criteria from the implementer's brief;
+- the ticket items, verbatim, per the Ticket items rule in `SKILL.md`;
 - the branch or worktree path;
 - for a bugfix, the original repro command and its failing output.
 
@@ -25,7 +26,7 @@ The verifier may write only temporary files outside the repo. It fixes nothing.
 
 At most 30 lines:
 
-- A verdict per check: `PASS`, `FAIL`, or `INCONCLUSIVE`, with the exact command.
+- A verdict per check, and one per ticket item: `PASS`, `FAIL`, or `INCONCLUSIVE`, with the exact command.
 - Verbatim output, trimmed to the lines that prove the verdict.
 - On `FAIL`: counterexamples (input, expected, actual). These alone go back to the implementer.
 - `unverified: <what> because <why>` for anything that could not run.
