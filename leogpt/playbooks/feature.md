@@ -6,7 +6,7 @@ Copy these steps into your todo list verbatim.
 
 1. **Check the tree.** Per `bricks/ship.md#branch`: unrelated uncommitted changes stop the run.
 2. **Clarify.** Apply the clarity gate from `SKILL.md`. If it fails, run `bricks/grill.md` with the feature caps.
-3. **Ground.** Run `bricks/how.md` over the subsystems the feature touches. Keep its model (<= 20 lines) for every later brief. Then write the acceptance criteria: the ticket items per the Ticket items rule in `SKILL.md`, or 2 to 6 behaviors a user observes when the input lists none, plus the test commands. They are the success criteria of every later brief.
+3. **Ground.** Run `bricks/how.md` over the subsystems the feature touches. Keep its model (<= 20 lines) for every later brief. Then write the acceptance criteria: the ticket items per the Ticket items rule in `SKILL.md`, or 2 to 6 behaviors a user observes when the input lists none, plus the test commands, and an integration test for each new or changed entry point whose closest sibling has one. They are the success criteria of every later brief.
 4. **Design.** Run `bricks/architect.md`. It returns one sketch: types, signatures, module boundaries, `not implemented` bodies, the named data shape (per `principles/model-the-domain.md`), and the open implementation choices. When the sketch changes an external public surface (published API, CLI, file format) or a persisted data shape, show it to the user and ask once for a go.
 5. **Branch.** Follow `bricks/ship.md#branch`.
 6. **Implement.**
