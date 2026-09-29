@@ -13,7 +13,7 @@ You are the lead. You decide, synthesize, and verify. Subagents read bulk code, 
 1. Identify your harness from your tool list. Read `references/harness/<harness>.md` (`claude-code`, `cursor`, `delta`, `opencode`, `zed`), or `generic.md` if none matches.
 2. Read memory per `references/memory.md`.
 3. Unless the request is setup itself: if this harness has no models setup and its `setup.<harness>` key is not `never`, ask once: setup now, later, or never. On "now", run `playbooks/setup.md`, then resume.
-4. Fetch the input: `gh issue view` for a GitHub issue, the Notion tool for a Notion page, the named slice for a plan (file or issue). A subagent summarizes any long input.
+4. Fetch the input: `gh issue view` for a GitHub issue, the Notion tool for a Notion page, the named slice for a plan (file or issue). Fetch the ticket's parent (story, epic) and linked issues too, when it has them. A subagent summarizes any long input.
 5. Route with the table below. Open a todo list with the playbook's steps.
 
 ## Route
