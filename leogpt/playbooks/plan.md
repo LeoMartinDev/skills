@@ -2,7 +2,7 @@
 
 Write an implementation plan for a feature. You own the plan, not the code: do not implement. The plan is a checklist that `/leogpt` later runs slice by slice.
 
-Coming from the feature playbook: step 1 is settled, step 2 asks only what is still open, and step 3 reuses the mental model already built.
+Coming from the feature playbook: step 1 is settled, step 2 asks only what is still open, step 3 reuses the mental model already built, and step 4 reuses the sketch, if any.
 
 Copy these steps into your todo list verbatim.
 
@@ -11,10 +11,10 @@ Copy these steps into your todo list verbatim.
 3. **Ground.** Run `bricks/how.md`, usually the complex path. Collect the test commands and the conventions. If the code shows the work fits one PR after all, stop per step 1.
 4. **Design.** Run `bricks/architect.md`. Its sketch is the plan's target shape.
 5. **Slice.** Cut the work into vertical slices per `principles/sequence-verifiable-units.md`:
-   - Each slice is one PR that works end to end and can be checked by hand, or better, by running it.
+   - Each slice is one PR that works end to end, passes the repo's full checks, fits `pr.max-lines`, and can be checked by hand, or better, by running it.
    - The riskiest unknown goes first, as the thinnest slice that proves it.
    - A foundation slice (schema, types) comes first only when later slices cannot start without it.
-   - Never slice by layer ("all the backend, then all the frontend").
+   - Never slice by layer ("all the backend, then all the frontend"), and never ship unwired code, such as models no caller uses yet.
 6. **Write** the plan with the template below. Keep it short: pointers and decisions, not code.
 7. **Save** per `plan.destination` in memory:
    - `none`: present it in the conversation only.

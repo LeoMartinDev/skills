@@ -22,11 +22,14 @@ When the user states a lasting preference ("from now on", "remember", "always", 
 | `arena.implementation` | `auto`, `never` | `auto` |
 | `arena.candidates` | integer >= 2 | `2` |
 | `review.single-reviewer-max-diff` | changed lines | `700` |
+| `pr.max-lines` | changed lines per PR | `400` |
 | `grill.max-rounds` | `feature=<n> bugfix=<n> plan=<n> grill=<n>` | `feature=3 bugfix=3 plan=5 grill=5` |
 | `grill.max-questions` | same shape, per round | `feature=4 bugfix=4 plan=8 grill=4` |
 | `verify.max-rounds` | integer | `3` |
 | `setup.<harness>` | `done <YYYY-MM-DD>`, `later`, `never` | unset (ask) |
 | `models.<harness>` | `role=model, ...` (see below) | unset |
+
+A lower PR size cap documented in the repo (agent docs, `CONTRIBUTING.md`, a bot config) wins over `pr.max-lines`.
 
 `later` means ask again on the next run. A setup older than 60 days earns a one-line suggestion to rerun `/leogpt setup` in the final reply.
 
