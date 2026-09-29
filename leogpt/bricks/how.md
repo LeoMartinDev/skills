@@ -17,6 +17,7 @@ Use `references/subagent-brief.md`, read-only, role `explorer`. Give each explor
 - **Flow**: the runtime path in 3 to 8 steps.
 - **Key types**: the data shapes that carry the domain, with their paths.
 - **Where things live**: which package or layer owns what, and the local conventions.
+- **Templates**: for each kind of file the task will add (handler, component, test), the closest existing sibling, as a path.
 - **Tests**: where the tests live and the exact command to run them.
 - **Gotchas**: surprising behavior, invariants, known traps.
 - **Why**: when a shape looks odd, one line from `git log` or `git blame` on why it is that way.
@@ -25,7 +26,7 @@ Use `references/subagent-brief.md`, read-only, role `explorer`. Give each explor
 
 Merge the reports yourself. When two explorers disagree, send one targeted follow-up rather than reading the code.
 
-- **In a playbook**: keep a mental model of at most 20 lines (entry points, flow, key types, conventions, test commands, gotchas) plus the report paths. Pass both to every later brief; a subagent that doubts the digest re-reads the file.
+- **In a playbook**: keep a mental model of at most 20 lines (entry points, flow, key types, conventions, templates, test commands, gotchas) plus the report paths. Pass both to every later brief; a subagent that doubts the digest re-reads the file.
 - **In the how route**: present the explanation to the user with the sections Overview, Key concepts, How it works, Where things live, and Gotchas. Drop any that are empty. Give `path:line` references, not code dumps.
 
 ## Rules
