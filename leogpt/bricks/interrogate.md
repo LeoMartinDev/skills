@@ -40,5 +40,5 @@ A finding with no concrete failure scenario is a nit at most.
 
 Merge the duplicates. Rank findings raised by both reviewers first. Check each blocker yourself against the code, with one targeted read, before accepting it. Then accept or reject each finding with a one-line reason.
 
-- **In a playbook**: send the accepted findings to the implementer, then verify again.
+- **In a playbook**: send the accepted findings to the implementer, then verify again. A blocker you reject, or resolve by a tradeoff, follows the Waived risks rule in `SKILL.md`.
 - **In the review route**: present the verdict: accepted findings, most severe first, then rejected findings with their reasons. Apply nothing unless the user asks.
