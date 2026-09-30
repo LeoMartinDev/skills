@@ -38,8 +38,8 @@ Tiers: `smart`, `code`, `fast`. Roles map to tiers:
 
 | Tier | Roles |
 |---|---|
-| `smart` | `designer`, `judge`, `reviewer`, `arena.design` |
-| `code` | `implementer`, `verifier`, `arena.implementation` |
+| `smart` | `designer`, `judge`, `reviewer`, `verifier`, `arena.design` |
+| `code` | `implementer`, `arena.implementation` |
 | `fast` | `explorer` |
 
 A value is a model slug as the harness spells it, or a profile model for Delta. An arena role takes a list of models, e.g. `[opus, fable]`.

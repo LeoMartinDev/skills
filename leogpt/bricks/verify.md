@@ -1,6 +1,6 @@
 # Brick: verify
 
-Prove the change works on the real artifact. A fresh `verifier` subagent does it. It never sees the implementer's reasoning, only the goal, the success criteria, and where the diff lives.
+Prove the change works on the real artifact. A `verifier` subagent does it, fresh on the first round. It never sees the implementer's reasoning, only the goal, the success criteria, and where the diff lives.
 
 ## Brief
 
@@ -34,7 +34,9 @@ At most 30 lines:
 
 ## Rounds
 
-On `FAIL`, send only the counterexamples back to the implementer (see `references/subagent-brief.md#continuing`), then verify again. Every fix, from counterexamples or review findings, costs one round of `verify.max-rounds`, a single counter for the whole run. Out of rounds: revert to the last commit that passed, ship it, and list in the PR body what it leaves unapplied. When no commit passed, stop per the Stuck rule in `SKILL.md`.
+On `FAIL`, send only the counterexamples back to the implementer (see `references/subagent-brief.md#continuing`), then verify again.
+
+A re-verification checks the fix round only. Continue the same verifier, or give a fresh one the previous report and its proof script paths. It reruns its proof scripts, adds a case per counterexample and per applied finding, reruns the tests covering the files the round changed, and the static checks on their package. Everything else keeps its previous verdict. Every fix, from counterexamples or review findings, costs one round of `verify.max-rounds`, a single counter for the whole run. Out of rounds: revert to the last commit that passed, ship it, and list in the PR body what it leaves unapplied. When no commit passed, stop per the Stuck rule in `SKILL.md`.
 
 ## Rules
 

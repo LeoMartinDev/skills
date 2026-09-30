@@ -13,10 +13,9 @@ Copy these steps into your todo list verbatim.
    - Still no repro: stop per the Stuck rule in `SKILL.md`. No repro, no fix.
 6. **Find the root cause.** From the grounding and the repro, list 2 to 4 hypotheses. Spawn one subagent per hypothesis, in parallel. It is an `explorer (report)` when reading code, logs, and `git log` can settle the hypothesis. It is an `implementer` in its own worktree when settling it needs temporary instrumentation, which never lands. Each returns a verdict with its evidence. Eliminate until one mechanism survives, and confirm it against the repro. Principle files `fix-root-causes` and `attack-the-premise`.
 7. **Fix.** If the fix crosses a function or module boundary, run `bricks/architect.md` first. One `implementer` makes the smallest change the evidence justifies, and commits it on top of the repro test. Its success criteria: the repro passes, the expected behavior from step 2 holds, and the ticket items hold, per the Ticket items rule in `SKILL.md`. No defensive guard that hides the symptom, no unrelated cleanup. Principle files `fix-root-causes`, `laziness-protocol`, `follow-local-conventions`, and `comment-the-why`.
-8. **Verify.** Run `bricks/verify.md` with the original repro. The repro now passes, and the surrounding tests still pass. If two fixes built on the same hypothesis fail, go back to step 6 and question the premise.
-9. **Review.** Run `bricks/interrogate.md` once on the branch diff. Accepted findings go back to the implementer, then run step 8 again. No second review.
-10. **Ship.** Run `bricks/ship.md` per `finish`. For a repro script, put its command and its before and after output in the PR body.
-11. **Reply.** Follow the Final reply rule in `SKILL.md`, with four parts: what was broken, the root cause, the fix, and the repro output before and after, verbatim.
+8. **Verify and review.** Launch `bricks/verify.md`, with the original repro, and `bricks/interrogate.md` together, on the same commit. The repro now passes, and the surrounding tests still pass. Send the counterexamples and the accepted findings to the implementer in one batch, then verify again per the Rounds of `bricks/verify.md`. No second review. If two fixes built on the same hypothesis fail, go back to step 6 and question the premise.
+9. **Ship.** Run `bricks/ship.md` per `finish`. For a repro script, put its command and its before and after output in the PR body.
+10. **Reply.** Follow the Final reply rule in `SKILL.md`, with four parts: what was broken, the root cause, the fix, and the repro output before and after, verbatim.
 
 ## Rules
 

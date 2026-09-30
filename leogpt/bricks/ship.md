@@ -30,6 +30,8 @@ With no convention: Conventional Commits (`type(scope): subject`, imperative, no
 
 ## Finish
 
+Before pushing a branch stacked on another branch, check that its base still exists on the remote (`git ls-remote --heads origin <base>`) and that its PR is still open. If it was merged, rebase with `git rebase --onto origin/<default> <old base tip>`, rerun the tests covering the change, and target the default branch.
+
 Read `finish` from memory. Measure the diff with `git diff --shortstat <default>...HEAD`. Over budget, do not push: apply the Budget rule in `SKILL.md`.
 
 - `stop`: leave the commits on the branch, do not push, and report.

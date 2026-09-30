@@ -14,10 +14,9 @@ Copy these steps into your todo list verbatim.
    - When the sketch has at least one `major` open choice, run `bricks/arena.md` with the implementation task, one worktree per candidate. If its gate fails, fall back to the next bullet.
    - Otherwise, one `implementer` subagent, which also settles the `minor` choices.
    - The implementer commits in small units, each ending in a passing check.
-7. **Verify.** Run `bricks/verify.md`, rounds included.
-8. **Review.** Run `bricks/interrogate.md` once on the branch diff. Send the accepted findings to the implementer, then rerun step 7. No second review.
-9. **Ship.** Run `bricks/ship.md` per `finish`.
-10. **Reply.** Follow the Final reply rule in `SKILL.md`. Add a table when you weighed design alternatives.
+7. **Verify and review.** Launch `bricks/verify.md` and `bricks/interrogate.md` together, on the same commit. Send the counterexamples and the accepted findings to the implementer in one batch, then verify again per the Rounds of `bricks/verify.md`. No second review.
+8. **Ship.** Run `bricks/ship.md` per `finish`.
+9. **Reply.** Follow the Final reply rule in `SKILL.md`. Add a table when you weighed design alternatives.
 
 ## Scope rules
 
