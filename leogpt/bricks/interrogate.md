@@ -38,7 +38,7 @@ A finding with no concrete failure scenario is a nit at most.
 
 ## 5. Synthesize
 
-Merge the duplicates. Rank findings raised by both reviewers first. Check each blocker yourself against the code, with one targeted read, before accepting it. Then accept or reject each finding with a one-line reason.
+Merge the duplicates. Rank findings raised by both reviewers first. Check each blocker yourself against the code, with one targeted read, before accepting it. Give the same read to any finding you would reject on a factual claim (already handled, out of scope, fixed by an existing contract) before rejecting it. Then accept or reject each finding with a one-line reason.
 
 - **In a playbook**: send the accepted findings to the implementer, then verify again. A blocker you reject, or resolve by a tradeoff, follows the Waived risks rule in `SKILL.md`. A `should` whose fix adds more than about 30 lines needs a failure scenario in normal use; otherwise do not apply it, and list it as unapplied in the PR body.
 - **In the review route**: present the verdict: accepted findings, most severe first, then rejected findings with their reasons. Apply nothing unless the user asks.
