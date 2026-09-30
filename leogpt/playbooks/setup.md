@@ -5,7 +5,7 @@ Pick one model per tier (`smart`, `code`, `fast`) for the current harness, have 
 Copy these steps into your todo list verbatim.
 
 1. **List the available models** per the harness file, section 3. If the harness picks no model per tier (see section 2), say so. Configure only what it supports.
-2. **Get the benchmark data.** An `explorer` subagent returns, for the listed models only: the intelligence index, the coding index, the blended price per million tokens, and the output speed. Its sources, in order:
+2. **Get the benchmark data.** An `explorer (lookup)` subagent returns, for the listed models only: the intelligence index, the coding index, the blended price per million tokens, and the output speed. Its sources, in order:
    - the Artificial Analysis API, when `ARTIFICIAL_ANALYSIS_API_KEY` is set: `curl -s -H "x-api-key: $ARTIFICIAL_ANALYSIS_API_KEY" https://artificialanalysis.ai/api/v2/data/llms/models`;
    - otherwise, the model leaderboard pages on artificialanalysis.ai, through web fetch;
    - otherwise, your own knowledge, flagged as such.

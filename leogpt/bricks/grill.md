@@ -7,7 +7,7 @@ Interview the user until the request is clear enough to build. Runs in the main 
 - **Called from a playbook**: lean toward deciding alone. Ask only what the user alone can decide: a product or business call, a preference, an irreversible choice, a scope boundary. Decide the rest and record it.
 - **In the grill route**: the goal is to challenge the user's idea. Put every open decision to them, and push back on weak answers with a concrete counterexample.
 
-Facts are your job, never the user's. When a question needs a fact (how the code works, what exists, a convention), send an `explorer` subagent to find it. Only the questions downstream of that fact wait for it.
+Facts are your job, never the user's. When a question needs a fact (how the code works, what exists, a convention), send an `explorer (lookup)` subagent to find it. Only the questions downstream of that fact wait for it.
 
 ## Design tree
 

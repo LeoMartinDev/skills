@@ -4,7 +4,7 @@ Every delegation uses this template. A subagent starts with no context: the brie
 
 ```markdown
 ## Role
-<explorer | designer | implementer | verifier | reviewer | judge | arena candidate>. <One sentence on what you produce.>
+<explorer (report) | explorer (lookup) | designer | implementer | verifier | reviewer | judge | arena candidate>. <One sentence on what you produce.>
 
 ## Goal
 <The outcome, in one or two sentences. For code: the behavior a user observes when you are done.>

@@ -7,7 +7,8 @@ You are in opencode when your tools include `subagent`, `skill`, and `question`.
 Tool `subagent`, with the parameters: `agent` (the agent ID), `description`, `prompt` (the brief), and optionally `model`, `background` and `sessionID`.
 
 - Only `mode: subagent` agents can be targeted. Built-ins: `explore` (glob, grep, and read only) and `general` (full tools).
-- Spawn `explore` for the read-only roles (explorer (lookup), reviewer, judge) when reading files is enough, and `general` for every other role, including the explorer (report). The brief's scope line keeps a read-only role read-only.
+- `explore`: explorer (lookup), reviewer, judge, when reading files is enough. It cannot write a file or run the shell.
+- `general`: every other role, the explorer (report) included, since it writes its report and runs `git log`. The brief's scope line keeps a read-only role read-only.
 - With `background: true`, the call returns at once and you are notified on completion. Pass the returned `sessionID` to continue that child, for example with counterexamples.
 - Nesting stops at one level by default. Only the lead spawns.
 - Issue independent `subagent` calls in the same turn to run them in parallel.

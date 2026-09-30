@@ -4,14 +4,14 @@ Build a working mental model of the code a task touches, or answer "how does X w
 
 ## 1. Size the question
 
-- **Simple**: one module, one function, one narrow question. One `explorer` explores and explains in a single pass.
-- **Complex**: a subsystem across several files, packages, or services. Split it into 2 to 4 distinct angles, for example the data model, the runtime flow, the entry points, and the tests. One `explorer` per angle, launched in parallel.
+- **Simple**: one module, one function, one narrow question. One `explorer (report)` explores and explains in a single pass.
+- **Complex**: a subsystem across several files, packages, or services. Split it into 2 to 4 distinct angles, for example the data model, the runtime flow, the entry points, and the tests. One `explorer (report)` per angle, launched in parallel.
 
 When in doubt, take the simple path.
 
 ## 2. Brief the explorers
 
-Use `references/subagent-brief.md`, role `explorer`, as an explorer (report). Its scope allows writes to `/tmp/leogpt-how-<slug>/` only: it writes the full report to `angle-<n>.md` there and returns a digest. The digest overrides the brief's return format: at most about 50 lines. When the task comes from a ticket, paste into each brief, verbatim, the risks, dependencies, and caveats named in the ticket and its parent. Each explorer returns:
+Use `references/subagent-brief.md`, role `explorer (report)`. Spawn it on the agent that section 1 of the harness file maps to that role, never a read-only one: it must write its report and run `git log`. Its scope allows writes to `/tmp/leogpt-how-<slug>/` only: it writes the full report to `angle-<n>.md` there and returns a digest. The digest overrides the brief's return format: at most about 50 lines. When the task comes from a ticket, paste into each brief, verbatim, the risks, dependencies, and caveats named in the ticket and its parent. Each explorer returns:
 
 - **Entry points**: where the flow starts (route, command, job, UI event), as `path:line`.
 - **Flow**: the runtime path in 3 to 8 steps.
