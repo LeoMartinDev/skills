@@ -42,7 +42,7 @@ Pick the design that hides the most complexity behind the smallest public surfac
 
 One read-only `reviewer`, on a different model from the designers when possible, challenges the chosen sketch. It always runs after a single designer. After an arena, it runs only when the sketch has a `major` open choice, a new public surface, or a cross-boundary change; otherwise skip it in one line.
 
-The reviewer gets the sketch location, the mental model, and the allowed paths, never the designers' reasoning. At most 15 lines: the weakest choice, one concrete failure scenario per risk, what to change, and whether each `major`/`minor` tag is right. Accept or reject each point in one line and revise the sketch. A risk you reject, or resolve by a tradeoff, follows the Waived risks rule in `SKILL.md`.
+The reviewer gets the sketch location, the mental model, and the allowed paths, never the designers' reasoning. At most 15 lines: the weakest choice, one concrete failure scenario per risk, what to change, and whether each `major`/`minor` tag is right. Accept or reject each point in one line and revise the sketch. Record each rejected point per the Record rule in `SKILL.md`.
 
 ## Output
 

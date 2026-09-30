@@ -23,7 +23,7 @@ Role `reviewer`, read-only. Read the threshold from `review.single-reviewer-max-
 Angles:
 
 - **A. Blast radius**: callers, shared state, new code that skips the wrapper its siblings use for the same data or service, data and migrations, concurrency, what breaks elsewhere. Any change to a guardrail (lint, type, test, or CI config, a disable comment) that the task did not ask for is a blocker. Prove the one fact the change's safety rests on with a cheap command, rather than asserting it.
-- **B. Simplicity**: needless layers, one-caller wrappers, dead code, workaround code, comments that fail `comment-the-why`, departures from local conventions. A kind of file no sibling has, such as tests for a thin wrapper whose sibling wrappers have none, is a `should`. Principle files `laziness-protocol`, `minimize-reader-load`, `follow-local-conventions`, and `comment-the-why`.
+- **B. Simplicity**: needless layers, one-caller wrappers, dead code, workaround code, comments that fail `comment-the-why`, departures from local conventions, including a file (test, doc, config) the closest siblings do not have. Principle files `laziness-protocol`, `minimize-reader-load`, `follow-local-conventions`, and `comment-the-why`.
 - **C. Domain and tests**: domain modeling, types, boundaries, and whether the tests assert observable behavior. Principle files `model-the-domain`, `type-system-discipline`, and `test-behavior-not-implementation`.
 
 Each brief carries the intent, the diff location (not the diff), and the angles.
@@ -40,5 +40,5 @@ A finding with no concrete failure scenario is a nit at most.
 
 Merge the duplicates. Rank findings raised by both reviewers first. Check each blocker yourself against the code, with one targeted read, before accepting it. Give the same read to any finding you would reject on a factual claim (already handled, out of scope, fixed by an existing contract) before rejecting it. Then accept or reject each finding with a one-line reason.
 
-- **In a playbook**: send the accepted findings to the implementer, then verify again. A blocker you reject, or resolve by a tradeoff, follows the Waived risks rule in `SKILL.md`. A `should` whose fix adds more than about 30 lines needs a failure scenario in normal use; otherwise do not apply it, and list it as unapplied in the PR body.
+- **In a playbook**: send the accepted findings to the implementer, then verify again. Record each rejected blocker per the Record rule in `SKILL.md`. A `should` whose fix adds more than about 30 lines needs a failure scenario in normal use; otherwise do not apply it, and list it as unapplied in the PR body.
 - **In the review route**: present the verdict: accepted findings, most severe first, then rejected findings with their reasons. Apply nothing unless the user asks.

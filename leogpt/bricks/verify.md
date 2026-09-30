@@ -20,7 +20,7 @@ The verifier may write only temporary files outside the repo. It fixes nothing.
 1. **Find the commands.** Package scripts, Makefile, CI config, the repo's agent docs. Prefer the commands CI runs.
 2. **Static.** Lint and typecheck on the smallest useful scope (changed package or files).
 3. **Tests.** Run the tests covering the changed code, and any tests added by the change. When cheap, check that a new test fails without the change: in a temporary worktree at the commit before the change (`git worktree add /tmp/leogpt-verify <base-sha>`), copy in the new test and run it. Then remove that worktree.
-4. **Real run**, when cheap: call the entry point the change adds or modifies (route, command, job, tool, handler) the way a user does, through its production wiring (DI, providers, registry, config), never only the functions behind it. A local HTTP request, a CLI invocation, a script that boots the app's wiring, or a browser if the harness has one. For a bugfix, rerun the original repro. If the wiring cannot run, report `unverified: wiring because <why>`. A function the entry point calls is not its wiring, even an exported pure one. When the change stays inert in production until something else ships (a flag, another ticket), report `unverified: wiring because inert until <what>`.
+4. **Real run**, when cheap: drive the entry point the way a user does, through its production wiring (DI, providers, registry, config): a local HTTP request, a CLI invocation, a script that boots the app, or a browser if the harness has one. For a bugfix, rerun the original repro. Calling the functions behind the entry point is not a real run. Whatever cannot run this way is `unverified: wiring because <why>`.
 5. **Derived checks.** From the goal alone, the verifier names 1 to 3 cases the tests may miss (an edge input, an empty state, an error path) and runs them when cheap.
 
 ## Report
@@ -32,10 +32,14 @@ At most 30 lines:
 - On `FAIL`: counterexamples (input, expected, actual). These alone go back to the implementer.
 - `unverified: <what> because <why>` for anything that could not run.
 
+## Rounds
+
+On `FAIL`, send only the counterexamples back to the implementer (see `references/subagent-brief.md#continuing`), then verify again. Every fix, from counterexamples or review findings, costs one round of `verify.max-rounds`, a single counter for the whole run. Out of rounds: revert to the last commit that passed, ship it, and list in the PR body what it leaves unapplied. When no commit passed, stop per the Stuck rule in `SKILL.md`.
+
 ## Rules
 
 - Any comparison with the base (a pre-existing error, a baseline count, a test that must fail) runs in a temporary worktree at the base, as in step 3. Never through `git stash` or a checkout in the user's tree.
 - An inconclusive check, or a check run on the wrong surface, is not a pass. Say so.
 - "It compiles" and "the tests I wrote pass" are not enough when a real run is cheap.
-- The lead re-reads every verdict with its exact command. It reruns nothing by default, except one targeted check when an `unverified:` item touches the core of the ticket (unverified wiring always does), or when a verdict lacks its evidence.
+- The lead re-reads every verdict with its exact command, and reruns one targeted check where a verdict lacks its evidence or the ticket's core behavior stays unverified.
 - The unverified items go into the final reply as they are, and into the PR body per `bricks/ship.md#pr-body`.
