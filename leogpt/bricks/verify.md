@@ -34,6 +34,7 @@ At most 30 lines:
 
 ## Rules
 
+- Any comparison with the base (a pre-existing error, a baseline count, a test that must fail) runs in a temporary worktree at the base, as in step 3. Never through `git stash` or a checkout in the user's tree.
 - An inconclusive check, or a check run on the wrong surface, is not a pass. Say so.
 - "It compiles" and "the tests I wrote pass" are not enough when a real run is cheap.
 - The lead re-reads every verdict with its exact command. It reruns nothing by default, except one targeted check when an `unverified:` item touches the core of the ticket (unverified wiring always does), or when a verdict lacks its evidence.
