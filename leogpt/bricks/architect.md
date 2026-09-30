@@ -6,6 +6,8 @@ Settle the shape before any code: data shape, types, signatures, and module boun
 
 The goal, the mental model from `bricks/how.md`, and the user's decisions from `bricks/grill.md`, if any.
 
+Before a design keeps existing data or sessions working (backward compatibility, grandfathering, a migration), establish the fact that it must: the feature is live (flag default, rollout config), or stored data already has that shape. When nothing is live, design no compatibility and record the decision.
+
 ## 1. Produce candidate designs
 
 - **The arena gate passes** for `arena.design`: run `bricks/arena.md` with the design task. Each candidate writes one design package.
@@ -45,5 +47,7 @@ The reviewer gets the sketch location, the mental model, and the allowed paths, 
 ## Output
 
 One sketch, the chosen package plus any grafts and review fixes, and its open choices. The open choices decide whether the implementation goes to an arena (see `playbooks/feature.md`).
+
+An open choice that is a product call, because it changes what a user sees or which users or sessions get the behavior, is not yours to settle. Neither is an open question a judge or reviewer raises for product. Put them to the user in one grill round, per the Decide rule in `SKILL.md`, before implementing.
 
 If implementation proves the sketch wrong, redo this brick with that evidence. Do not patch around it.
