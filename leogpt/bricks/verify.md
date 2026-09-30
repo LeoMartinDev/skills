@@ -10,6 +10,7 @@ Use `references/subagent-brief.md`, role `verifier`, with the principle file `pr
 - the success criteria from the implementer's brief;
 - the ticket items, verbatim, per the Ticket items rule in `SKILL.md`;
 - the branch or worktree path;
+- the entry point to drive (route, command, job, tool), never a function behind it;
 - for a bugfix, the original repro command and its failing output.
 
 The verifier may write only temporary files outside the repo. It fixes nothing.
@@ -19,7 +20,7 @@ The verifier may write only temporary files outside the repo. It fixes nothing.
 1. **Find the commands.** Package scripts, Makefile, CI config, the repo's agent docs. Prefer the commands CI runs.
 2. **Static.** Lint and typecheck on the smallest useful scope (changed package or files).
 3. **Tests.** Run the tests covering the changed code, and any tests added by the change. When cheap, check that a new test fails without the change: in a temporary worktree at the commit before the change (`git worktree add /tmp/leogpt-verify <base-sha>`), copy in the new test and run it. Then remove that worktree.
-4. **Real run**, when cheap: call the entry point the change adds or modifies (route, command, job, tool, handler) the way a user does, through its production wiring (DI, providers, registry, config), never only the functions behind it. A local HTTP request, a CLI invocation, a script that boots the app's wiring, or a browser if the harness has one. For a bugfix, rerun the original repro. If the wiring cannot run, report `unverified: wiring because <why>`.
+4. **Real run**, when cheap: call the entry point the change adds or modifies (route, command, job, tool, handler) the way a user does, through its production wiring (DI, providers, registry, config), never only the functions behind it. A local HTTP request, a CLI invocation, a script that boots the app's wiring, or a browser if the harness has one. For a bugfix, rerun the original repro. If the wiring cannot run, report `unverified: wiring because <why>`. A function the entry point calls is not its wiring, even an exported pure one. When the change stays inert in production until something else ships (a flag, another ticket), report `unverified: wiring because inert until <what>`.
 5. **Derived checks.** From the goal alone, the verifier names 1 to 3 cases the tests may miss (an edge input, an empty state, an error path) and runs them when cheap.
 
 ## Report
