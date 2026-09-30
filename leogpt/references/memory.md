@@ -55,6 +55,8 @@ Resolve a role's model in this order:
 
 An explicit `none` stops the resolution: that role has no model, and for an arena role, no arena.
 
+**Distinct models.** When a brick asks a role for a model different from other roles' (the judge from the candidates, the design challenger from the designers), and the resolved model is one those roles used, it gives way. Take, in order: another model listed in memory for the same tier or role, then a model the harness lists from a vendor none of them used, at the tier's level per `playbooks/setup.md`. When none fits, keep the resolved model and say so in one line.
+
 Pass the resolved model explicitly on every spawn, the way section 2 of the harness file says. A subagent inherits its model only when the role has no model or the harness has no per-spawn choice. In a standard arena, each candidate gets a distinct model from the role's list.
 
 If the harness rejects a model, fall back to the inherited model and say so in one line. For an arena role, drop the rejected model instead of replacing it.
