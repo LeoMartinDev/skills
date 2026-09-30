@@ -21,8 +21,7 @@ When the user states a lasting preference ("from now on", "remember", "always", 
 | `arena.design` | `auto`, `never` | `auto` |
 | `arena.implementation` | `auto`, `never` | `auto` |
 | `arena.candidates` | integer >= 2 | `2` |
-| `review.single-reviewer-max-diff` | changed lines | `700` |
-| `pr.max-lines` | changed lines per PR | `400` |
+| `pr.max-lines` | changed lines per PR, tests included | `700` |
 | `grill.max-rounds` | `feature=<n> bugfix=<n> plan=<n> grill=<n>` | `feature=3 bugfix=3 plan=5 grill=5` |
 | `grill.max-questions` | same shape, per round | `feature=4 bugfix=4 plan=8 grill=4` |
 | `verify.max-rounds` | integer | `3` |

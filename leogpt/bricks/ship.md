@@ -30,7 +30,7 @@ With no convention: Conventional Commits (`type(scope): subject`, imperative, no
 
 ## Finish
 
-Read `finish` from memory. Measure the diff with `git diff --shortstat <default>...HEAD`. Over `pr.max-lines`, finish anyway, and say so plainly in the final reply: the size, the budget, and a split into vertical slices per the Slice step in `playbooks/plan.md`.
+Read `finish` from memory. Measure the diff with `git diff --shortstat <default>...HEAD`. Over budget, do not push: apply the Budget rule in `SKILL.md`.
 
 - `stop`: leave the commits on the branch, do not push, and report.
 - `pr`: push, then open a ready PR.

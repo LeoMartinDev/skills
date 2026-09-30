@@ -15,6 +15,7 @@ Every delegation uses this template. A subagent starts with no context: the brie
 ## Scope
 - Allowed to write: <paths or globs, or "nothing, read-only">.
 - Out of scope: <what not to touch or decide>.
+- Budget (roles that write code): <the budget from the Budget rule in `SKILL.md`, minus the branch's current diff, tests included>. Stop and report before crossing it.
 
 ## Principles to read first
 Read each file below in full before any other tool call.

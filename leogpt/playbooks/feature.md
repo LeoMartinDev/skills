@@ -7,7 +7,7 @@ Copy these steps into your todo list verbatim.
 1. **Check the tree.** Per `bricks/ship.md#branch`: unrelated uncommitted changes stop the run.
 2. **Clarify.** Apply the clarity gate from `SKILL.md`. If it fails, run `bricks/grill.md` with the feature caps.
 3. **Ground.** Run `bricks/how.md` over the subsystems the feature touches. Keep its model (<= 20 lines) for every later brief. Then write the acceptance criteria: the ticket items per the Ticket items rule in `SKILL.md`, or 2 to 6 behaviors a user observes when the input lists none, plus the test commands, and an integration test for each new or changed entry point whose closest sibling has one. They are the success criteria of every later brief.
-4. **Design.** Run `bricks/architect.md`. It returns one sketch: types, signatures, module boundaries, `not implemented` bodies, the named data shape (per `principles/model-the-domain.md`), and the open implementation choices. When the sketch changes an external public surface (published API, CLI, file format) or a persisted data shape, show it to the user and ask once for a go. Estimate the diff from the sketch, tests included. Over `pr.max-lines`, apply the Scope rules below.
+4. **Design.** Run `bricks/architect.md`. It returns one sketch: types, signatures, module boundaries, `not implemented` bodies, the named data shape (per `principles/model-the-domain.md`), and the open implementation choices. When the sketch changes an external public surface (published API, CLI, file format) or a persisted data shape, show it to the user and ask once for a go. Estimate the diff from the sketch, tests included. Over budget (Budget rule in `SKILL.md`), apply the Scope rules below.
 5. **Branch.** Follow `bricks/ship.md#branch`.
 6. **Implement.**
    - Every implementation brief, arena candidate or single implementer, contains the sketch, the allowed paths, the success criteria, and the principle files `laziness-protocol`, `follow-local-conventions`, `comment-the-why`, `test-behavior-not-implementation`, and `sequence-verifiable-units`.
@@ -21,6 +21,6 @@ Copy these steps into your todo list verbatim.
 
 ## Scope rules
 
-- One feature, one PR, within `pr.max-lines`. If grounding shows the feature needs several independently verifiable slices, or the design's estimate exceeds the budget, switch to `playbooks/plan.md` and say why in one line. The grill decisions carry over.
+- One feature, one PR, within budget. If grounding shows the feature needs several independently verifiable slices, or the design's estimate exceeds the budget, switch to `playbooks/plan.md` and say why in one line. The grill decisions carry over.
 - Code-coupled work goes to a single implementer. Parallel implementers only for disjoint files with no shared state.
 - If implementation contradicts the sketch (a missing parameter, a wrong boundary), the implementer reports it instead of absorbing it. Go back to step 4 with that evidence.

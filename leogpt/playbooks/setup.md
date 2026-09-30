@@ -11,9 +11,9 @@ Copy these steps into your todo list verbatim.
    - otherwise, your own knowledge, flagged as such.
    Models are matched by vendor, family, and version. An unmatched model gets "no data".
 3. **Apply the tier rules** below. Draft one pick per tier (`smart`, `code`, `fast`) with one or two alternatives, and the model list of each arena role.
-4. **Propose.** Show a table: tier or arena role, pick, intelligence, coding, price, and one line on why. Propose `review.single-reviewer-max-diff: 700` (changed lines: 1 reviewer at or below, 2 above) unless memory already sets it.
-5. **Confirm.** One question per tier and per arena role through the choice tool: the pick first, marked "(Recommended)", then the alternatives. Batch the questions per the harness's limits. Ask the review threshold as one extra question (keep 700, or a custom value).
-6. **Write** `models.<harness>`, `review.single-reviewer-max-diff`, and `setup.<harness>: done <YYYY-MM-DD>` in the global section of memory. Then write the harness-native config (section 6 of its file), showing it before writing.
+4. **Propose.** Show a table: tier or arena role, pick, intelligence, coding, price, and one line on why.
+5. **Confirm.** One question per tier and per arena role through the choice tool: the pick first, marked "(Recommended)", then the alternatives. Batch the questions per the harness's limits.
+6. **Write** `models.<harness>` and `setup.<harness>: done <YYYY-MM-DD>` in the global section of memory. Then write the harness-native config (section 6 of its file), showing it before writing.
 7. **Reply** with the final table and the line "Model data: Artificial Analysis (https://artificialanalysis.ai/)".
 
 ## Tier rules

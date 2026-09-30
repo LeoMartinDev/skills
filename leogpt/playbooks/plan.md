@@ -11,10 +11,11 @@ Copy these steps into your todo list verbatim.
 3. **Ground.** Run `bricks/how.md`, usually the complex path. Collect the test commands and the conventions. If the code shows the work fits one PR after all, stop per step 1.
 4. **Design.** Run `bricks/architect.md`. Its sketch is the plan's target shape.
 5. **Slice.** Cut the work into vertical slices per `principles/sequence-verifiable-units.md`:
-   - Each slice is one PR that works end to end, passes the repo's full checks, fits `pr.max-lines`, and can be checked by hand, or better, by running it.
+   - Each slice is one PR that works end to end, passes the repo's full checks, fits the budget (Budget rule in `SKILL.md`), and can be checked by hand, or better, by running it.
    - The riskiest unknown goes first, as the thinnest slice that proves it.
    - A foundation slice (schema, types) comes first only when later slices cannot start without it.
-   - Never slice by layer ("all the backend, then all the frontend"), and never ship unwired code, such as models no caller uses yet.
+   - Never slice by layer ("all the backend, then all the frontend").
+   - Prefer slices a user can observe. When none fits the budget, a slice proven by its tests alone (a ported field, a model and its tests) is fine, as long as the next slice wires it. "No slice is verifiable alone" never justifies a PR over budget.
 6. **Write** the plan with the template below. Keep it short: pointers and decisions, not code.
 7. **Save** per `plan.destination` in memory:
    - `none`: present it in the conversation only.
