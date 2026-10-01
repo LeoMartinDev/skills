@@ -48,6 +48,6 @@ The reviewer gets the sketch location, the mental model, and the allowed paths, 
 
 One sketch, the chosen package plus any grafts and review fixes, and its open choices. The open choices decide whether the implementation goes to an arena (see `playbooks/feature.md`).
 
-An open choice that is a product call, because it changes what a user sees or which users or sessions get the behavior, is not yours to settle. Neither is an open question a judge or reviewer raises for product. Put them to the user in one grill round, per the Decide rule in `SKILL.md`, before implementing.
+An open choice that is a product call, because it changes what a user sees or which users or sessions get the behavior, is not yours to settle. Neither is an open question a judge or reviewer raises for product. Put them to the user in one grill round, per the Decide rule in `SKILL.md`, before implementing. Ask as soon as the pick is made: when the challenge runs, ask while it runs, never after it. The same round carries the go that `playbooks/feature.md` step 4 requires, if any. A product question raised by the challenge itself gets its own round.
 
 If implementation proves the sketch wrong, redo this brick with that evidence. Do not patch around it.
