@@ -4,6 +4,8 @@
 
 heyleo is a personal engineering skill for building features, fixing bugs, planning changes, and reviewing code. The main agent acts as the lead: it makes decisions and delegates exploration, implementation, verification, and review to subagents.
 
+**Heavily inspired by [pstack](https://github.com/cursor/plugins/tree/main/pstack) by poteto (Lauren Tan).** Its engineering principles, delegation approach, and workflows are the foundation of heyleo. See [what differs](#inspired-by-pstack) below.
+
 ```text
 /heyleo add a CSV export to the invoices list
 ```
@@ -92,6 +94,19 @@ The skill is organized into small files loaded as needed:
 
 Keep each skill file under 80 lines and check referenced paths when editing. To validate behavior, run a clear feature request and a vague request in a sandbox repository: the first should proceed, and the second should ask for the missing decisions.
 
-## Credits
+## Inspired by pstack
 
-Flow and principles adapted from [pstack](https://github.com/cursor/plugins/tree/main/pstack) by poteto (Lauren Tan).
+heyleo owes a lot to [pstack](https://github.com/cursor/plugins/tree/main/pstack) by poteto (Lauren Tan): keeping the lead's context small, grounding decisions in code, designing before implementing, challenging changes with multiple models, and proving results on the real artifact. The `how`, `architect`, `arena`, and `interrogate` bricks adapt those ideas, alongside many of its engineering principles.
+
+heyleo reshapes that foundation into a smaller personal workflow:
+
+| Area | pstack | heyleo |
+|---|---|---|
+| Packaging | A Cursor plugin with separately invokable skills and subagents. | One `/heyleo` skill, with internal bricks and principles loaded as needed. |
+| Coding agents | Built around Cursor's tools, rules, and runtime. | Adapters for Claude Code, Cursor, Delta, omp, opencode, Pi, and Zed, plus a generic fallback. |
+| Scope | Broader playbooks, including performance, runtime forensics, prototypes, and multi-day orchestration. | Focused on features, bugs, plans, explanations, reviews, idea discussions, and bounded PR watches. |
+| Arena | Parallel candidates can produce different kinds of artifacts. | Candidates propose designs before implementation; one implementer builds the settled design. |
+| Review | Each configured reviewer gets the same prompt and rubric. | Two reviewers take assigned angles, alongside a fresh verifier on the same commit; repairs are batched and reverified. |
+| Delivery | Includes workflows for landing verified PR stacks and autonomous merges. | Opens a PR by default and never merges; large changes become smaller planned PRs. |
+
+Both share the same emphasis on engineering judgment, small changes, independent scrutiny, and verification. heyleo is a personal adaptation of that approach, with its own routing and execution rules. It can be installed on its own without pstack.
