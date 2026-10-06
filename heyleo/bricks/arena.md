@@ -11,7 +11,7 @@ Apply the arena gate in `references/config.md#models` for `arena.design`. If it 
 - **Artifact**: one design package per candidate (see `bricks/architect.md`), addressing the same observable behavior, constraints, and invariants.
 - **Rubric**: 3 to 6 gradeable criteria for this task. Only you and the judge see it. Candidates see the task.
 - **Angles**: give each candidate one distinct stance, for example "smallest diff that reuses what exists" versus "the right domain model, even if the diff grows".
-- **Output paths**: `/tmp/leogpt-arena-<slug>/candidate-<n>.md`. Candidates share the source checkout and write only their report; see the harness file, section 5.
+- **Output paths**: `/tmp/heyleo-arena-<slug>/candidate-<n>.md`. Candidates share the source checkout and write only their report; see the harness file, section 5.
 
 ## 2. Fan out
 

@@ -4,7 +4,7 @@ Run state records a task's progress and evidence. It is neither configuration no
 
 ## Store
 
-Use the adapter's run-state tool when present. Otherwise keep a JSON checkpoint in `~/.agents/runs/leogpt/<repo>/<run-id>/state.json`, outside the repo. Resolve a safe repo identity as in `references/memory.md`; generate a unique run ID and report its location. Update via a temporary file and atomic rename. Only the lead writes the checkpoint. If durable writes are unavailable, retain a compact conversation checkpoint and disclose that it will not survive session loss.
+Use the adapter's run-state tool when present. Otherwise keep a JSON checkpoint in `~/.agents/runs/heyleo/<repo>/<run-id>/state.json`, outside the repo. Resolve a safe repo identity as in `references/memory.md`; generate a unique run ID and report its location. Update via a temporary file and atomic rename. Only the lead writes the checkpoint. If durable writes are unavailable, retain a compact conversation checkpoint and disclose that it will not survive session loss.
 
 Create state only for feature, bugfix, plan, or watch work that spans phases. A small factual answer or setup needs no run. Never write user secrets, raw private logs, or entire code files into state.
 
@@ -50,7 +50,7 @@ Save after grounding and design, each returned implementation or repair batch, v
 
 ## Resume
 
-Route `/leogpt resume <run-id or state-path>` here. Load that run, confirm the repo identity and checkout exist, inspect the current branch, HEAD, uncommitted changes, PR state when present, and recover needed artifacts. Never overwrite unrelated changes or switch the user's checkout silently. Report a mismatch that prevents safe progress.
+Route `/heyleo resume <run-id or state-path>` here. For a run ID, look in the new store first, then in `~/.agents/runs/leogpt/<repo>/`; an explicit state path works with either name. Keep a resumed legacy run in its existing directory. Load that run, confirm the repo identity and checkout exist, inspect the current branch, HEAD, uncommitted changes, PR state when present, and recover needed artifacts. Never overwrite unrelated changes or switch the user's checkout silently. Report a mismatch that prevents safe progress.
 
 Check a checkpoint's claims against reality before continuing. A pushed PR's current head outranks the saved head. Evidence only proves the commit and scope actually checked. After HEAD, base, wiring, or relevant files change, rerun the affected proofs and static checks; old verdicts remain history. Review repairs follow `bricks/verify.md`'s rounds; material scope or design changes require a fresh review. Restore the flow's criteria and invariants before spawning any child.
 

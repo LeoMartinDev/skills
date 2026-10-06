@@ -36,7 +36,7 @@ Design candidates share the source checkout and write only their own report at t
 
 ## 6. Native config written by setup
 
-Setup also writes `~/.cursor/rules/leogpt-models.mdc`, with frontmatter `description: leogpt model choices` and `alwaysApply: true`, and one line per tier (`smart: <slug>`, `code: <slug>`, `fast: <slug>`), plus any per-role override. The configuration stays the source of truth: the rule mirrors it for Cursor sessions that do not load this skill.
+Setup also writes `~/.cursor/rules/heyleo-models.mdc`, with frontmatter `description: heyleo model choices` and `alwaysApply: true`, and one line per tier (`smart: <slug>`, `code: <slug>`, `fast: <slug>`), plus any per-role override. The configuration stays the source of truth: the rule mirrors it for Cursor sessions that do not load this skill.
 
 ## 7. Limits
 

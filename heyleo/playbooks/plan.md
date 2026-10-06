@@ -1,6 +1,6 @@
 # Playbook: plan
 
-Write an implementation plan for a feature. You own the plan, not the code: do not implement. The plan is a checklist that `/leogpt` later runs slice by slice.
+Write an implementation plan for a feature. You own the plan, not the code: do not implement. The plan is a checklist that `/heyleo` later runs slice by slice.
 
 Coming from the feature playbook: step 1 is settled, step 2 asks only what is still open, step 3 reuses the mental model already built, and step 4 reuses the sketch, if any.
 
@@ -23,7 +23,7 @@ Copy these steps into your todo list verbatim.
    - `home`: write `~/.agents/plans/<repo>/<slug>.md`.
    - `github-issue`: `gh issue create`, with the plan as the body.
 8. **Learn.** Apply `references/memory.md#learn-at-the-end-of-a-workflow`; save only established durable knowledge from grounding, never the unimplemented plan itself.
-9. **Stop.** Reply with the plan's location, the slices in order, and the decisions to validate. Explain how to run a slice: `/leogpt implement slice <n> of <plan location>`. With `none`, a slice can run only in this conversation: offer once to save the plan (repo, home, or issue) so another session can pick it up.
+9. **Stop.** Reply with the plan's location, the slices in order, and the decisions to validate. Explain how to run a slice: `/heyleo implement slice <n> of <plan location>`. With `none`, a slice can run only in this conversation: offer once to save the plan (repo, home, or issue) so another session can pick it up.
 
 ## Template
 
@@ -50,4 +50,4 @@ Copy these steps into your todo list verbatim.
 - <approach>: <why it lost>
 ```
 
-When `/leogpt` runs a slice, the feature playbook treats that slice as a clear, detailed ticket: no grill unless the code contradicts the plan. Its **You see** and **Verify** lines are its ticket items.
+When `/heyleo` runs a slice, the feature playbook treats that slice as a clear, detailed ticket: no grill unless the code contradicts the plan. Its **You see** and **Verify** lines are its ticket items.

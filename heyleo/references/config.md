@@ -1,10 +1,10 @@
 # Configuration
 
-Explicit execution settings live in `~/.agents/config/leogpt.md`, outside any repo, so they never land in a commit.
+Explicit execution settings live in `~/.agents/config/heyleo.md`, outside any repo, so they never land in a commit.
 
 ## Read
 
-Read the file at the start of every run. Missing keys take their defaults. If it is absent, read recognized settings from the legacy `~/.agents/memory/leogpt.md`. On the next setup or explicit settings write, copy recognized legacy keys to the new config first, preserve repo sections, and keep the legacy file untouched. An existing config key always wins.
+Read the file at the start of every run. Missing keys take their defaults. If it is absent, read recognized settings from `~/.agents/config/leogpt.md`, then from the legacy `~/.agents/memory/leogpt.md` if neither config exists. On the next setup or explicit settings write, copy recognized settings from that source to the new config first, preserve repo sections, and keep the source untouched. An existing config key always wins.
 
 The file has a `## global` section and optional `## repo: <owner>/<name>` sections. Resolve the repo name from `git remote get-url origin`, or from the top-level folder name when there is no remote. A repo section overrides the global section key by key.
 
@@ -33,7 +33,7 @@ When the user states a lasting execution preference ("from now on", "remember", 
 
 A lower PR size cap documented in the repo (agent docs, `CONTRIBUTING.md`, a bot config) wins over `pr.max-lines`.
 
-`later` means ask again on the next run. A setup older than 60 days earns a one-line suggestion to rerun `/leogpt setup` in the final reply.
+`later` means ask again on the next run. A setup older than 60 days earns a one-line suggestion to rerun `/heyleo setup` in the final reply.
 
 ## Models
 

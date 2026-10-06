@@ -20,7 +20,7 @@ The verifier may write only temporary files outside the repo. It fixes nothing.
 
 1. **Find the commands.** Package scripts, Makefile, CI config, the repo's agent docs. Prefer the commands CI runs.
 2. **Static.** Lint and typecheck on the smallest useful scope (changed package or files).
-3. **Tests.** Run the tests covering the changed code, and any tests added by the change. When cheap, check that a new test fails without the change: in a temporary worktree at the commit before the change (`git worktree add /tmp/leogpt-verify <base-sha>`), copy in the new test and run it. Then remove that worktree.
+3. **Tests.** Run the tests covering the changed code, and any tests added by the change. When cheap, check that a new test fails without the change: in a temporary worktree at the commit before the change (`git worktree add /tmp/heyleo-verify <base-sha>`), copy in the new test and run it. Then remove that worktree.
 4. **Real run**, when cheap: drive the entry point the way a user does, through its production wiring (DI, providers, registry, config): a local HTTP request, a CLI invocation, a script that boots the app, or a browser if the harness has one. For a bugfix, rerun the original repro. Calling the functions behind the entry point is not a real run. Whatever cannot run this way is `unverified: wiring because <why>`.
 5. **Derived checks.** From the goal alone, the verifier names 1 to 3 cases the tests may miss (an edge input, an empty state, an error path) and runs them when cheap.
 
