@@ -12,7 +12,7 @@ Use `persistent: true` for an implementer expected to receive review corrections
 
 ## 2. Pick the model
 
-Resolve roles per `references/config.md#models`. Everyx accepts an exact `provider/model` in `agent_spawn.model` and a separate optional `thinking` level. Pass the resolved model explicitly; absent values inherit the parent's model/thinking. Unavailable models fail instead of silently falling back. Changing the lead's model is not per-role selection.
+Resolve model/effort pairs per `references/config.md#models`. Split `provider/model:effort`: send the bare `provider/model` in `agent_spawn.model` and the supported level in `agent_spawn.thinking`. For example, `provider/model:high` becomes `{model: "provider/model", thinking: "high"}`. Omit `thinking` for a bare entry or `:inherit`; it then inherits the parent. Check the installed Everyx enum and Pi's supported levels for the model; Pi can clamp a level, so distinguish requested from effective effort. Pass the model explicitly; unavailable models fail instead of silently falling back. Changing the lead's model is not per-role selection.
 
 ## 3. List available models
 
@@ -30,7 +30,7 @@ Everyx inherits the parent's cwd. Give read-only tools to candidates that return
 
 ## 6. Native config written by setup
 
-LeoGPT choices live in `~/.agents/config/leogpt.md`. Everyx needs no role profile files: send role instructions and resolved models at launch. Its installation is a separate, user-authorized runtime task (`pi install npm:@everyx/pi-subagent`); setup does not install packages. Do not add speculative Pi settings.
+LeoGPT choices live in `~/.agents/config/leogpt.md`. Everyx needs no role profile files: send role instructions and resolved model/effort pairs at launch. This does not change Pi's main-session `defaultThinkingLevel`. Its installation is a separate, user-authorized runtime task (`pi install npm:@everyx/pi-subagent`); setup does not install packages. Do not add speculative Pi settings.
 
 ## 7. Limits
 

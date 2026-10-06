@@ -16,6 +16,8 @@ Without one, run each delegated step yourself, in the main thread, in the same o
 
 Only if a per-call or per-agent model setting exists. Otherwise everything runs on the current model.
 
+Split model/effort pairs per `references/config.md#effort`. Pass effort only through a supported control; strip the suffix when sending a bare model ID. With no effort control, retain native behavior and state the limitation once.
+
 ## 3. List available models
 
 Only if the harness exposes a list (a CLI command, a settings file, a tool schema). Otherwise, ask the user to paste it during setup.

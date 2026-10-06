@@ -17,6 +17,8 @@ Tool `subagent`, with the parameters: `agent` (the agent ID), `description`, `pr
 
 Parameter `model` on the `subagent` call, as `provider/model` or `provider/model#variant`. It overrides the agent's own model, which overrides the session's model. Omit it only when the role has no model per `references/config.md#models`.
 
+Translate `:effort` to a verified native variant supported by that model; do not append the skill suffix to `model`. Strip `:inherit` and preserve an existing native variant. If no corresponding variant exists, apply the effort fallback in `references/config.md#effort`.
+
 ## 3. List available models
 
 Run `opencode models` in the shell. It lists every model available to the user, as `provider/model`.

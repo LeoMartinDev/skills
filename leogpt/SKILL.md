@@ -31,19 +31,19 @@ You are the lead. You decide, synthesize, and verify. Subagents read bulk code, 
 | Watch an existing PR, CI and review repairs | `bricks/pr-watch.md` |
 | Resume a saved run | `references/run-state.md#resume`, then the restored flow |
 | A lasting execution preference ("from now on", "always") | `references/config.md#write`, confirm, stop |
-| Remember durable user or project knowledge | `references/memory.md#write`, confirm, stop |
+| Remember durable project knowledge or a project-specific user decision | `references/memory.md#write`, confirm, stop |
 
 ## Lead rules
 
 - **Clarity gate** before feature, bugfix, or plan. Grill (`bricks/grill.md`) when the request does not state the observable expected behavior, or leaves the scope open, or has two plausible readings that lead to different code. A ticket that states behavior and scope runs autonomously. Lean toward deciding alone on everything else.
 - **Ticket items** carry over verbatim. When the input lists a Definition of Done, acceptance criteria, or an explicit scope, each item becomes a success criterion, word for word. Add your own criteria where they leave a gap.
-- **Delegate** with `references/subagent-brief.md`. Pick and pass each subagent's model per `references/config.md#models`.
+- **Delegate** with `references/subagent-brief.md`. Resolve each subagent's model and effort per `references/config.md#models`, and pass them through the harness's actual controls.
 - **Checkpoint and learn**: preserve progress and commit-scoped evidence per `references/run-state.md`. At the end of a workflow, apply `references/memory.md#learn-at-the-end-of-a-workflow`; no durable learning means no memory write. Configuration and run status never become learned knowledge.
 - **Decide** reversible choices yourself. Ask the user only where a step says to: the grill, the setup prompt, and the few one-time questions the steps name. If grounding or design surfaces decisions only the user can make (see the Mindset in `bricks/grill.md`), run one more grill round with all of them, as soon as they are known, within the same caps. Never split pending questions across rounds: a later round is only for a question that did not exist at the earlier one.
-- **Record** every decision in the final reply and in the PR body: the choice and why. A decision that leaves a known gap (a ticket item dropped, deferred, or reinterpreted, a risk or finding rejected, an open question deferred) also states its residual risk in one line: the user flow it hits.
+- **Record** every decision in reports or run state: the choice and why. The final reply and PR body highlight decisions affecting behavior, maintenance, or risk. Every known gap (a ticket item dropped, deferred, or reinterpreted, a risk or finding rejected, an open question deferred) stays explicit there with its residual risk: the user flow it hits.
 - **Budget**: a PR never exceeds `pr.max-lines` changed lines plus a 5 % tolerance (735 at 700), tests included, measured with `git diff --shortstat <default>...HEAD`. Within the tolerance, ship as is: never slice for it. The budget is a stop condition, never a target: no subagent compacts, reflows, or reindents code to fit under it, and it is never a success criterion. Measure after each implementer or fix round returns. Over budget: no verify, no review, no push. Switch to `playbooks/plan.md` and slice, with the sketch and the branch's commits as the design; keep the branch unpushed as a reference. A review fix that would cross the budget stays unapplied and is listed in the PR body, unless it is a blocker: then the whole change is over budget.
 - **Stuck** (no commit passes verification within `verify.max-rounds`, or the bug won't reproduce): stop without a PR. Report what you tried, where it blocks, and the remaining hypotheses.
-- **Final reply**, in the user's language: what you did, each decision (choice, alternatives, why), verification evidence, what stays unverified, and the models used: per role, the model actually passed on its spawns, or `inherited: <session model>`. Every number you cite (tests, lines, errors) comes from the last run of its command.
+- **Final reply**, in the user's language: observable outcome, key evidence and material limits first, then consequential decisions and inspection links. For implemented changes, use `bricks/explain.md`. Preserve every unverified item and the models used: per role, the model actually passed on its spawns, or `inherited: <session model>`. Every number you cite comes from the last run of its command.
 
 ## Principles
 

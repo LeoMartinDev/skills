@@ -42,7 +42,7 @@ Attach every created PR when the harness has a PR attachment tool, and checkpoin
 
 ## PR body
 
-Write it last, from the final diff, for a teammate who knows the codebase but has not seen the ticket, the plan, or this run. Every sentence must make sense and be true for that reader.
+Before opening the PR, run `bricks/explain.md` from the final diff and recorded evidence, for a teammate who knows the codebase but has not seen the ticket, the plan, or this run. Every sentence must make sense and be true for that reader. Use the same brick for the final reply, including `finish=stop`; after watch repairs, refresh the explanation against the current head.
 
 - **With a PR template** in the repo: fill it, keeping its headings, order, and language. Tick only the true checklist items. Pass the filled file with `gh pr create --body-file`, since `--body` skips the template.
 - **Without one**: Why, What changes, Decisions, Verification, in the language of the repo's recent PRs. Drop any empty section.

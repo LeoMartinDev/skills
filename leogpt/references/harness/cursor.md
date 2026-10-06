@@ -16,6 +16,8 @@ Tool `Task`, with the parameters `subagent_type` (`generalPurpose`, or the name 
 
 Parameter `model` on the `Task` call, as a Cursor slug (for example `claude-opus-5-5-max`, `gpt-5.6-sol-max`, `grok-4.7-xhigh-fast`). Omit it only when the role has no model per `references/config.md#models`. An invalid slug is rejected, and the error lists the valid slugs.
 
+Translate the skill's `:effort` suffix to a verified native slug or exposed effort parameter. Never manufacture a slug by appending `-high` or `-max`; without a matching control, preserve native behavior per `references/config.md#effort`. Strip `:inherit`.
+
 ## 3. List available models
 
 There is no in-agent tool for this. Try, in order:

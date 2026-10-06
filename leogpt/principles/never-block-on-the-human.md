@@ -6,7 +6,7 @@
 
 ## Do
 - Pick the option you would defend, note the alternatives, and move on.
-- Put every decision you took alone in the final reply, so the user can correct it afterwards.
+- Record every decision you took alone in reports or run state. Highlight consequential choices and every known gap in the final reply, with inspection links so the user can correct them afterwards.
 - Batch the questions that truly need the user into one grill round.
 
 ## Don't

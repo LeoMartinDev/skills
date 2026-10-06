@@ -16,6 +16,8 @@ Tool `Agent`, with the parameters `description` (3-5 words), `prompt` (the brief
 
 Parameter `model` on the `Agent` call. It takes the aliases listed in the tool's schema (for example `opus`, `sonnet`, `haiku`, `fable`). Omit it only when the role has no model per `references/config.md#models`: the subagent then inherits the lead's model.
 
+Strip the skill's `:effort` suffix before passing an alias. Inspect the actual schema for a per-child effort control; if absent, preserve native effort and report the limitation per `references/config.md#effort`. Do not change the lead's effort to simulate a child override.
+
 ## 3. List available models
 
 Read the `model` enum in the `Agent` tool schema. That enum is the list. Map each alias to its full name and version (`opus` = Claude Opus <version>, and so on) using the model IDs in your system prompt. If a version is unknown, mark the guess with `*` in the setup table.

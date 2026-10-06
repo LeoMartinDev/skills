@@ -254,6 +254,7 @@ Playbooks are assembled from **bricks**, each a file in `leogpt/bricks/`.
 | `implement` | Settled design to checked commits: concrete precedent, expected writes, invariants, evidence, final diff inspection. | |
 | `pr-watch` | CI and review triage, verified repairs, bounded polling, readiness and blocker report. | when a user decision is needed |
 | `ship` | Branch rules, the repo's commit and PR conventions (Conventional Commits by default), then `finish`. Never merges. | |
+| `explain` | Turns the final diff and recorded evidence into an inspectable PR and reply: criterion-to-proof mapping, consequential decisions, and optional diagram or interactive page. Called by `ship`. | |
 
 **Arena**: candidates propose designs for the same task, a judge scores them, and the lead keeps the best as a base and grafts 1 or 2 ideas from the others. Designs get one when the configured gate permits it, even on a single model with one angle each. Major choices are resolved before the implementer writes code.
 
@@ -261,13 +262,13 @@ Playbooks are assembled from **bricks**, each a file in `leogpt/bricks/`.
 
 - **Clarity gate**: grill only a vague or ambiguous request, within caps. Otherwise decide alone.
 - **Ticket items verbatim**: a Definition of Done or acceptance criteria become success criteria, word for word.
-- **Decide reversible choices alone**, and record every decision (choice + why) in the reply and the PR body. A decision that leaves a gap also states its residual risk.
+- **Decide reversible choices alone**, and record every decision (choice + why) in reports or run state. Highlight consequential decisions in the reply and PR body; every known gap stays explicit with its residual risk.
 - **Budget**: a PR never exceeds `pr.max-lines` changed lines (700) plus 5 % (735), tests included. Over it, the work becomes a plan of smaller PRs.
 - **Fresh verifier**: it gets the goal, the criteria, and the diff location, never the implementer's reasoning.
 - **Hands off your checkout**: only the implementer touches git, on its own branch. No `stash`, `reset`, or `checkout` by anyone else. Unrelated uncommitted changes stop the run.
 - **Guardrails are off limits**: lint, type, test, and CI configs and disable comments are never edited unless the task is about them.
 - **Stuck means stop**: no PR, a report of what was tried and what remains.
-- **Final reply**, in your language: what was done, each decision, the evidence, what stays unverified, and the models actually used per role.
+- **Final reply**, in your language: observable outcome, key evidence and limits first, then consequential decisions, inspection links, and the models actually used per role. `explain` links every criterion to its proof and adds a visual only when useful.
 
 ## Roles and models
 
@@ -281,7 +282,7 @@ Each subagent has one role, and each role maps to a model tier. The rule is **th
 
 Design candidates use suitable distinct models, from different vendors when useful. Tiers may share models; selection depends on availability and user priorities.
 
-A role's model resolves in this order: its role key in `models.<harness>` → its tier key → the harness-native config → the agent's judgment. Setup fetches no benchmark rankings. Uncertain capabilities are disclosed; current product facts are checked in official provider documentation when needed.
+A role's model resolves in this order: its role key in `models.<harness>` → its tier key → the harness-native config → the agent's judgment. Each entry can be `model:effort`, including individual arena candidates; model and effort resolve together. Bare entries or `:inherit` preserve native defaults. Setup proposes a supported effort with each model, and adapters translate it to actual runtime controls (for Pi/Everyx, separate `model` and `thinking` parameters). Unsupported or clamped effort is disclosed. Setup fetches no benchmark rankings. Uncertain capabilities are disclosed; current product facts are checked in official provider documentation when needed.
 
 ## Configuration, memory, and execution state
 
@@ -298,7 +299,7 @@ Explicit settings live in `~/.agents/config/leogpt.md`, outside every repo, so t
 | `grill.max-rounds` | `feature=3 bugfix=3 plan=5 grill=5` | per flow |
 | `grill.max-questions` | `feature=4 bugfix=4 plan=8 grill=4` | per flow, per round |
 | `setup.<harness>` | unset (ask) | `done <date>`, `later`, `never` |
-| `models.<harness>` | unset | `smart=…, code=…, fast=…, arena.design=[…]` |
+| `models.<harness>` | unset | `smart=model:effort, code=…, fast=…, arena.design=[model:effort, …]` |
 | `watch.after-ship` | `false` | `true` |
 | `watch.max-rounds` | `5` | repair batches |
 | `watch.timeout-minutes` | `30` | bounded duration |
@@ -316,7 +317,7 @@ Explicit settings live in `~/.agents/config/leogpt.md`, outside every repo, so t
 - finish: draft-pr
 ```
 
-Existing settings in the legacy `~/.agents/memory/leogpt.md` are read when the new config is absent, then copied on the next settings write; the old file is preserved. Project knowledge lives in `~/.agents/memory/projects/<repo>/leogpt.md`. End-of-workflow learning writes only useful, non-obvious, established facts with a source, and updates existing entries instead of accumulating duplicates. Generic advice, task summaries, and unverified plans are excluded.
+Existing settings in the legacy `~/.agents/memory/leogpt.md` are read when the new config is absent, then copied on the next settings write; the old file is preserved solely for configuration migration. Long-term learned memory is exclusively per project, at `~/.agents/memory/projects/<repo>/repo.md`: only the current project's memory is loaded, and no global user memory is created. End-of-workflow learning writes only useful, non-obvious, established facts with a source, and updates existing entries instead of accumulating duplicates. Generic advice, task summaries, and unverified plans are excluded.
 
 Run checkpoints use `~/.agents/runs/leogpt/<repo>/<run-id>/state.json` or an exposed harness store. They track phases, decisions, findings, counters, commits, and evidence. Resume validates the actual checkout and PR head; proofs on an older commit are rechecked where affected. Storage and wake-ups belong to the runtime; workflow decisions remain in the skill.
 
@@ -351,7 +352,7 @@ Each harness adapter has eight sections: spawn, model, model inventory, question
 leogpt/
 ├── SKILL.md                  router, lead rules, principles index
 ├── playbooks/                feature · bugfix · plan · setup
-├── bricks/                   grill · how · architect · arena · implement · interrogate · verify · ship · pr-watch
+├── bricks/                   grill · how · architect · arena · implement · interrogate · verify · explain · ship · pr-watch
 ├── principles/               22 principle files
 └── references/
     ├── config.md             settings, defaults, model resolution, arena gate

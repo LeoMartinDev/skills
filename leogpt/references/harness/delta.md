@@ -20,6 +20,8 @@ Delegate through the subagent mechanism in your tool list: read its schema and p
 
 There is no per-call model. Each profile has a default model and thinking effort in Settings > Subagents; provider-specific Model Preferences in LLM Providers take precedence, then Delta's built-in default (Worker follows the parent's model). Custom profiles are TOML files in the `profiles` folder beside `settings.json`. A role mapped to a profile in configuration means: delegate with that profile.
 
+Apply the effort from a model/profile pair through the native profile setting, checking its actual supported fields. Strip the skill suffix from profile IDs. Roles needing different efforts require distinct profiles; report provider-level overrides that prevent the requested effort per `references/config.md#effort`.
+
 ## 3. List available models
 
 There is no tool for this. Check Settings > LLM Providers and the thread's model selector for the picker list, plus `~/.config/delta/.env` for configured provider keys. Otherwise, ask the user to paste the list from the model selector.
