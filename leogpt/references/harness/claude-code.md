@@ -14,7 +14,7 @@ Tool `Agent`, with the parameters `description` (3-5 words), `prompt` (the brief
 
 ## 2. Pick the model
 
-Parameter `model` on the `Agent` call. It takes the aliases listed in the tool's schema (for example `opus`, `sonnet`, `haiku`, `fable`). Omit it only when the role has no model per `references/memory.md#models`: the subagent then inherits the lead's model.
+Parameter `model` on the `Agent` call. It takes the aliases listed in the tool's schema (for example `opus`, `sonnet`, `haiku`, `fable`). Omit it only when the role has no model per `references/config.md#models`: the subagent then inherits the lead's model.
 
 ## 3. List available models
 
@@ -30,10 +30,14 @@ Pass `isolation: "worktree"` on the `Agent` call. Each candidate gets its own gi
 
 ## 6. Native config written by setup
 
-None needed: the model is chosen per call. Setup writes only `models.claude-code` in memory.
+None needed: the model is chosen per call. Setup writes only `models.claude-code` in configuration.
 
 ## 7. Limits
 
 - Do not use the `Workflow` tool. It needs an explicit user opt-in and exists only in Claude Code.
 - Only the lead spawns subagents. Do not rely on nested spawning.
 - A background subagent keeps running after you reply. Wait for its notification before using its result.
+
+## 8. Additional capabilities
+
+Apply `references/capabilities.md`. Core delegation, continuation, parallelism, model selection, choice UI, and isolation follow sections 1–5. Retrieval extensions and wake-up support must be inspected; file state and memory use the shared fallbacks.

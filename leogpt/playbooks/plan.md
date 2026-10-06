@@ -17,12 +17,13 @@ Copy these steps into your todo list verbatim.
    - Never slice by layer ("all the backend, then all the frontend").
    - Prefer slices a user can observe. When none fits the budget, a slice proven by its tests alone (a ported field, a model and its tests) is fine, as long as the next slice wires it. "No slice is verifiable alone" never justifies a PR over budget.
 6. **Write** the plan with the template below. Keep it short: pointers and decisions, not code.
-7. **Save** per `plan.destination` in memory:
+7. **Save** per `plan.destination` in configuration:
    - `none`: present it in the conversation only.
    - `repo:<path>`: write `<path>/<slug>.md` in the repo.
    - `home`: write `~/.agents/plans/<repo>/<slug>.md`.
    - `github-issue`: `gh issue create`, with the plan as the body.
-8. **Stop.** Reply with the plan's location, the slices in order, and the decisions to validate. Explain how to run a slice: `/leogpt implement slice <n> of <plan location>`. With `none`, a slice can run only in this conversation: offer once to save the plan (repo, home, or issue) so another session can pick it up.
+8. **Learn.** Apply `references/memory.md#learn-at-the-end-of-a-workflow`; save only established durable knowledge from grounding, never the unimplemented plan itself.
+9. **Stop.** Reply with the plan's location, the slices in order, and the decisions to validate. Explain how to run a slice: `/leogpt implement slice <n> of <plan location>`. With `none`, a slice can run only in this conversation: offer once to save the plan (repo, home, or issue) so another session can pick it up.
 
 ## Template
 

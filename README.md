@@ -1,6 +1,6 @@
 # leogpt
 
-A personal Agent Skill for serious engineering work: build a feature, fix a bug, write a plan, explain code, review a diff, or challenge an idea. It runs in Claude Code, Cursor, Delta, omp, opencode, and Zed, and degrades gracefully anywhere else.
+A personal Agent Skill for serious engineering work: build a feature, fix a bug, write a plan, explain code, review a diff, or challenge an idea. It runs in Claude Code, Cursor, Delta, omp, opencode, Pi, and Zed, and degrades gracefully anywhere else.
 
 **The one idea: the main agent is a lead, not a typist.** It decides, synthesizes, and verifies. Subagents read the code, write it, verify it, and review it, and each hands back a short report. The main context stays small, so long tasks stay sharp.
 
@@ -47,8 +47,10 @@ Type `/leogpt` followed by what you want (`/skill:leogpt` in omp). The input can
 | `/leogpt how does invoice numbering work?` | **How**: an explanation with `path:line` references |
 | `/leogpt review this branch` | **Review**: an adversarial verdict, nothing applied |
 | `/leogpt grill my idea: cache VAT rates per org` | **Grill**: tough questions on your idea, then a recap |
-| `/leogpt setup` | **Setup**: pick one model per tier for this harness |
-| `/leogpt from now on, open PRs as drafts here` | **Memory**: stores the preference, confirms, stops |
+| `/leogpt setup` | **Setup**: the agent proposes models, you choose, configuration stores them |
+| `/leogpt watch-pr 123` | **Watch**: inspect CI and reviews, repair verified findings, stop at readiness or a limit |
+| `/leogpt resume <run-id or state-path>` | Validate a saved checkpoint and continue the workflow |
+| `/leogpt from now on, open PRs as drafts here` | **Configuration**: stores the execution preference, confirms, stops |
 
 By default a run goes **all the way to an open PR without stopping**. It only asks you something when the request is vague, when a choice is truly yours (product, scope, a public API change), or when it is stuck.
 
@@ -64,7 +66,7 @@ Every diagram reads top to bottom. The text on the right says what can branch of
 1. Identify the harness     from the tool list, load references/harness/<harness>.md
    │
    ▼
-2. Read memory              ~/.agents/memory/leogpt.md
+2. Read configuration       ~/.agents/config/leogpt.md + relevant learned memory
    │
    ▼
 3. First run here?          ask once: setup now / later / never
@@ -82,7 +84,9 @@ Every diagram reads top to bottom. The text on the right says what can branch of
       how does X work? ................ explain, stop
       review a PR or diff ............. verdict, stop
       grill my idea ................... questions + recap, stop
-      "from now on…" .................. save to memory, stop
+      watch-pr ....................... monitor and repair an existing PR
+      resume ......................... validate a checkpoint, continue
+      "from now on…" .................. save execution preference to config, stop
 ```
 
 Feature, bugfix, and plan pass a **clarity gate** first. The request gets grilled only when it does not state the expected behavior, leaves the scope open, or has two readings that lead to different code. A ticket that states behavior and scope runs with no questions.
@@ -107,15 +111,18 @@ Feature, bugfix, and plan pass a **clarity gate** first. The request gets grille
    │
    ▼
 6. Implement                one implementer, small checked commits
-   │                        (2 competing implementations when a major choice is open)
+   │                        (optional comparison of internal strategies under one settled design)
    ▼
 7. Verify + review          see the loop below
    │
    ▼
-8. Ship                     PR, draft PR, or stop, per memory
+8. Ship                     PR, draft PR, or stop, per configuration; optional bounded PR watch
    │
    ▼
-9. Final reply              decisions, evidence, what stays unverified, models used
+9. Learn                    save only non-obvious, durable, sourced knowledge; usually nothing
+   │
+   ▼
+10. Final reply             decisions, evidence, what stays unverified, models used
 ```
 
 ### Verify + review loop
@@ -141,7 +148,8 @@ Implementer fixes           every failure and accepted finding, in one batch
    ▼
 Verifier re-checks          the fix only, then back to "All green?"
 
-Out of rounds → ship the last commit that passed, listing what stays unapplied.
+Out of rounds → ship a rechecked passing result only if all required criteria still hold.
+Otherwise stop. Never rewrite pushed history to restore an old checkpoint.
 No commit ever passed → stop without a PR and report (stuck).
 ```
 
@@ -176,7 +184,10 @@ The verifier checks, in order: lint and typecheck, the tests, a **real run** thr
 8. Verify + review          the original repro must now pass
    │                        2 fixes on the same hypothesis failed → back to 6
    ▼
-9. Ship + reply             what broke, root cause, fix, repro before/after
+9. Ship                     optional bounded PR watch
+   │
+   ▼
+10. Learn + reply           qualifying knowledge only; root cause, fix, repro before/after
 ```
 
 ### Plan
@@ -202,7 +213,8 @@ The lead writes the plan, not the code.
 6. Write + save             chat, repo file, ~/.agents/plans, or a GitHub issue
    │
    ▼
-7. Stop                     then run a slice: /leogpt implement slice <n> of <plan>
+7. Learn + stop             save proven knowledge, not the unimplemented plan
+                            then run a slice: /leogpt implement slice <n> of <plan>
 ```
 
 A slice runs through Feature as a clear ticket: no questions unless the code contradicts the plan.
@@ -213,16 +225,16 @@ A slice runs through Feature as a clear ticket: no questions unless the code con
 1. List the harness's models
    │
    ▼
-2. Fetch benchmarks         Artificial Analysis: intelligence, coding, price, speed
+2. Assess models            agent judgment, available controls, and your priorities
    │
    ▼
-3. Pick one model per tier  smart · code · fast (rules below)
+3. Propose                  smart · code · fast, alternatives and tradeoffs
    │
    ▼
 4. You confirm each pick
    │
    ▼
-5. Write memory             + the harness's native config, if it has one
+5. Write configuration      + confirmed native profiles, when applicable
 ```
 
 ---
@@ -239,9 +251,11 @@ Playbooks are assembled from **bricks**, each a file in `leogpt/bricks/`.
 | `arena` | N candidates on distinct models attempt the same task. A judge scores them against a hidden rubric. The lead picks a base and grafts the best ideas of the others. | |
 | `interrogate` | Adversarial review by 2 reviewers on distinct models. Every finding needs a concrete failure scenario. The lead checks each blocker itself. | |
 | `verify` | A fresh verifier that never sees the implementer's reasoning. Verbatim evidence or an explicit `unverified:`. | |
+| `implement` | Settled design to checked commits: concrete precedent, expected writes, invariants, evidence, final diff inspection. | |
+| `pr-watch` | CI and review triage, verified repairs, bounded polling, readiness and blocker report. | when a user decision is needed |
 | `ship` | Branch rules, the repo's commit and PR conventions (Conventional Commits by default), then `finish`. Never merges. | |
 
-**Arena**: 2 candidates on different models attempt the same task, a judge scores them, the lead keeps the best as a base and grafts 1 or 2 ideas from the other. Designs always get one when subagents exist, even on a single model (one angle each). Implementations get one only with 2 distinct models and a major open choice.
+**Arena**: 2 candidates on different models attempt the same task, a judge scores them, the lead keeps the best as a base and grafts 1 or 2 ideas from the other. Designs always get one when subagents exist, even on a single model (one angle each). Implementations get one only with enough distinct models and a justified comparison of internal strategies under the same contract. Major choices are resolved in architecture.
 
 ## Rules the lead never breaks
 
@@ -261,17 +275,17 @@ Each subagent has one role, and each role maps to a model tier. The rule is **th
 
 | Tier | Roles | Pick rule |
 |---|---|---|
-| `smart` | designer, judge, reviewer, verifier, design arena | Cheapest model with an intelligence index ≥ 90 % of the best |
-| `code` | implementer, implementation arena | Best coding index per dollar among models ≥ 75 % of the best coding index |
-| `fast` | explorer | Fastest model ≥ 50 % of the best coding index, then cheapest |
+| `smart` | designer, judge, reviewer, verifier, design arena | Strong reasoning and judgment |
+| `code` | implementer, implementation arena | Reliable implementation and tool use |
+| `fast` | explorer | Low latency and cost, adequate for the exploration scope |
 
-Arena roles take the top 2 of their tier, from different vendors when possible.
+Arena roles use suitable distinct models, from different vendors when useful. Tiers may share models; selection depends on availability and user priorities.
 
-A role's model resolves in this order: its role key in `models.<harness>` → its tier key → the harness-native config → the agent's own judgment with the same rules. Setup uses the [Artificial Analysis](https://artificialanalysis.ai/) API when `ARTIFICIAL_ANALYSIS_API_KEY` is set, its public leaderboard otherwise.
+A role's model resolves in this order: its role key in `models.<harness>` → its tier key → the harness-native config → the agent's judgment. Setup fetches no benchmark rankings. Uncertain capabilities are disclosed; current product facts are checked in official provider documentation when needed.
 
-## Memory
+## Configuration, memory, and execution state
 
-Preferences live in `~/.agents/memory/leogpt.md`, outside every repo, so they never land in a commit. It has a `## global` section and optional `## repo: <owner>/<name>` sections that override it key by key. Change it in plain language (`/leogpt from now on…`); the agent confirms in one line.
+Explicit settings live in `~/.agents/config/leogpt.md`, outside every repo, so they never land in a commit. It has a `## global` section and optional `## repo: <owner>/<name>` sections that override it key by key. Change it in plain language (`/leogpt from now on…`); the agent confirms in one line.
 
 | Key | Default | Options |
 |---|---|---|
@@ -285,9 +299,13 @@ Preferences live in `~/.agents/memory/leogpt.md`, outside every repo, so they ne
 | `grill.max-questions` | `feature=4 bugfix=4 plan=8 grill=4` | per flow, per round |
 | `setup.<harness>` | unset (ask) | `done <date>`, `later`, `never` |
 | `models.<harness>` | unset | `smart=…, code=…, fast=…, arena.design=[…]` |
+| `watch.after-ship` | `false` | `true` |
+| `watch.max-rounds` | `5` | repair batches |
+| `watch.timeout-minutes` | `30` | bounded duration |
+| `watch.poll-seconds` | `60` | integer ≥ 15 |
 
 ```markdown
-# leogpt memory
+# leogpt config
 
 ## global
 - finish: pr
@@ -298,19 +316,25 @@ Preferences live in `~/.agents/memory/leogpt.md`, outside every repo, so they ne
 - finish: draft-pr
 ```
 
+Existing settings in the legacy `~/.agents/memory/leogpt.md` are read when the new config is absent, then copied on the next settings write; the old file is preserved. Project knowledge lives in `~/.agents/memory/projects/<repo>/leogpt.md`. End-of-workflow learning writes only useful, non-obvious, established facts with a source, and updates existing entries instead of accumulating duplicates. Generic advice, task summaries, and unverified plans are excluded.
+
+Run checkpoints use `~/.agents/runs/leogpt/<repo>/<run-id>/state.json` or an exposed harness store. They track phases, decisions, findings, counters, commits, and evidence. Resume validates the actual checkout and PR head; proofs on an older commit are rechecked where affected. Storage and wake-ups belong to the runtime; workflow decisions remain in the skill.
+
+PR monitoring stops at readiness, a blocker, or configured time/repair limits. It never merges. Without an authorized scheduler, monitoring runs only while the session remains active; it does not silently create background jobs.
+
 ## Harness support
 
-Each harness file in `leogpt/references/harness/` answers the same 7 questions in the same order: spawn, model, list models, questions, isolation, native config, limits.
+Each harness adapter has eight sections: spawn, model, model inventory, questions, isolation, native configuration, limits, and additional capabilities. The shared contract in `references/capabilities.md` defines optional retrieval, persistence, and wake-up capabilities with fallbacks. Pi requires extensions for subagents; no extension installation is part of the skill.
 
 | | Claude Code | Cursor | Delta | omp | opencode | Zed | generic |
 |---|---|---|---|---|---|---|---|
 | Subagents | `Agent` | `Task` | Worker / Scout / Reviewer | `task` | `subagent` | `spawn_agent` | sequential fallback |
-| Model per role | per call | per call | per profile | per agent file | per call | one for all | no |
-| Implementation arena | ✅ | ✅ | ≥ 2 profile models | ≥ 2 distinct agent models | ✅ | ❌ | ≥ 2 selectable models |
+| Model per role | per call | per call | per profile | per agent file | per call | per call when supported | inspect tools |
+| Implementation arena | ✅ | ✅ | distinct profile models | distinct agent models | ✅ | distinct selectable models | distinct selectable models |
 | Design arena | ✅ | ✅ | ✅ | ✅ | ✅ | same model | with subagents |
 | Choice UI | `AskUserQuestion` | `AskQuestion` | text | `ask` | `question` | text | text |
-| Worktrees | `isolation: "worktree"` | manual | isolated copies | manual | manual | not needed | manual |
-| Setup writes | memory | + `~/.cursor/rules/leogpt-models.mdc` | + profile models | + `~/.omp/agent/agents/leogpt-*.md` | memory | + `agent.subagent_model` | memory |
+| Worktrees | `isolation: "worktree"` | manual | isolated copies | manual | manual | manual | manual |
+| Setup writes | config | + `~/.cursor/rules/leogpt-models.mdc` | + profile models | + `~/.omp/agent/agents/leogpt-*.md` | config | + `agent.subagent_model` | config |
 
 ## Principles
 
@@ -329,12 +353,15 @@ Each harness file in `leogpt/references/harness/` answers the same 7 questions i
 leogpt/
 ├── SKILL.md                  router, lead rules, principles index
 ├── playbooks/                feature · bugfix · plan · setup
-├── bricks/                   grill · how · architect · arena · interrogate · verify · ship
+├── bricks/                   grill · how · architect · arena · implement · interrogate · verify · ship · pr-watch
 ├── principles/               22 principle files
 └── references/
-    ├── memory.md             memory schema, defaults, model resolution, arena gate
+    ├── config.md             settings, defaults, model resolution, arena gate
+    ├── memory.md             selective durable learning
+    ├── run-state.md          checkpoints and validated resume
+    ├── capabilities.md       harness contract and fallbacks
     ├── subagent-brief.md     the delegation template every subagent receives
-    └── harness/              claude-code · cursor · delta · omp · opencode · zed · generic
+    └── harness/              claude-code · cursor · delta · omp · opencode · pi · zed · generic
 ```
 
 Every skill file stays under 80 lines: details load on demand, so each run pays only for what it uses.
@@ -351,13 +378,13 @@ Every skill file stays under 80 lines: details load on demand, so each run pays 
 | Size | 80 lines max per file, details on demand | Large files: they cost context on every run |
 | Autonomy | No human stop by default until the PR opens | Checkpoints before implementation: the grill already covers the risky case, a vague request |
 | Grilling | Only for a vague or ambiguous request, capped, biased to decide alone | Always grilling: too slow for detailed tickets |
-| Arena | Design always, even on one model with distinct angles: two 60-line designs are cheap. Implementation only with ≥ 2 distinct models and a `major` open choice | Same-model implementation arena: two full implementations for little diversity. pstack's mandatory arena on any open choice: too expensive |
+| Arena | Design always, even on one model with distinct angles: two 60-line designs are cheap. Implementation only with distinct models and a justified internal strategy comparison | Same-model implementation arena: two full implementations for little diversity. pstack's mandatory arena on any open choice: too expensive |
 | Review | 2 reviewers on distinct models, once, in parallel with verification | pstack's 3 models every time: too expensive. Review after verification: slower, and each check would run twice |
 | PR size | 700 changed lines + 5 %, else slice into a plan | Big PRs: hard to review. Slicing on any overflow: churn for a few lines |
 | Verification | A fresh verifier; tests plus a cheap real run; explicit "unverified" | Tests only: `prove-it-works` requires the real artifact |
 | Stuck | Stop without a PR and report | Draft PR marked unverified: contradicts `prove-it-works` |
-| Models | Setup proposes, you confirm, memory stores | Live API calls every run: latency, needs a key and web access |
-| Memory | One file outside the repos, global plus per-repo | In the skill repo: preferences would get committed |
+| Models | Agent proposes, you choose, configuration stores | Benchmark ranking formulas: do not represent task fit or user priorities |
+| Persistence | Separate config, learned memory, and per-run state outside repos | Mixing settings, durable facts, and transient progress makes resume and learning unreliable |
 
 ### From pstack: kept, merged, dropped
 
@@ -371,10 +398,10 @@ Every skill file stays under 80 lines: details load on demand, so each run pays 
 1. Check file sizes (80 lines max per skill file) and that every referenced path exists.
 2. Read `leogpt/SKILL.md` as the agent would, then follow one route end to end. Every step must name a file that exists or a concrete action.
 3. Check every delegation against `references/subagent-brief.md`: role, scope, principles to read, success criteria, short return.
-4. Check each harness file for the same 7 sections, and that none relies on a tool another harness file says is missing.
+4. Check each harness file for the same 8 sections, and that none relies on a tool another harness file says is missing.
 5. Look for contradictions with the design decisions above.
 6. Run it on a real task in a sandbox branch: a detailed ticket should run with no questions; a bare prompt should grill.
 
 ## Credits
 
-Flow and principles adapted from [pstack](https://github.com/cursor/plugins/tree/main/pstack) by poteto (Lauren Tan). Model data from [Artificial Analysis](https://artificialanalysis.ai/).
+Flow and principles adapted from [pstack](https://github.com/cursor/plugins/tree/main/pstack) by poteto (Lauren Tan).

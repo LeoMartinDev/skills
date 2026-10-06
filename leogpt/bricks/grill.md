@@ -17,7 +17,7 @@ Work in rounds. A round asks the whole frontier at once. After the answers, reco
 
 ## Caps
 
-Read `grill.max-rounds` and `grill.max-questions` in memory, for the current flow (`feature`, `bugfix`, `plan`, or `grill` for the grill route).
+Read `grill.max-rounds` and `grill.max-questions` in configuration, for the current flow (`feature`, `bugfix`, `plan`, or `grill` for the grill route).
 
 - More frontier than `max-questions`: ask the most structural ones, decide the rest yourself, and list those decisions in the round.
 - `max-rounds` reached: stop asking. Decide what is left and flag each decision. In a plan, list them under "Decisions to validate".

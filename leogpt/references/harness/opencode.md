@@ -15,7 +15,7 @@ Tool `subagent`, with the parameters: `agent` (the agent ID), `description`, `pr
 
 ## 2. Pick the model
 
-Parameter `model` on the `subagent` call, as `provider/model` or `provider/model#variant`. It overrides the agent's own model, which overrides the session's model. Omit it only when the role has no model per `references/memory.md#models`.
+Parameter `model` on the `subagent` call, as `provider/model` or `provider/model#variant`. It overrides the agent's own model, which overrides the session's model. Omit it only when the role has no model per `references/config.md#models`.
 
 ## 3. List available models
 
@@ -31,8 +31,12 @@ There is no built-in worktree isolation. Before spawning each candidate, create 
 
 ## 6. Native config written by setup
 
-None needed: the model is chosen per call. Setup writes only `models.opencode` in memory.
+None needed: the model is chosen per call. Setup writes only `models.opencode` in configuration.
 
 ## 7. Limits
 
 - The `skill` tool lists at most 10 supporting files. Read any other file of this skill by its path.
+
+## 8. Additional capabilities
+
+Apply `references/capabilities.md`. Core delegation, continuation, parallelism, model selection, choice UI, and manual isolation follow sections 1–5. Inspect retrieval and wake-up extensions; state and memory use file fallbacks.

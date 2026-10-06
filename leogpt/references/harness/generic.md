@@ -26,7 +26,7 @@ Without a choice UI, use the text format in `bricks/grill.md`: numbered question
 
 ## 5. Isolate an arena candidate
 
-Arenas need subagents. Without them, skip every arena and say so in one line: `architect` then drafts one design itself and still runs its challenge step. With subagents, the arena gate in `references/memory.md` applies: the design arena runs even on one model, the implementation arena needs at least 2 distinct selectable models.
+Arenas need subagents. Without them, skip every arena and say so in one line: `architect` then drafts one design itself and still runs its challenge step. With subagents, the arena gate in `references/config.md` applies: the design arena runs even on one model, the implementation arena needs at least 2 distinct selectable models.
 
 When an implementation arena runs, isolate each candidate yourself: `git worktree add ../<repo>-arena-<n> -b arena/<slug>-<n>`, pass the path in the brief, and `git worktree remove` it after the graft.
 
@@ -37,3 +37,7 @@ None.
 ## 7. Limits
 
 - Without subagents, the context window fills faster. Keep summaries short and never re-read large files you already summarized.
+
+## 8. Additional capabilities
+
+Apply `references/capabilities.md`. Determine each optional capability from actual tools. Use the fallbacks in the shared contract; do not infer retrieval, durable resume, or background wake-up from the presence of shell or child-agent tools.

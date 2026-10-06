@@ -11,6 +11,8 @@ When in doubt, take the simple path.
 
 ## 2. Brief the explorers
 
+Retrieval follows the harness capabilities: use hybrid/semantic search for conceptual questions, `rg` for exact names and strings, and symbol/LSP navigation for definitions, references, and callers. Confirm retrieved facts with targeted source reads. If an index is stale or a tool is missing, fall back to lexical search; do not claim reference completeness from text matches. Prefer compact sourced facts over broad file dumps.
+
 Use `references/subagent-brief.md`, role `explorer (report)`. Spawn it on the agent that section 1 of the harness file maps to that role, never a read-only one: it must write its report and run `git log`. Its scope allows writes to `/tmp/leogpt-how-<slug>/` only: it writes the full report to `angle-<n>.md` there and returns a digest. The digest overrides the brief's return format: at most about 50 lines. When the task comes from a ticket, paste into each brief, verbatim, the risks, dependencies, and caveats named in the ticket and its parent. Each explorer returns:
 
 - **Entry points**: where the flow starts (route, command, job, UI event), as `path:line`.
@@ -20,6 +22,7 @@ Use `references/subagent-brief.md`, role `explorer (report)`. Spawn it on the ag
 - **Templates**: for each kind of file the task will add (handler, component, test), the closest existing sibling, as a path. For each data source or service the new code will call, how its existing callers reach it (wrapper, repair step, cache, guard), as `path:line`. The new code takes the same path unless the design says otherwise.
 - **Tests**: where the tests live and the exact command to run them.
 - **Gotchas**: surprising behavior, invariants, known traps.
+- **Structural facts**: relevant symbol → definition, key callers/wiring, tests, and closest sibling, with `path:line` pointers and uncertainty noted. Include only facts useful for the goal; retrieval results are leads to verify, not proof by themselves.
 - **Known risks**: each risk, dependency, or caveat passed in the brief, mapped to `path:line`, and whether the change must handle it.
 - **Why**: when a shape looks odd, one line from `git log` or `git blame` on why it is that way.
 

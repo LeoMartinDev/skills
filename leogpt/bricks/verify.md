@@ -8,6 +8,7 @@ Use `references/subagent-brief.md`, role `verifier`, with the principle file `pr
 
 - the goal, as the behavior a user observes;
 - the success criteria from the implementer's brief;
+- the invariants from grounding/design, with source pointers; verify preservation independently of implementation claims;
 - the ticket items, verbatim, per the Ticket items rule in `SKILL.md`;
 - the branch or worktree path;
 - the entry point to drive (route, command, job, tool), never a function behind it;
@@ -27,7 +28,7 @@ The verifier may write only temporary files outside the repo. It fixes nothing.
 
 At most 30 lines:
 
-- A verdict per check, and one per ticket item: `PASS`, `FAIL`, or `INCONCLUSIVE`, with the exact command.
+- A verdict per check, ticket item, and relevant invariant: `PASS`, `FAIL`, or `INCONCLUSIVE`, with the exact command and tested commit.
 - Verbatim output, trimmed to the lines that prove the verdict.
 - On `FAIL`: counterexamples (input, expected, actual). These alone go back to the implementer.
 - `unverified: <what> because <why>` for anything that could not run.
@@ -36,7 +37,7 @@ At most 30 lines:
 
 On `FAIL`, send only the counterexamples back to the implementer (see `references/subagent-brief.md#continuing`), then verify again.
 
-A re-verification checks the fix round only. Continue the same verifier, or give a fresh one the previous report and its proof script paths. It reruns its proof scripts, adds a case per counterexample and per applied finding, reruns the tests covering the files the round changed, and the static checks on their package. Everything else keeps its previous verdict. Every fix, from counterexamples or review findings, costs one round of `verify.max-rounds`, a single counter for the whole run. Out of rounds: revert to the last commit that passed, ship it, and list in the PR body what it leaves unapplied. When no commit passed, stop per the Stuck rule in `SKILL.md`.
+A re-verification checks the fix round and its affected behaviors and invariants. Continue the same verifier, or give a fresh one the previous report and proof script paths. It reruns its proof scripts, adds a case per counterexample and applied finding, reruns covering tests, and static checks on the changed package. Earlier verdicts remain evidence only for their recorded commit and scope; shared code, wiring, base, or design changes require affected checks to rerun. Every fix costs one round of `verify.max-rounds`, a single counter for the flow, preserved on resume. Out of rounds before shipping: the implementer restores a previously passing result only if it still meets every required criterion, then verify that result before shipping and list unapplied optional fixes. Otherwise stop. After a PR is pushed, leave failed repairs unpushed and report the blocker; never rewrite pushed history to restore a checkpoint.
 
 ## Rules
 

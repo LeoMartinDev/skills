@@ -1,14 +1,15 @@
 # Brick: arena
 
-N candidates on distinct models attempt the same task in parallel. A judge scores them. You pick a base and graft the best ideas of the others into it. Used by `bricks/architect.md` (design) and `playbooks/feature.md` (implementation).
+N candidates on distinct models attempt the same task in parallel. A judge scores them. You pick a base and graft the best ideas of the others into it. Used by `bricks/architect.md` (design) and `bricks/implement.md` (internal implementation strategies under one settled design).
 
 ## 0. Gate
 
-Apply the arena gate in `references/memory.md#models` for `arena.design` or `arena.implementation`. If it fails, do not run: return to the caller, which falls back. If it passes, take the runners it gives, from different vendors when possible. A same-model arena is noted in the final reply.
+Apply the arena gate in `references/config.md#models` for `arena.design` or `arena.implementation`. If it fails, do not run: return to the caller, which falls back. If it passes, take the runners it gives, from different vendors when possible. A same-model arena is noted in the final reply.
 
 ## 1. Frame
 
 - **Artifact**: what each candidate produces. A design package (see `bricks/architect.md`), or a working implementation with commits.
+- **Implementation contract**: identical boundaries, observable behavior, and invariants for every candidate; each follows `bricks/implement.md`. Major design choices are settled before this arena.
 - **Rubric**: 3 to 6 gradeable criteria for this task. Only you and the judge see it. Candidates see the task.
 - **Angles**: give each candidate one distinct stance, for example "smallest diff that reuses what exists" versus "the right domain model, even if the diff grows".
 - **Output paths**: design, `/tmp/leogpt-arena-<slug>/candidate-<n>.md`; implementation, one git worktree per candidate (see the harness file, section 5).

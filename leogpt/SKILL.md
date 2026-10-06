@@ -1,6 +1,6 @@
 ---
 name: leogpt
-description: Rigorous, delegation-first engineering workflow. Use for /leogpt followed by a feature to build, a bug to fix, a plan to write, a "how does X work" question, a review request, an idea to grill, or "setup". Accepts free text, a GitHub issue, or a Notion page.
+description: Rigorous, delegation-first engineering workflow. Use for /leogpt followed by a feature, bugfix, plan, code explanation, review, idea to grill, setup, watch-pr, or resume. Accepts free text, a GitHub issue, or a Notion page.
 disable-model-invocation: true
 ---
 
@@ -10,9 +10,9 @@ You are the lead. You decide, synthesize, and verify. Subagents read bulk code, 
 
 ## Start (every run)
 
-1. Identify your harness from your tool list. Read `references/harness/<harness>.md` (`claude-code`, `cursor`, `delta`, `omp`, `opencode`, `zed`), or `generic.md` if none matches.
-2. Read memory per `references/memory.md`.
-3. Unless the request is setup itself: if this harness has no models setup and its `setup.<harness>` key is not `never`, ask once: setup now, later, or never. On "now", run `playbooks/setup.md`, then resume.
+1. Identify your harness from your tool list and runtime context. Read `references/harness/<harness>.md` (`claude-code`, `cursor`, `delta`, `omp`, `opencode`, `pi`, `zed`), or `generic.md` if none matches, and apply `references/capabilities.md`.
+2. Read configuration per `references/config.md` and relevant learned knowledge per `references/memory.md`. For a resume, restore and validate the named checkpoint per `references/run-state.md` before starting new work.
+3. Unless the request is setup, resume, or watch-pr: if this harness has no models setup and its `setup.<harness>` key is not `never`, ask once: setup now, later, or never. On "now", run `playbooks/setup.md`, then resume.
 4. Fetch the input: `gh issue view` for a GitHub issue, the Notion tool for a Notion page, the named slice for a plan (file or issue). Fetch the ticket's parent (story, epic) and linked issues too, when it has them. A subagent summarizes any long input.
 5. Route with the table below. Open a todo list with the playbook's steps.
 
@@ -28,13 +28,17 @@ You are the lead. You decide, synthesize, and verify. Subagents read bulk code, 
 | How does X work, where should X live | `bricks/how.md`, then present |
 | Review a PR, branch, or diff | `bricks/interrogate.md`, then present |
 | Grill or challenge an idea | `bricks/grill.md`, then recap and stop |
-| A lasting preference ("from now on", "remember") | `references/memory.md#write`, confirm, stop |
+| Watch an existing PR, CI and review repairs | `bricks/pr-watch.md` |
+| Resume a saved run | `references/run-state.md#resume`, then the restored flow |
+| A lasting execution preference ("from now on", "always") | `references/config.md#write`, confirm, stop |
+| Remember durable user or project knowledge | `references/memory.md#write`, confirm, stop |
 
 ## Lead rules
 
 - **Clarity gate** before feature, bugfix, or plan. Grill (`bricks/grill.md`) when the request does not state the observable expected behavior, or leaves the scope open, or has two plausible readings that lead to different code. A ticket that states behavior and scope runs autonomously. Lean toward deciding alone on everything else.
 - **Ticket items** carry over verbatim. When the input lists a Definition of Done, acceptance criteria, or an explicit scope, each item becomes a success criterion, word for word. Add your own criteria where they leave a gap.
-- **Delegate** with `references/subagent-brief.md`. Pick and pass each subagent's model per `references/memory.md#models`.
+- **Delegate** with `references/subagent-brief.md`. Pick and pass each subagent's model per `references/config.md#models`.
+- **Checkpoint and learn**: preserve progress and commit-scoped evidence per `references/run-state.md`. At the end of a workflow, apply `references/memory.md#learn-at-the-end-of-a-workflow`; no durable learning means no memory write. Configuration and run status never become learned knowledge.
 - **Decide** reversible choices yourself. Ask the user only where a step says to: the grill, the setup prompt, and the few one-time questions the steps name. If grounding or design surfaces decisions only the user can make (see the Mindset in `bricks/grill.md`), run one more grill round with all of them, as soon as they are known, within the same caps. Never split pending questions across rounds: a later round is only for a question that did not exist at the earlier one.
 - **Record** every decision in the final reply and in the PR body: the choice and why. A decision that leaves a known gap (a ticket item dropped, deferred, or reinterpreted, a risk or finding rejected, an open question deferred) also states its residual risk in one line: the user flow it hits.
 - **Budget**: a PR never exceeds `pr.max-lines` changed lines plus a 5 % tolerance (735 at 700), tests included, measured with `git diff --shortstat <default>...HEAD`. Within the tolerance, ship as is: never slice for it. The budget is a stop condition, never a target: no subagent compacts, reflows, or reindents code to fit under it, and it is never a success criterion. Measure after each implementer or fix round returns. Over budget: no verify, no review, no push. Switch to `playbooks/plan.md` and slice, with the sketch and the branch's commits as the design; keep the branch unpushed as a reference. A review fix that would cross the budget stays unapplied and is listed in the PR body, unless it is a blocker: then the whole change is over budget.

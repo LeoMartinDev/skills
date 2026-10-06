@@ -14,7 +14,7 @@ Tool `Task`, with the parameters `subagent_type` (`generalPurpose`, or the name 
 
 ## 2. Pick the model
 
-Parameter `model` on the `Task` call, as a Cursor slug (for example `claude-opus-5-5-max`, `gpt-5.6-sol-max`, `grok-4.7-xhigh-fast`). Omit it only when the role has no model per `references/memory.md#models`. An invalid slug is rejected, and the error lists the valid slugs.
+Parameter `model` on the `Task` call, as a Cursor slug (for example `claude-opus-5-5-max`, `gpt-5.6-sol-max`, `grok-4.7-xhigh-fast`). Omit it only when the role has no model per `references/config.md#models`. An invalid slug is rejected, and the error lists the valid slugs.
 
 ## 3. List available models
 
@@ -34,9 +34,13 @@ There is no worktree parameter on `Task`. Before spawning each candidate, create
 
 ## 6. Native config written by setup
 
-Setup also writes `~/.cursor/rules/leogpt-models.mdc`, with frontmatter `description: leogpt model choices` and `alwaysApply: true`, and one line per tier (`smart: <slug>`, `code: <slug>`, `fast: <slug>`), plus any per-role override. The memory stays the source of truth: the rule mirrors it for Cursor sessions that do not load this skill.
+Setup also writes `~/.cursor/rules/leogpt-models.mdc`, with frontmatter `description: leogpt model choices` and `alwaysApply: true`, and one line per tier (`smart: <slug>`, `code: <slug>`, `fast: <slug>`), plus any per-role override. The configuration stays the source of truth: the rule mirrors it for Cursor sessions that do not load this skill.
 
 ## 7. Limits
 
 - Parallel agents beyond 2 to 4 cost more in review than they gain.
 - If `AskQuestion` fails to render, fall back to the text format in `bricks/grill.md`.
+
+## 8. Additional capabilities
+
+Apply `references/capabilities.md`. Core delegation, parallelism, model selection, choice UI, and manual isolation follow sections 1–5; continuation uses a fresh child. Use semantic/symbol tools only when exposed, not inferred from editor indexing. State and memory use file fallbacks; inspect wake-up support.

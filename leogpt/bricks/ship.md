@@ -1,6 +1,6 @@
 # Brick: ship
 
-Branch, commit, and deliver per the repo's conventions and the `finish` key in memory.
+Branch, commit, and deliver per the repo's conventions and the `finish` key in configuration.
 
 ## Branch
 
@@ -32,13 +32,13 @@ With no convention: Conventional Commits (`type(scope): subject`, imperative, no
 
 Before pushing a branch stacked on another branch, check that its base still exists on the remote (`git ls-remote --heads origin <base>`) and that its PR is still open. If it was merged, rebase with `git rebase --onto origin/<default> <old base tip>`, rerun the tests covering the change, and target the default branch.
 
-Read `finish` from memory. Measure the diff with `git diff --shortstat <default>...HEAD`. Over budget, do not push: apply the Budget rule in `SKILL.md`.
+Read `finish` from configuration. Measure the diff with `git diff --shortstat <default>...HEAD`. Over budget, do not push: apply the Budget rule in `SKILL.md`.
 
 - `stop`: leave the commits on the branch, do not push, and report.
 - `pr`: push, then open a ready PR.
 - `draft-pr`: push, then open a draft PR.
 
-Never merge, and do not babysit CI after opening. Post the URL in the final reply.
+Attach every created PR when the harness has a PR attachment tool, and checkpoint its URL and head per `references/run-state.md`. Never merge. When `watch.after-ship` is true, run `bricks/pr-watch.md` after opening or updating the PR (ready or draft); otherwise stop monitoring here. Post the URL and any watch result in the final reply. `finish=stop` never starts a watch.
 
 ## PR body
 

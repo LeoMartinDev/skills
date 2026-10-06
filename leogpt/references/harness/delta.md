@@ -18,7 +18,7 @@ Delegate through the subagent mechanism in your tool list: read its schema and p
 
 ## 2. Pick the model
 
-There is no per-call model. Each profile has a default model and thinking effort in Settings > Subagents; provider-specific Model Preferences in LLM Providers take precedence, then Delta's built-in default (Worker follows the parent's model). Custom profiles are TOML files in the `profiles` folder beside `settings.json`. A role mapped to a profile in memory means: delegate with that profile.
+There is no per-call model. Each profile has a default model and thinking effort in Settings > Subagents; provider-specific Model Preferences in LLM Providers take precedence, then Delta's built-in default (Worker follows the parent's model). Custom profiles are TOML files in the `profiles` folder beside `settings.json`. A role mapped to a profile in configuration means: delegate with that profile.
 
 ## 3. List available models
 
@@ -34,10 +34,14 @@ Do not create worktrees yourself: Worker and Reviewer use isolated copies that m
 
 ## 6. Native config written by setup
 
-Setup sets the Worker, Scout, and Reviewer profile models, or writes custom `<id>.toml` profiles from `example.toml.example` (`worktree = "isolated"` for writers, `"shared"` for Scout-like reads). Show the change before writing. Memory records `models.delta` per tier and arena role. Profiles are machine-local: a missing profile on another machine errors instead of substituting.
+Setup sets the Worker, Scout, and Reviewer profile models, or writes custom `<id>.toml` profiles from `example.toml.example` (`worktree = "isolated"` for writers, `"shared"` for Scout-like reads). Show the change before writing. Configuration records `models.delta` per tier and arena role. Profiles are machine-local: a missing profile on another machine errors instead of substituting.
 
 ## 7. Limits
 
 - Delegation can be Disabled or Only When Asked; concurrency defaults to 4 per thread and 8 overall, 0 pauses new subagent work.
 - Switching the thread's model mid-run keeps the conversation and worktrees.
 - Skills load from `.agents/skills/` (shared), `.delta/skills/` (Delta-only override by frontmatter `name`), and `~/.agents/skills/` (personal).
+
+## 8. Additional capabilities
+
+Apply `references/capabilities.md`. Delegation, continuation, parallelism, model profiles, and isolation depend on the enabled settings in sections 1–5. Choice UI falls back to text. Inspect retrieval and wake-up tools; state and memory use file fallbacks.

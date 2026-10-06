@@ -21,7 +21,7 @@ Angles:
 - **B. Simplicity**: needless layers, one-caller wrappers, dead code, workaround code, comments that fail `comment-the-why`, departures from local conventions, including a file (test, doc, config) the closest siblings do not have. Principle files `laziness-protocol`, `minimize-reader-load`, `follow-local-conventions`, and `comment-the-why`.
 - **C. Domain and tests**: domain modeling, types, boundaries, and whether the tests assert observable behavior. Principle files `model-the-domain`, `type-system-discipline`, and `test-behavior-not-implementation`.
 
-Each brief carries the intent, the diff location (not the diff), and the angles.
+Each brief carries the intent, diff location (not the diff), criteria, grounded invariants, and angles.
 
 ## 4. Findings format
 

@@ -13,7 +13,7 @@ Tool `spawn_agent`, with the parameters `label` (a short UI label), `message` (t
 
 ## 2. Pick the model
 
-Parameter `model` on the `spawn_agent` call (Zed 1.22 and later), as the exact `provider/model-id` that `list_agents_and_models` returns for the native agent (for example `anthropic/claude-opus-5-5`, `openai-subscribed/gpt-5.6-sol`). Omit it only when the role has no model per `references/memory.md#models`: the subagent then runs on `agent.subagent_model`, else the thread's model. An unavailable model fails the spawn, and the error names `list_agents_and_models`. If `spawn_agent` has no `model` parameter, Zed is older than 1.22: every subagent shares one model, so say so in one line.
+Parameter `model` on the `spawn_agent` call (Zed 1.22 and later), as the exact `provider/model-id` that `list_agents_and_models` returns for the native agent (for example `anthropic/claude-opus-5-5`, `openai-subscribed/gpt-5.6-sol`). Omit it only when the role has no model per `references/config.md#models`: the subagent then runs on `agent.subagent_model`, else the thread's model. An unavailable model fails the spawn, and the error names `list_agents_and_models`. If `spawn_agent` has no `model` parameter, Zed is older than 1.22: every subagent shares one model, so say so in one line.
 
 ## 3. List available models
 
@@ -29,10 +29,14 @@ There is no worktree parameter on `spawn_agent`. The design arena's candidates w
 
 ## 6. Native config written by setup
 
-None required: memory holds `models.zed`, and each spawn passes its role's model. Setup may also propose `agent.subagent_model` in `~/.config/zed/settings.json`, set to the `fast` pick, so Zed's own unrouted subagents stay cheap. Show the JSON change and write it only after the user confirms.
+None required: configuration holds `models.zed`, and each spawn passes its role's model. Setup may also propose `agent.subagent_model` in `~/.config/zed/settings.json`, set to the `fast` pick, so Zed's own unrouted subagents stay cheap. Show the JSON change and write it only after the user confirms.
 
 ## 7. Limits
 
 - Zed loads global skills from `~/.agents/skills/` only, one level deep: the `leogpt` folder must sit directly in it.
 - There is no choice UI.
 - `agent.subagent_model` carries thinking, effort and speed settings, and a spawn with that same model keeps them. Another model runs with its defaults.
+
+## 8. Additional capabilities
+
+Apply `references/capabilities.md`. Delegation, continuation, parallelism, model selection, and manual isolation follow sections 1–5. Choice UI falls back to text. Inspect retrieval and wake-up tools; state and memory use file fallbacks.

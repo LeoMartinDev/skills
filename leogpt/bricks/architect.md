@@ -24,7 +24,9 @@ Each package, at most 60 lines:
 - **Boundaries**: what each module owns and what it hides.
 - **Call site**: how the main caller uses it, in 3 to 10 lines.
 - **Rationale**: the alternatives considered and why they lost.
-- **Open choices**: what the sketch leaves to the implementation. Tag each one `major` if it changes the public surface or the data flow, and `minor` otherwise (naming, local structure, test layout).
+- **Invariants**: existing behavior and contracts that must remain true, grounded in actual callers, stored data, or user requirements. Do not invent compatibility constraints for unused surfaces.
+- **Assumptions and evidence**: important safety claims, their source or proof, and any unresolved uncertainty.
+- **Open choices**: distinguish major decisions (public surface, persisted data, data flow, module boundaries) from minor choices (naming, local structure, test layout). Resolve major decisions in this brick before output; only minor choices reach implementation.
 
 ## 3. Screen and pick
 
@@ -40,13 +42,13 @@ Pick the design that hides the most complexity behind the smallest public surfac
 
 ## 4. Challenge
 
-One read-only `reviewer`, on a different model from the designers when possible, challenges the chosen sketch. It always runs after a single designer. After an arena, it runs only when the sketch has a `major` open choice, a new public surface, or a cross-boundary change; otherwise skip it in one line.
+One read-only `reviewer`, on a different model from the designers when possible, challenges the chosen sketch. It always runs after a single designer. After an arena, it runs only when the sketch has an unresolved major decision, a new public surface, or a cross-boundary change; otherwise skip it in one line.
 
-The reviewer gets the sketch location, the mental model, and the allowed paths, never the designers' reasoning. At most 15 lines: the weakest choice, one concrete failure scenario per risk, what to change, and whether each `major`/`minor` tag is right. Accept or reject each point in one line and revise the sketch. Record each rejected point per the Record rule in `SKILL.md`.
+The reviewer gets the sketch location, mental model, invariants, and allowed paths, never the designers' reasoning. At most 15 lines: the weakest choice, one concrete failure scenario per risk, what to change, and any major decision still unresolved. Accept or reject each point in one line and revise the sketch. Record each rejected point per the Record rule in `SKILL.md`.
 
 ## Output
 
-One sketch, the chosen package plus any grafts and review fixes, and its open choices. The open choices decide whether the implementation goes to an arena (see `playbooks/feature.md`).
+One settled sketch, including grafts and review fixes, invariants, sourced assumptions, and only minor open choices. The lead settles structural decisions; unresolved product decisions follow the paragraph below. If a major uncertainty needs runtime evidence, obtain a scoped temporary probe before finalizing the design, not competing production implementations.
 
 An open choice that is a product call, because it changes what a user sees or which users or sessions get the behavior, is not yours to settle. Neither is an open question a judge or reviewer raises for product. Put them to the user in one grill round, per the Decide rule in `SKILL.md`, before implementing. Ask as soon as the pick is made: when the challenge runs, ask while it runs, never after it. The same round carries the go that `playbooks/feature.md` step 4 requires, if any. A product question raised by the challenge itself gets its own round.
 
