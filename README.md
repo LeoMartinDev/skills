@@ -15,7 +15,7 @@ For features and fixes, the default outcome is an open pull request with the dec
 ## Install
 
 ```bash
-npx skills add LeoMartinDev/heyleo -g
+npx skills add LeoMartinDev/skills -g
 ```
 
 Then run this once in each coding agent to choose models for the different roles:
@@ -77,8 +77,8 @@ Renamed from **leogpt**: existing configuration is read as a fallback and copied
 Clone the repository and link the skill so edits apply immediately:
 
 ```bash
-git clone git@github.com:LeoMartinDev/heyleo.git
-cd heyleo
+git clone git@github.com:LeoMartinDev/skills.git
+cd skills
 mkdir -p ~/.agents/skills ~/.claude/skills
 ln -s "$PWD/heyleo" ~/.agents/skills/heyleo
 ln -s ~/.agents/skills/heyleo ~/.claude/skills/heyleo
