@@ -19,7 +19,6 @@ When the user states a lasting execution preference ("from now on", "remember", 
 | `plan.destination` | `none`, `repo:<path>`, `home` (`~/.agents/plans/<repo>/`), `github-issue` | `none` |
 | `finish` | `pr`, `draft-pr`, `stop` | `pr` |
 | `arena.design` | `auto`, `never` | `auto` |
-| `arena.implementation` | `auto`, `never` | `auto` |
 | `arena.candidates` | integer >= 2 | `2` |
 | `pr.max-lines` | changed lines per PR, tests included | `700` |
 | `grill.max-rounds` | `feature=<n> bugfix=<n> plan=<n> grill=<n>` | `feature=3 bugfix=3 plan=5 grill=5` |
@@ -43,7 +42,7 @@ Tiers: `smart`, `code`, `fast`. Roles map to tiers:
 | Tier | Roles |
 |---|---|
 | `smart` | `designer`, `judge`, `reviewer`, `verifier`, `arena.design` |
-| `code` | `implementer`, `arena.implementation` |
+| `code` | `implementer` |
 | `fast` | `explorer` |
 
 A value is a model slug as the harness spells it, or a profile model for Delta. An arena role takes a list of models, e.g. `[opus, fable]`.
@@ -54,4 +53,4 @@ Resolve a role's model: its role key in `models.<harness>` (e.g. `reviewer=...`)
 
 Pass the model explicitly on every spawn, per section 2 of the harness file. If the harness rejects it, fall back to the inherited model, or for an arena, drop it, and say so in one line.
 
-**Arena gate.** The one place that decides whether an arena runs. It runs when its key is not `never`, the harness has subagents, and enough distinct selectable models exist for `arena.candidates`, one per candidate. With only one selectable model, `arena.design` may run with one distinct angle per candidate. When diversity is insufficient otherwise, skip the arena. Implementation also requires safe isolation and the comparison justified by `bricks/implement.md`. Say in one line when an arena is skipped or runs on one model, and recheck the gate after any fallback.
+**Arena gate.** The one place that decides whether the design arena runs. It runs when `arena.design` is not `never`, the harness has subagents, and enough distinct selectable models exist for `arena.candidates`, one per candidate. With only one selectable model, use one distinct angle per candidate. When diversity is insufficient otherwise, skip the arena. Say in one line when an arena is skipped or runs on one model, and recheck the gate after any fallback.

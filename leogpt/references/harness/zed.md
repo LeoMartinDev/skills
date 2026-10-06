@@ -23,9 +23,9 @@ Tool `list_agents_and_models`. Use the `models[].id` of the entry with `is_nativ
 
 There is no choice UI. Use the text format in `bricks/grill.md`.
 
-## 5. Isolate an arena candidate
+## 5. Scope an arena candidate
 
-There is no worktree parameter on `spawn_agent`. The design arena's candidates write files, so they need none. Before spawning each implementation candidate, create a worktree yourself: `git worktree add ../<repo>-arena-<n> -b arena/<slug>-<n>`. Pass its absolute path in the brief, and scope the candidate's writes to it. Remove the worktrees with `git worktree remove` after the graft.
+Design candidates share the source checkout and write only their own report at the path in the brief. They do not change project files or Git state; separate worktrees are unnecessary. Apply read-only tool controls where available, allowing only the report write when needed.
 
 ## 6. Native config written by setup
 
@@ -39,4 +39,4 @@ None required: configuration holds `models.zed`, and each spawn passes its role'
 
 ## 8. Additional capabilities
 
-Apply `references/capabilities.md`. Delegation, continuation, parallelism, model selection, and manual isolation follow sections 1–5. Choice UI falls back to text. Inspect retrieval and wake-up tools; state and memory use file fallbacks.
+Apply `references/capabilities.md`. Delegation, continuation, parallelism, model selection, and arena scope follow sections 1–5. Choice UI falls back to text. Inspect retrieval and wake-up tools; state and memory use file fallbacks.

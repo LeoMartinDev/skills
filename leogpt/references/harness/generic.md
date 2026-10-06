@@ -24,11 +24,11 @@ Only if the harness exposes a list (a CLI command, a settings file, a tool schem
 
 Without a choice UI, use the text format in `bricks/grill.md`: numbered questions, each with its options and your recommendation.
 
-## 5. Isolate an arena candidate
+## 5. Scope an arena candidate
 
-Arenas need subagents. Without them, skip every arena and say so in one line: `architect` then drafts one design itself and still runs its challenge step. With subagents, the arena gate in `references/config.md` applies: the design arena runs even on one model, the implementation arena needs at least 2 distinct selectable models.
+Design candidates share the source checkout and write only their own report at the path in the brief. They do not change project files or Git state; separate worktrees are unnecessary. Apply read-only tool controls where available, allowing only the report write when needed.
 
-When an implementation arena runs, isolate each candidate yourself: `git worktree add ../<repo>-arena-<n> -b arena/<slug>-<n>`, pass the path in the brief, and `git worktree remove` it after the graft.
+Without subagents, skip the arena and say so in one line: `architect` drafts one design itself and still runs its challenge step. With subagents, apply the arena gate in `references/config.md`.
 
 ## 6. Native config written by setup
 

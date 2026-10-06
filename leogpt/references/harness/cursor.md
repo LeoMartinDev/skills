@@ -28,9 +28,9 @@ There is no in-agent tool for this. Try, in order:
 
 Tool `AskQuestion`. It renders several multiple-choice questions in one form. Batch the independent questions of a round in one call. Put the recommended option first and mark it "(Recommended)".
 
-## 5. Isolate an arena candidate
+## 5. Scope an arena candidate
 
-There is no worktree parameter on `Task`. Before spawning each candidate, create a worktree yourself: `git worktree add ../<repo>-arena-<n> -b arena/<slug>-<n>`. Pass its absolute path in the brief, and scope the candidate's writes to it. Remove the worktrees with `git worktree remove` after the graft.
+Design candidates share the source checkout and write only their own report at the path in the brief. They do not change project files or Git state; separate worktrees are unnecessary. Apply read-only tool controls where available, allowing only the report write when needed.
 
 ## 6. Native config written by setup
 
@@ -43,4 +43,4 @@ Setup also writes `~/.cursor/rules/leogpt-models.mdc`, with frontmatter `descrip
 
 ## 8. Additional capabilities
 
-Apply `references/capabilities.md`. Core delegation, parallelism, model selection, choice UI, and manual isolation follow sections 1–5; continuation uses a fresh child. Use semantic/symbol tools only when exposed, not inferred from editor indexing. State and memory use file fallbacks; inspect wake-up support.
+Apply `references/capabilities.md`. Core delegation, parallelism, model selection, choice UI, and arena scope follow sections 1–5; continuation uses a fresh child. Use semantic/symbol tools only when exposed, not inferred from editor indexing. State and memory use file fallbacks; inspect wake-up support.

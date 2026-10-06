@@ -25,9 +25,9 @@ Run `opencode models` in the shell. It lists every model available to the user, 
 
 Tool `question`: one or more questions per call, with a `multiple` flag for multi-select. Put the recommended option first and mark it "(Recommended)". If the tool rejects your shape, fall back to the text format in `bricks/grill.md`.
 
-## 5. Isolate an arena candidate
+## 5. Scope an arena candidate
 
-There is no built-in worktree isolation. Before spawning each candidate, create a worktree yourself: `git worktree add ../<repo>-arena-<n> -b arena/<slug>-<n>`. Pass its absolute path in the brief, and scope the candidate's writes to it. Remove the worktrees with `git worktree remove` after the graft.
+Design candidates share the source checkout and write only their own report at the path in the brief. They do not change project files or Git state; separate worktrees are unnecessary. Apply read-only tool controls where available, allowing only the report write when needed.
 
 ## 6. Native config written by setup
 
@@ -39,4 +39,4 @@ None needed: the model is chosen per call. Setup writes only `models.opencode` i
 
 ## 8. Additional capabilities
 
-Apply `references/capabilities.md`. Core delegation, continuation, parallelism, model selection, choice UI, and manual isolation follow sections 1–5. Inspect retrieval and wake-up extensions; state and memory use file fallbacks.
+Apply `references/capabilities.md`. Core delegation, continuation, parallelism, model selection, choice UI, and arena scope follow sections 1–5. Inspect retrieval and wake-up extensions; state and memory use file fallbacks.

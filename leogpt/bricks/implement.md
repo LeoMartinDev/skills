@@ -10,8 +10,6 @@ Use `references/subagent-brief.md`. One `implementer` owns coupled code. Paralle
 
 Give writers the principle files `laziness-protocol`, `follow-local-conventions`, `comment-the-why`, `test-behavior-not-implementation`, and `sequence-verifiable-units`, plus task-specific principles such as `fix-root-causes` for a bugfix.
 
-An implementation arena is optional only when comparing credible internal strategies under the same settled contract, boundaries, invariants, and observable behavior would resolve a concrete uncertainty. Name the comparison and its evidence criterion; apply `bricks/arena.md`'s gate. It is never a fallback for unfinished architecture. Each candidate follows this brick. Otherwise use one implementer.
-
 ## 1. Establish the write plan
 
 Before editing, inspect the closest existing implementation and test of the same kind. Start with grounding's templates; confirm they fit. Record their paths and the patterns reused in the report artifact. If none fits, say so and justify the chosen shape.

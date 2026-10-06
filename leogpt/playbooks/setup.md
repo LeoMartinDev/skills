@@ -6,9 +6,9 @@ Copy these steps into your todo list verbatim.
 
 1. **List the available models** per the harness file, section 3. If the harness picks no model per tier (see section 2), say so. Configure only what it supports.
 2. **Assess the available models yourself**, using the role guidance below, the user's priorities, and the harness's actual model controls. Do not fetch benchmark rankings. State uncertainty when you do not know a model; do not invent capabilities, prices, speed measurements, or scores. If a recommendation depends on current product facts, verify only those facts in the provider's official documentation.
-3. **Draft a selection.** One pick per tier (`smart`, `code`, `fast`) with useful alternatives when available, and the model list of each arena role. Tiers may share a model when that best fits the available choices.
-4. **Propose.** Show a compact table: tier or arena role, pick, alternatives, and why. Explain the relevant quality, latency, and cost tradeoffs qualitatively; include numbers only when verified.
-5. **Confirm.** One question per tier and per arena role through the choice tool: the pick first, marked "(Recommended)", then the alternatives. Batch the questions per the harness's limits.
+3. **Draft a selection.** One pick per tier (`smart`, `code`, `fast`) with useful alternatives when available, and the model list of the design arena. Tiers may share a model when that best fits the available choices.
+4. **Propose.** Show a compact table: tier or design arena, pick, alternatives, and why. Explain the relevant quality, latency, and cost tradeoffs qualitatively; include numbers only when verified.
+5. **Confirm.** One question per tier and for the design arena through the choice tool: the pick first, marked "(Recommended)", then the alternatives. Batch the questions per the harness's limits.
 6. **Write** `models.<harness>` and `setup.<harness>: done <YYYY-MM-DD>` in the global section of configuration. Then write the harness-native config (section 6 of its file), showing it before writing.
 7. **Reply** with the confirmed choices and where they were stored.
 
@@ -22,7 +22,7 @@ Use your judgment to recommend models appropriate to each role. Favor quality fo
 | `code` | Reliable implementation and tool use in the codebase |
 | `fast` | Efficient exploration and factual lookup, with enough capability for the assigned scope |
 
-- **Arena roles** (`arena.design`, `arena.implementation`) use suitable distinct models, from different vendors when useful and available. Propose enough models for `arena.candidates` when possible. With a single model, write it anyway: the arena gate in `references/config.md` decides what runs. With no usable model, write `none`, which disables that arena on this harness. Tell the user.
+- **Design arena** (`arena.design`) uses suitable distinct models, from different vendors when useful and available. Propose enough models for `arena.candidates` when possible. With a single model, write it anyway: the arena gate in `references/config.md` decides what runs. With no usable model, write `none`, which disables that arena on this harness. Tell the user.
 
 ## Answers to the first-run prompt
 

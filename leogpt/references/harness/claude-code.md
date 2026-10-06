@@ -24,9 +24,9 @@ Read the `model` enum in the `Agent` tool schema. That enum is the list. Map eac
 
 Tool `AskUserQuestion`: 1 to 4 questions per call, 2 to 4 options each, a `header` of 12 characters max, `multiSelect` when choices combine. "Other" is added automatically. Put the recommended option first, with " (Recommended)" at the end of its label. A round with more than 4 questions takes several calls.
 
-## 5. Isolate an arena candidate
+## 5. Scope an arena candidate
 
-Pass `isolation: "worktree"` on the `Agent` call. Each candidate gets its own git worktree, removed automatically when unchanged. Ask each candidate to report its worktree path and branch in its return.
+Design candidates share the source checkout and write only their own report at the path in the brief. They do not change project files or Git state; separate worktrees are unnecessary. Apply read-only tool controls where available, allowing only the report write when needed.
 
 ## 6. Native config written by setup
 
@@ -40,4 +40,4 @@ None needed: the model is chosen per call. Setup writes only `models.claude-code
 
 ## 8. Additional capabilities
 
-Apply `references/capabilities.md`. Core delegation, continuation, parallelism, model selection, choice UI, and isolation follow sections 1–5. Retrieval extensions and wake-up support must be inspected; file state and memory use the shared fallbacks.
+Apply `references/capabilities.md`. Core delegation, continuation, parallelism, model selection, choice UI, and arena scope follow sections 1–5. Retrieval extensions and wake-up support must be inspected; file state and memory use the shared fallbacks.

@@ -28,13 +28,13 @@ There is no tool for this. Check Settings > LLM Providers and the thread's model
 
 There is no choice UI. Use the text format in `bricks/grill.md`.
 
-## 5. Isolate an arena candidate
+## 5. Scope an arena candidate
 
-Do not create worktrees yourself: Worker and Reviewer use isolated copies that merge back automatically on successful completion (failed work does not merge). Scout shares the parent's checkout: never use it for implementation candidates. The design arena needs no isolation (candidates write files). The implementation arena needs at least 2 distinct selectable profile models, else one Worker implements and you say so in one line.
+Design candidates share the source checkout and write only their own report at the path in the brief. They do not change project files or Git state; separate worktrees are unnecessary. Apply read-only tool controls where available, allowing only the report write when needed.
 
 ## 6. Native config written by setup
 
-Setup sets the Worker, Scout, and Reviewer profile models, or writes custom `<id>.toml` profiles from `example.toml.example` (`worktree = "isolated"` for writers, `"shared"` for Scout-like reads). Show the change before writing. Configuration records `models.delta` per tier and arena role. Profiles are machine-local: a missing profile on another machine errors instead of substituting.
+Setup sets the Worker, Scout, and Reviewer profile models, or writes custom `<id>.toml` profiles from `example.toml.example` (`worktree = "isolated"` for writers, `"shared"` for Scout-like reads). Show the change before writing. Configuration records `models.delta` per tier and design arena. Profiles are machine-local: a missing profile on another machine errors instead of substituting.
 
 ## 7. Limits
 
@@ -44,4 +44,4 @@ Setup sets the Worker, Scout, and Reviewer profile models, or writes custom `<id
 
 ## 8. Additional capabilities
 
-Apply `references/capabilities.md`. Delegation, continuation, parallelism, model profiles, and isolation depend on the enabled settings in sections 1–5. Choice UI falls back to text. Inspect retrieval and wake-up tools; state and memory use file fallbacks.
+Apply `references/capabilities.md`. Delegation, continuation, parallelism, model profiles, and arena scope depend on the enabled settings in sections 1–5. Choice UI falls back to text. Inspect retrieval and wake-up tools; state and memory use file fallbacks.

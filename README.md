@@ -248,14 +248,14 @@ Playbooks are assembled from **bricks**, each a file in `leogpt/bricks/`.
 | `grill` | Maps the request as a tree of decisions and asks the open ones in rounds, each with a recommended answer. Looks facts up itself; asks only for decisions. Capped per round and per flow. | ✅ the only one |
 | `how` | 1 to 4 explorers in parallel, one per angle (data model, runtime flow, entry points, tests). The lead merges their digests into one mental model. | |
 | `architect` | Types, signatures, and module boundaries with empty bodies. An arena of designs or one designer, a screen against common design smells, then a fresh reviewer challenges the pick. | |
-| `arena` | N candidates on distinct models attempt the same task. A judge scores them against a hidden rubric. The lead picks a base and grafts the best ideas of the others. | |
+| `arena` | N candidates on distinct models propose designs for the same task. A judge scores them against a hidden rubric. The lead picks a base and grafts the best ideas of the others. | |
 | `interrogate` | Adversarial review by 2 reviewers on distinct models. Every finding needs a concrete failure scenario. The lead checks each blocker itself. | |
 | `verify` | A fresh verifier that never sees the implementer's reasoning. Verbatim evidence or an explicit `unverified:`. | |
 | `implement` | Settled design to checked commits: concrete precedent, expected writes, invariants, evidence, final diff inspection. | |
 | `pr-watch` | CI and review triage, verified repairs, bounded polling, readiness and blocker report. | when a user decision is needed |
 | `ship` | Branch rules, the repo's commit and PR conventions (Conventional Commits by default), then `finish`. Never merges. | |
 
-**Arena**: 2 candidates on different models attempt the same task, a judge scores them, the lead keeps the best as a base and grafts 1 or 2 ideas from the other. Designs always get one when subagents exist, even on a single model (one angle each). Implementations get one only with enough distinct models and a justified comparison of internal strategies under the same contract. Major choices are resolved in architecture.
+**Arena**: candidates propose designs for the same task, a judge scores them, and the lead keeps the best as a base and grafts 1 or 2 ideas from the others. Designs get one when the configured gate permits it, even on a single model with one angle each. Major choices are resolved before the implementer writes code.
 
 ## Rules the lead never breaks
 
@@ -276,10 +276,10 @@ Each subagent has one role, and each role maps to a model tier. The rule is **th
 | Tier | Roles | Pick rule |
 |---|---|---|
 | `smart` | designer, judge, reviewer, verifier, design arena | Strong reasoning and judgment |
-| `code` | implementer, implementation arena | Reliable implementation and tool use |
+| `code` | implementer | Reliable implementation and tool use |
 | `fast` | explorer | Low latency and cost, adequate for the exploration scope |
 
-Arena roles use suitable distinct models, from different vendors when useful. Tiers may share models; selection depends on availability and user priorities.
+Design candidates use suitable distinct models, from different vendors when useful. Tiers may share models; selection depends on availability and user priorities.
 
 A role's model resolves in this order: its role key in `models.<harness>` → its tier key → the harness-native config → the agent's judgment. Setup fetches no benchmark rankings. Uncertain capabilities are disclosed; current product facts are checked in official provider documentation when needed.
 
@@ -293,7 +293,7 @@ Explicit settings live in `~/.agents/config/leogpt.md`, outside every repo, so t
 | `plan.destination` | `none` (chat only) | `repo:<path>`, `home`, `github-issue` |
 | `pr.max-lines` | `700` | any; a lower cap documented in the repo wins |
 | `verify.max-rounds` | `3` | integer |
-| `arena.design`, `arena.implementation` | `auto` | `never` |
+| `arena.design` | `auto` | `never` |
 | `arena.candidates` | `2` | integer ≥ 2 |
 | `grill.max-rounds` | `feature=3 bugfix=3 plan=5 grill=5` | per flow |
 | `grill.max-questions` | `feature=4 bugfix=4 plan=8 grill=4` | per flow, per round |
@@ -324,16 +324,14 @@ PR monitoring stops at readiness, a blocker, or configured time/repair limits. I
 
 ## Harness support
 
-Each harness adapter has eight sections: spawn, model, model inventory, questions, isolation, native configuration, limits, and additional capabilities. The shared contract in `references/capabilities.md` defines optional retrieval, persistence, and wake-up capabilities with fallbacks. Pi requires extensions for subagents; no extension installation is part of the skill.
+Each harness adapter has eight sections: spawn, model, model inventory, questions, arena scope, native configuration, limits, and additional capabilities. The shared contract in `references/capabilities.md` defines optional retrieval, persistence, and wake-up capabilities with fallbacks. Pi requires extensions for subagents; no extension installation is part of the skill.
 
 | | Claude Code | Cursor | Delta | omp | opencode | Zed | generic |
 |---|---|---|---|---|---|---|---|
 | Subagents | `Agent` | `Task` | Worker / Scout / Reviewer | `task` | `subagent` | `spawn_agent` | sequential fallback |
 | Model per role | per call | per call | per profile | per agent file | per call | per call when supported | inspect tools |
-| Implementation arena | ✅ | ✅ | distinct profile models | distinct agent models | ✅ | distinct selectable models | distinct selectable models |
 | Design arena | ✅ | ✅ | ✅ | ✅ | ✅ | same model | with subagents |
 | Choice UI | `AskUserQuestion` | `AskQuestion` | text | `ask` | `question` | text | text |
-| Worktrees | `isolation: "worktree"` | manual | isolated copies | manual | manual | manual | manual |
 | Setup writes | config | + `~/.cursor/rules/leogpt-models.mdc` | + profile models | + `~/.omp/agent/agents/leogpt-*.md` | config | + `agent.subagent_model` | config |
 
 ## Principles
@@ -378,7 +376,7 @@ Every skill file stays under 80 lines: details load on demand, so each run pays 
 | Size | 80 lines max per file, details on demand | Large files: they cost context on every run |
 | Autonomy | No human stop by default until the PR opens | Checkpoints before implementation: the grill already covers the risky case, a vague request |
 | Grilling | Only for a vague or ambiguous request, capped, biased to decide alone | Always grilling: too slow for detailed tickets |
-| Arena | Design always, even on one model with distinct angles: two 60-line designs are cheap. Implementation only with distinct models and a justified internal strategy comparison | Same-model implementation arena: two full implementations for little diversity. pstack's mandatory arena on any open choice: too expensive |
+| Arena | Compare designs before writing code, even on one model with distinct angles | Mandatory arena on any open choice: too expensive |
 | Review | 2 reviewers on distinct models, once, in parallel with verification | pstack's 3 models every time: too expensive. Review after verification: slower, and each check would run twice |
 | PR size | 700 changed lines + 5 %, else slice into a plan | Big PRs: hard to review. Slicing on any overflow: churn for a few lines |
 | Verification | A fresh verifier; tests plus a cheap real run; explicit "unverified" | Tests only: `prove-it-works` requires the real artifact |

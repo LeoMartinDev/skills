@@ -8,7 +8,6 @@ Read with the selected harness adapter. Adapters map mechanisms; playbooks and b
 | `continueAgent` | Address a returned child with targeted follow-up | Fresh child with original brief, current state, and follow-up |
 | `parallelAgents` | Independent children launched together, within concurrency limits | Sequential execution; keep dependency order |
 | `modelPerRole` | Selectable model or profile for a role | Inherited model; report actual selection, not configured intent |
-| `isolation` | Separate checkout for competing writers, with artifacts recoverable | Manual worktrees; without safe isolation skip implementation arena |
 | `choiceUI` | Questions and answers accessible in this session | Text questions per `bricks/grill.md` |
 | `semanticSearch` | Conceptual retrieval returning source paths and snippets | `rg`/lexical search followed by targeted reads |
 | `symbolNavigation` | Definitions, references, callers with source pointers | Exact search and inspect callers; do not claim completeness |

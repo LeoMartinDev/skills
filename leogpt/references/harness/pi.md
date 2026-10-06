@@ -4,13 +4,15 @@ Use this adapter when the runtime identifies itself as Pi. Built-in filesystem a
 
 ## 1. Spawn a subagent
 
-Vanilla Pi does not provide built-in subagents. If an installed extension exposes a child-agent tool, use its actual schema for the brief, role or agent name, model, and checkout. Do not assume a tool named `spawn_agent` exists. Map every LeoGPT role to a child with the necessary tools and explicit write scope.
+Vanilla Pi does not provide built-in subagents. With Everyx (`@everyx/pi-subagent`), use `agent_spawn` with a self-contained `prompt` from `references/subagent-brief.md`, a short role/task `label`, explicit `model`, and a `tools` allowlist. It defines no agent profiles; the brick supplies the role instructions. Read-only discovery can use `read`, `grep`, `find`, `ls`; grant `bash` only when the task needs it and state its allowed scope. Writers need the relevant edit/write tools. Exclude delegation tools from children: only the lead spawns.
 
-Use extension batch or concurrent dispatch only if supported. Continue a child only with the exposed session/agent handle; otherwise start a fresh child with the original brief and follow-up. Without an extension run roles sequentially per `generic.md`. Only the lead spawns.
+Independent `agent_spawn` calls can run concurrently; dispatch in bounded waves (start with at most 4) because Everyx has no concurrency cap. Use foreground calls for dependencies; background calls return an `agent_id` and deliver completion notifications. There is no result/wait tool: do not poll. Set `timeoutMs` to the remaining phase/run deadline when bounded execution is required.
+
+Use `persistent: true` for an implementer expected to receive review corrections. Continue its resident context with `agent_send({to: agent_id, message: ...})`; delivery is not completion, so await the result notification before verification. Stop unneeded residents with `agent_stop({agent_id})`. After stop, reload, or exit, start a fresh child with the checkpoint and brief: saved transcripts do not restore the live handle. For another extension inspect its actual schema; without one execute roles sequentially per `generic.md`.
 
 ## 2. Pick the model
 
-Resolve roles per `references/config.md#models`. Pass the exact provider/model or configured profile accepted by the installed subagent extension. If it cannot select per child, use its inherited model and disclose that. Changing the lead's model is not per-role selection.
+Resolve roles per `references/config.md#models`. Everyx accepts an exact `provider/model` in `agent_spawn.model` and a separate optional `thinking` level. Pass the resolved model explicitly; absent values inherit the parent's model/thinking. Unavailable models fail instead of silently falling back. Changing the lead's model is not per-role selection.
 
 ## 3. List available models
 
@@ -20,22 +22,24 @@ Use an exposed model-list tool, or inspect the installed CLI's help for its mode
 
 Use a question tool only if an installed extension exposes it. Pi extension UI APIs are not themselves agent tools. Otherwise use the text question format in `bricks/grill.md`.
 
-## 5. Isolate an arena candidate
+## 5. Scope an arena candidate
 
-Use extension checkout isolation when documented and ensure the candidate reports its branch and path. Otherwise create one manual worktree per implementation candidate, pass its absolute path, and remove only your own worktrees after preserving the selected commits. Without safe isolation skip the implementation arena.
+Design candidates share the source checkout and write only their own report at the path in the brief. They do not change project files or Git state; separate worktrees are unnecessary. Apply read-only tool controls where available, allowing only the report write when needed.
+
+Everyx inherits the parent's cwd. Give read-only tools to candidates that return their report inline; the lead can save each returned report at its assigned path.
 
 ## 6. Native config written by setup
 
-LeoGPT choices live in `~/.agents/config/leogpt.md`. Write extension-specific profiles only when the installed extension documents their location and format and the user confirms the proposed setup. Do not add speculative Pi settings or install packages as part of setup.
+LeoGPT choices live in `~/.agents/config/leogpt.md`. Everyx needs no role profile files: send role instructions and resolved models at launch. Its installation is a separate, user-authorized runtime task (`pi install npm:@everyx/pi-subagent`); setup does not install packages. Do not add speculative Pi settings.
 
 ## 7. Limits
 
-The skill owns playbook ordering and gates; Pi extensions supply mechanisms. Session history or a resumable Pi conversation is not automatically a structured LeoGPT run checkpoint. Do not claim background monitoring from an extension's mere presence.
+The skill owns playbook ordering and gates; Pi extensions supply mechanisms. Everyx background children depend on the parent process; they are not a scheduler and do not survive its exit. Keep an interactive or RPC parent alive for follow-ups: `pi --print` can exit after delivery acknowledgement, before the child's notification. Session transcripts are not structured LeoGPT checkpoints. Persist phase, evidence and artifacts per `references/run-state.md` independently of live agent IDs.
 
 ## 8. Additional capabilities
 
-Apply `references/capabilities.md`. `spawnAgent`, `continueAgent`, `parallelAgents`, `modelPerRole`, and `choiceUI` depend on loaded extensions; confirm each separately. `isolation` can use shell worktrees. Built-in shell/file access can store run state and project memory via the shared file fallbacks; `wakeUp` needs an explicitly exposed scheduler.
+Apply `references/capabilities.md`. Loaded Everyx tools support `spawnAgent`, `parallelAgents`, `modelPerRole`, and `continueAgent` for resident children. They provide neither `choiceUI` nor `wakeUp`. Built-in shell/file access can store run state and project memory via the shared file fallbacks; confirm additional capabilities from actual tools.
 
-For conceptual retrieval prefer an installed hybrid search extension such as pi-knowledge, using its actual schema. For definitions/references prefer an exposed LSP tool. Neither is assumed installed. Confirm results with targeted source reads; use `rg` when missing or stale. Installing or implementing these extensions is a separate runtime task.
+Retrieval and LSP extensions are optional separate runtime tasks. Use targeted `rg` and source reads when none are loaded; inspect actual schemas before using any installed retrieval or symbol tools.
 
-Official runtime references: [Pi overview](https://github.com/earendil-works/pi/blob/main/packages/coding-agent/README.md) and [extensions](https://github.com/earendil-works/pi/blob/main/packages/coding-agent/docs/extensions.md). Consult the installed version's docs when its API differs.
+Runtime references: [Pi overview](https://github.com/earendil-works/pi/blob/main/packages/coding-agent/README.md), [extensions](https://github.com/earendil-works/pi/blob/main/packages/coding-agent/docs/extensions.md), and [Everyx](https://github.com/everyx/pi-extensions/tree/master/packages/pi-subagent). Consult installed docs and schemas when versions differ.

@@ -26,7 +26,7 @@ The `task` tool has no `model` parameter. The model is fixed by the agent, so le
 | verifier | `leogpt-verifier` |
 | reviewer | `leogpt-reviewer` |
 | judge | `leogpt-judge` |
-| arena candidate `n` | `leogpt-arena-design-<n>` or `leogpt-arena-implementation-<n>` |
+| arena candidate `n` | `leogpt-arena-design-<n>` |
 
 - A role that resolves to `none` has no agent file: omit `agent`.
 - The distinct-models rule of `references/config.md#models` picks among existing agents: take the agent of another role of the same tier whose model differs (for example a `leogpt-arena-design-<n>` for the design challenger). With none, keep the role's own agent and say so in one line.
@@ -40,16 +40,16 @@ Run `omp models` in the shell. It lists every model of the authenticated provide
 
 Tool `ask`: one call with several `questions`. Each has an `id`, a `question`, 2 to 5 `options` (each with a short `label` and an optional `description`), `multi` when choices combine, and `recommended` (a 0-based index; the tool appends "(Recommended)"). Never add an "Other" option: the UI adds it.
 
-## 5. Isolate an arena candidate
+## 5. Scope an arena candidate
 
-There is no isolation the skill relies on. `isolated: true` exists only when `task.isolation.enabled` is set, and its result is a patch or a branch depending on the user's settings. Before spawning each candidate, create a worktree yourself: `git worktree add ../<repo>-arena-<n> -b arena/<slug>-<n>`. Pass its absolute path in the brief and scope the candidate's writes to it. Remove the worktrees with `git worktree remove` after the graft.
+Design candidates share the source checkout and write only their own report at the path in the brief. They do not change project files or Git state; separate worktrees are unnecessary. Apply read-only tool controls where available, allowing only the report write when needed.
 
 ## 6. Native config written by setup
 
 Setup writes one agent file per role in `~/.omp/agent/agents/`. It never writes to a project's `.omp/agents/`, which would override the user-level file. Files:
 
 - `leogpt-explorer`, `leogpt-designer`, `leogpt-implementer`, `leogpt-verifier`, `leogpt-reviewer`, `leogpt-judge`;
-- `leogpt-arena-design-<n>` and `leogpt-arena-implementation-<n>`, one per entry of the matching `arena.*` list.
+- `leogpt-arena-design-<n>`, one per entry of the `arena.design` list.
 
 Resolve each role's model per `references/config.md#models` (role key, else tier key). Skip a role that resolves to `none`. Template, with the resolved selector:
 
@@ -77,4 +77,4 @@ Configuration stays the source of truth. Whenever `models.omp` changes, rewrite 
 
 ## 8. Additional capabilities
 
-Apply `references/capabilities.md`. Delegation, continuation, parallelism, model profiles, choice UI, and manual isolation follow sections 1–5. Inspect retrieval and wake-up tools; state and memory use file fallbacks.
+Apply `references/capabilities.md`. Delegation, continuation, parallelism, model profiles, choice UI, and arena scope follow sections 1–5. Inspect retrieval and wake-up tools; state and memory use file fallbacks.
