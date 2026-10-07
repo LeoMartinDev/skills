@@ -30,11 +30,11 @@ Everyx inherits the parent's cwd. Give read-only tools to candidates that return
 
 ## 6. Native config written by setup
 
-heyleo choices live in `~/.agents/config/heyleo.md`. Everyx needs no role profile files: send role instructions and resolved model/effort pairs at launch. This does not change Pi's main-session `defaultThinkingLevel`. Its installation is a separate, user-authorized runtime task (`pi install npm:@everyx/pi-subagent`); setup does not install packages. Do not add speculative Pi settings.
+bigbrain choices live in `~/.agents/config/bigbrain.md`. Everyx needs no role profile files: send role instructions and resolved model/effort pairs at launch. This does not change Pi's main-session `defaultThinkingLevel`. Its installation is a separate, user-authorized runtime task (`pi install npm:@everyx/pi-subagent`); setup does not install packages. Do not add speculative Pi settings.
 
 ## 7. Limits
 
-The skill owns playbook ordering and gates; Pi extensions supply mechanisms. Everyx background children depend on the parent process; they are not a scheduler and do not survive its exit. Keep an interactive or RPC parent alive for follow-ups: `pi --print` can exit after delivery acknowledgement, before the child's notification. Session transcripts are not structured heyleo checkpoints. Persist phase, evidence and artifacts per `references/run-state.md` independently of live agent IDs.
+The skill owns playbook ordering and gates; Pi extensions supply mechanisms. Everyx background children depend on the parent process; they are not a scheduler and do not survive its exit. Keep an interactive or RPC parent alive for follow-ups: `pi --print` can exit after delivery acknowledgement, before the child's notification. Session transcripts are not structured bigbrain checkpoints. Persist phase, evidence and artifacts per `references/run-state.md` independently of live agent IDs.
 
 ## 8. Additional capabilities
 

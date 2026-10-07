@@ -13,7 +13,7 @@ When in doubt, take the simple path.
 
 Retrieval follows the harness capabilities: use hybrid/semantic search for conceptual questions, `rg` for exact names and strings, and symbol/LSP navigation for definitions, references, and callers. Confirm retrieved facts with targeted source reads. If an index is stale or a tool is missing, fall back to lexical search; do not claim reference completeness from text matches. Prefer compact sourced facts over broad file dumps.
 
-Use `references/subagent-brief.md`, role `explorer (report)`. Spawn it on the agent that section 1 of the harness file maps to that role, never a read-only one: it must write its report and run `git log`. Its scope allows writes to `/tmp/heyleo-how-<slug>/` only: it writes the full report to `angle-<n>.md` there and returns a digest. The digest overrides the brief's return format: at most about 50 lines. When the task comes from a ticket, paste into each brief, verbatim, the risks, dependencies, and caveats named in the ticket and its parent. Each explorer returns:
+Use `references/subagent-brief.md`, role `explorer (report)`. Spawn it on the agent that section 1 of the harness file maps to that role, never a read-only one: it must write its report and run `git log`. Its scope allows writes to `/tmp/bigbrain-how-<slug>/` only: it writes the full report to `angle-<n>.md` there and returns a digest. The digest overrides the brief's return format: at most about 50 lines. When the task comes from a ticket, paste into each brief, verbatim, the risks, dependencies, and caveats named in the ticket and its parent. Each explorer returns:
 
 - **Entry points**: where the flow starts (route, command, job, UI event), as `path:line`.
 - **Flow**: the runtime path in 3 to 8 steps.

@@ -1,6 +1,6 @@
 # Playbook: plan
 
-Write an implementation plan for a feature. You own the plan, not the code: do not implement. The plan is a checklist that `/heyleo` later runs slice by slice.
+Write an implementation plan for a feature. You own the plan, not the code: do not implement. The plan is a checklist that `/bigbrain` later runs slice by slice.
 
 Coming from the feature playbook: step 1 is settled, step 2 asks only what is still open, step 3 reuses the mental model already built, and step 4 reuses the sketch, if any.
 
@@ -24,7 +24,7 @@ Copy these steps into your todo list verbatim.
    - `home`: write `~/.agents/plans/<repo>/<slug>.md`.
    - `github-issue`: `gh issue create`, with the plan as the body.
 9. **Learn.** Apply `references/memory.md#learn-at-the-end-of-a-workflow`; save only established durable knowledge from grounding, never the unimplemented plan itself.
-10. **Stop.** Reply with the plan's location, the slices in order, and the decisions to validate or blockers. Explain how to run a slice: `/heyleo implement slice <n> of <plan location>`. With `none`, a slice can run only in this conversation: offer once to save the plan (repo, home, or issue) so another session can pick it up.
+10. **Stop.** Reply with the plan's location, the slices in order, and the decisions to validate or blockers. Explain how to run a slice: `/bigbrain implement slice <n> of <plan location>`. With `none`, a slice can run only in this conversation: offer once to save the plan (repo, home, or issue) so another session can pick it up.
 
 ## Template
 

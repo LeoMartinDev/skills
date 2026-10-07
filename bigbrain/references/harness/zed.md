@@ -35,7 +35,7 @@ None required: configuration holds `models.zed`, and each spawn passes its role'
 
 ## 7. Limits
 
-- Zed loads global skills from `~/.agents/skills/` only, one level deep: the `heyleo` folder must sit directly in it.
+- Zed loads global skills from `~/.agents/skills/` only, one level deep: the `bigbrain` folder must sit directly in it.
 - There is no choice UI.
 - `agent.subagent_model` carries thinking, effort and speed settings, and a spawn with that same model keeps them. Another model runs with its defaults.
 

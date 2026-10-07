@@ -27,4 +27,4 @@ Use your judgment to recommend models appropriate to each role. Favor quality fo
 ## Answers to the first-run prompt
 
 - `later`: write `setup.<harness>: later`. The prompt comes back on the next run.
-- `never`: write `setup.<harness>: never`. Models then follow your judgment with the tier rules above, and the prompt does not come back. `/heyleo setup` still works.
+- `never`: write `setup.<harness>: never`. Models then follow your judgment with the tier rules above, and the prompt does not come back. `/bigbrain setup` still works.

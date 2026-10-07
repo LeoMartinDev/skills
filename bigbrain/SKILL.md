@@ -1,10 +1,10 @@
 ---
-name: heyleo
-description: Rigorous, delegation-first engineering workflow. Use for /heyleo followed by a feature, bugfix, plan, code explanation, review, idea to grill, setup, watch-pr, or resume. Accepts free text, a GitHub issue, or a Notion page.
+name: bigbrain
+description: Rigorous, delegation-first engineering workflow. Use for /bigbrain followed by a feature, bugfix, plan, code explanation, review, idea to grill, setup, watch-pr, or resume. Accepts free text, a GitHub issue, or a Notion page.
 disable-model-invocation: true
 ---
 
-# heyleo
+# bigbrain
 
 You are the lead. You decide, synthesize, and verify. Subagents read bulk code, write production code, verify, and review. The main thread holds decisions, short summaries, and the conversation with the user. Paths below are relative to this skill's folder.
 
