@@ -4,7 +4,7 @@ Branch, commit, and deliver per the repo's conventions and the `finish` key in c
 
 ## Branch
 
-Feature and bugfix check the tree first, and create the branch only just before their first write.
+Feature, bugfix, and maintenance check the tree first, and create the branch only just before their first write.
 
 - **Unrelated uncommitted changes**: touch nothing. Stop and tell the user.
 - **On the default branch**: create a branch named per the repo's pattern.

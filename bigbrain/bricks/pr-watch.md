@@ -21,7 +21,7 @@ On each poll fetch fresh checks and latest reviews for the current head, thread 
 
 ## Repair
 
-Batch actionable CI failures and accepted findings into one targeted `bricks/implement.md` repair. Include repro/log evidence, expected behavior, invariants, allowed paths, and budget. Design contradictions return to `bricks/architect.md`. Guardrail changes remain off limits unless explicitly in scope; a failing CI does not authorize weakening checks.
+Batch actionable CI failures and accepted findings into one targeted `bricks/implement.md` repair. Include repro/log evidence, expected behavior, invariants, allowed paths, budget, and the originating flow from the checkpoint or PR intent. Maintenance repairs apply `playbooks/maintenance.md#conditional-design` to newly opened structural decisions and preserve still-valid work; other design contradictions return to `bricks/architect.md`. Guardrail changes remain off limits unless explicitly in scope; a failing CI does not authorize weakening checks.
 
 Each repair batch costs one watch round, including failed attempts. Run `bricks/verify.md` on the changed scope, original failure, and applied findings; its own round limit still applies. A base merge, changed design, or material scope change also needs fresh review. Do not push a failing or over-budget repair. Inspect the diff, confirm the remote head has not moved, commit and push normally, checkpoint, then observe checks on the new SHA. Respect `ship`'s conventions and stacked-base handling.
 

@@ -17,7 +17,7 @@ Work in rounds. A round asks the whole frontier at once. After the answers, reco
 
 ## Caps
 
-Read `grill.max-rounds` and `grill.max-questions` in configuration, for the current flow (`feature`, `bugfix`, `plan`, or `grill` for the grill route).
+Read `grill.max-rounds` and `grill.max-questions` in configuration, for the current flow (`feature`, `bugfix`, `maintenance`, `plan`, or `grill` for the grill route).
 
 - More frontier than `max-questions`: ask the most structural ones, decide the rest yourself, and list those decisions in the round.
 - `max-rounds` reached: stop asking. Decide what is left and flag each decision. In a plan, list them under "Decisions to validate".
@@ -42,7 +42,7 @@ Without a choice tool, use this text format:
 
 The session ends when the frontier is empty or a cap is reached. Recap one line per decision: the decision, then who took it (user or you).
 
-- Called from feature or bugfix: present the recap. Ask once for confirmation only when you decided alone on at least one structural choice (scope, behavior, data shape), or when a cap left open decisions. Otherwise continue without asking.
+- Called from feature, bugfix, or maintenance: present the recap. Ask once for confirmation only when you decided alone on at least one structural choice (scope, behavior, data shape), or when a cap left open decisions. In maintenance, internal restructuring within preserved contracts needs no confirmation. Otherwise continue without asking.
 - Called from plan: ask once whether the recap matches the user's understanding, then continue the plan.
 - In the grill route: ask once whether the recap matches, then stop. Suggest the next step in one line (plan or feature), without starting it.
 

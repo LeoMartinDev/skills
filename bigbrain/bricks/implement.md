@@ -1,14 +1,16 @@
 # Brick: implement
 
-Turn a settled design or an evidence-backed fix into a small idiomatic diff. Used for initial implementation and targeted repairs; the calling playbook owns reproduction, verification, review, and shipping.
+Turn a settled design, an evidence-backed fix, or a maintenance brief into a small idiomatic diff. Used for initial implementation and targeted repairs; the calling playbook owns reproduction, verification, review, and shipping.
 
 ## Input and delegation
 
-The goal, grounding, sketch when needed, allowed paths, ticket items, success criteria, invariants, and check commands. For a bugfix include the original repro and confirmed cause. For a repair include the accepted findings or counterexamples and current commit. An unresolved choice changing public behavior, persisted data, data flow, or module boundaries returns to `bricks/architect.md` before writing.
+The goal, grounding, sketch when needed, allowed paths, ticket items, success criteria, invariants, and check commands. For a bugfix include the original repro and confirmed cause. For maintenance include the transformation brief, baseline, and sketch only when conditional design produced one. For a repair include the accepted findings or counterexamples and current commit. Outside maintenance, an unresolved choice changing public behavior, persisted data, data flow, or module boundaries returns to `bricks/architect.md` before writing.
+
+In maintenance mode, choose local structure directly within the brief's scope and contracts, including established cross-module transformations. A newly opened decision about responsibilities, state ownership, or dependency direction returns to the lead per `playbooks/maintenance.md#conditional-design`; pause dependent edits and preserve still-valid work. A conflict with scope or preserved contracts follows its Scope rules. Neither situation automatically restarts the workflow.
 
 Use `references/subagent-brief.md`. One `implementer` owns coupled code. Parallel implementers require disjoint files and no shared state. Continue the existing implementer for repairs when supported.
 
-Give writers the principle files `laziness-protocol`, `follow-local-conventions`, `comment-the-why`, `test-behavior-not-implementation`, and `sequence-verifiable-units`, plus task-specific principles such as `fix-root-causes` for a bugfix.
+Give writers the principle files `laziness-protocol`, `follow-local-conventions`, `comment-the-why`, `test-behavior-not-implementation`, and `sequence-verifiable-units`, plus task-specific principles such as `fix-root-causes` for a bugfix, or `subtract-before-you-add` and `minimize-reader-load` for simplification. Include applicable architecture principles from the maintenance brief or sketch.
 
 ## 1. Establish the write plan
 
@@ -20,7 +22,7 @@ Carry the invariants alongside the new behavior. For a complex task, keep a comp
 
 ## 2. Implement verifiable units
 
-Extend local patterns, with the smallest change that satisfies the contract. Each unit adds a behavior or necessary prerequisite and its relevant proof, leaving the branch working. Avoid dividing commits solely by technical layer. The bugfix repro commit remains the only permitted red commit.
+Extend local patterns, with the smallest change that satisfies the contract. Each unit delivers a behavior, maintenance outcome, or necessary prerequisite and its relevant proof, leaving the branch working. Maintenance characterization tests pass against the baseline and transformed code. Avoid dividing commits solely by technical layer. The bugfix repro commit remains the only permitted red commit.
 
 Run the narrow checks before committing each unit; run the package typecheck after the last one. A check run on unchanged code need not be repeated. Broad checks stay with `bricks/verify.md`. Remove instrumentation and debug leftovers. Measure the total diff against the configured budget; never compress code to fit.
 

@@ -1,12 +1,10 @@
 ---
 name: bigbrain
-description: Rigorous, delegation-first engineering workflow. Use for /bigbrain followed by a feature, bugfix, plan, code explanation, review, idea to grill, setup, watch-pr, or resume. Accepts free text, a GitHub issue, or a Notion page.
+description: Rigorous, delegation-first engineering workflow. Use for /bigbrain followed by a feature, bugfix, refactor, chore, plan, code explanation, review, idea to grill, setup, watch-pr, or resume. Accepts free text, a GitHub issue, or a Notion page.
 disable-model-invocation: true
 ---
 
-# bigbrain
-
-You are the lead. You decide, synthesize, and verify. Subagents read bulk code, write production code, verify, and review. The main thread holds decisions, short summaries, and the conversation with the user. Paths below are relative to this skill's folder.
+You are the lead. You decide, synthesize, and verify. Subagents read bulk code, write production code, verify, and review. The main thread holds decisions, short summaries, and the conversation with the user. Every delegation uses `references/subagent-brief.md`; resolve each role's model and effort per `references/config.md#models` through the harness's actual controls. Paths below are relative to this skill's folder.
 
 ## Start (every run)
 
@@ -22,8 +20,9 @@ You are the lead. You decide, synthesize, and verify. Subagents read bulk code, 
 |---|---|
 | New or changed behavior | `playbooks/feature.md` |
 | A defect: wrong behavior observable today | `playbooks/bugfix.md` |
-| Plan, spec, break down a feature | `playbooks/plan.md` |
-| Run a slice of a saved plan | `playbooks/plan.md#execute-a-saved-slice`, then `playbooks/feature.md` |
+| Refactor, simplify, restructure existing code, or chore | `playbooks/maintenance.md` |
+| Plan, spec, break down a change | `playbooks/plan.md` (preserve feature or maintenance flow) |
+| Run a slice of a saved plan | `playbooks/plan.md#execute-a-saved-slice`, then the plan's flow |
 | Setup, configure models | `playbooks/setup.md` |
 | How does X work, where should X live | `bricks/how.md`, then present |
 | Review a PR, branch, or diff | `bricks/interrogate.md`, then present |
@@ -35,19 +34,19 @@ You are the lead. You decide, synthesize, and verify. Subagents read bulk code, 
 
 ## Lead rules
 
-- **Clarity gate** before feature, bugfix, or plan. Grill (`bricks/grill.md`) when the request does not state the observable expected behavior, or leaves the scope open, or has two plausible readings that lead to different code. A ticket that states behavior and scope runs autonomously. Lean toward deciding alone on everything else.
+- **Clarity gate** before feature, bugfix, maintenance, or plan. Grill (`bricks/grill.md`) when the request leaves the goal or scope open, or has two plausible readings that lead to different code. Feature and bugfix need observable expected behavior; maintenance needs a concrete cleanup or operational outcome and the contracts to preserve, grounded in code. A clear request runs autonomously. Lean toward deciding alone on everything else.
+- **Maintenance** uses `playbooks/maintenance.md#conditional-design` during implementation, repairs, planning, and saved slices: direct implementation by default, architect for open structural decisions, arena only for consequential alternatives that remain unresolved. Size or crossing module boundaries alone triggers neither. Apply its Scope rules when behavior or contracts would change.
 - **Ticket items** carry over verbatim. When the input lists a Definition of Done, acceptance criteria, or an explicit scope, each item becomes a success criterion, word for word. Add your own criteria where they leave a gap.
-- **Delegate** with `references/subagent-brief.md`. Resolve each subagent's model and effort per `references/config.md#models`, and pass them through the harness's actual controls.
 - **Checkpoint and learn**: preserve progress and commit-scoped evidence per `references/run-state.md`. At the end of a workflow, apply `references/memory.md#learn-at-the-end-of-a-workflow`; no durable learning means no memory write. Configuration and run status never become learned knowledge.
 - **Decide** reversible choices yourself. Ask the user only where a step says to: the grill, the setup prompt, and the few one-time questions the steps name. If grounding or design surfaces decisions only the user can make (see the Mindset in `bricks/grill.md`), run one more grill round with all of them, as soon as they are known, within the same caps. Never split pending questions across rounds: a later round is only for a question that did not exist at the earlier one.
 - **Record** every decision in reports or run state: the choice and why. The final reply and PR body highlight decisions affecting behavior, maintenance, or risk. Every known gap (a ticket item dropped, deferred, or reinterpreted, a risk or finding rejected, an open question deferred) stays explicit there with its residual risk: the user flow it hits.
-- **Budget**: a PR never exceeds `pr.max-lines` changed lines plus a 5 % tolerance (735 at 700), tests included, measured with `git diff --shortstat <default>...HEAD`. Within the tolerance, ship as is: never slice for it. The budget is a stop condition, never a target: no subagent compacts, reflows, or reindents code to fit under it, and it is never a success criterion. Measure after each implementer or fix round returns. Over budget: no verify, no review, no push. Switch to `playbooks/plan.md` and slice, with the sketch and the branch's commits as the design; keep the branch unpushed as a reference. A review fix that would cross the budget stays unapplied and is listed in the PR body, unless it is a blocker: then the whole change is over budget.
+- **Budget**: a PR never exceeds `pr.max-lines` changed lines plus a 5 % tolerance (735 at 700), tests included, measured with `git diff --shortstat <default>...HEAD`. Within the tolerance, ship as is: never slice for it. The budget is a stop condition, never a target: no subagent compacts, reflows, or reindents code to fit under it, and it is never a success criterion. Measure after each implementer or fix round returns. Over budget: no verify, no review, no push. Switch to `playbooks/plan.md` and slice, preserving the flow and reusing the grounding, transformation brief or sketch, and branch commits; keep the branch unpushed as a reference. A review fix that would cross the budget stays unapplied and is listed in the PR body, unless it is a blocker: then the whole change is over budget.
 - **Stuck** (no commit passes verification within `verify.max-rounds`, or the bug won't reproduce): stop without a PR. Report what you tried, where it blocks, and the remaining hypotheses.
 - **Final reply**, in the user's language: observable outcome, key evidence and material limits first, then consequential decisions and inspection links. For implemented changes, use `bricks/explain.md`. Preserve every unverified item and the models used: per role, the model actually passed on its spawns, or `inherited: <session model>`. Every number you cite comes from the last run of its command.
 
 ## Principles
 
-Before applying a principle, read its file in `principles/` in full. Name the relevant files in every subagent brief, per `references/subagent-brief.md`.
+Before applying a principle, read its file in `principles/` in full. Name the relevant files in every subagent brief, per `references/subagent-brief.md`. Applicable principles constrain implementation and design alike; revise or reject violating candidates before comparing them, and recheck the synthesized design after grafts.
 
 **Core**
 - `laziness-protocol`: sizing a diff, tempted by a new layer. Smallest change that solves it; bias to deletion.

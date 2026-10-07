@@ -6,22 +6,23 @@ Prove the change works on the real artifact. A `verifier` subagent does it, fres
 
 Use `references/subagent-brief.md`, role `verifier`, with the principle file `prove-it-works`. Include:
 
-- the goal, as the behavior a user observes;
+- the goal, as observable behavior or a concrete maintenance outcome;
 - the success criteria from the implementer's brief;
 - the invariants from grounding/design, with source pointers; verify preservation independently of implementation claims;
 - the ticket items, verbatim, per the Ticket items rule in `SKILL.md`;
 - the branch or worktree path;
 - the entry point to drive (route, command, job, tool), never a function behind it;
-- for a bugfix, the original repro command and its failing output.
+- for a bugfix, the original repro command and its failing output;
+- for maintenance, the baseline commands, results, and pre-existing failures, plus the affected contracts and entry points to compare or exercise.
 
 The verifier may write only temporary files outside the repo. It fixes nothing.
 
 ## Checks, in order
 
 1. **Find the commands.** Package scripts, Makefile, CI config, the repo's agent docs. Prefer the commands CI runs.
-2. **Static.** Lint and typecheck on the smallest useful scope (changed package or files).
-3. **Tests.** Run the tests covering the changed code, and any tests added by the change. When cheap, check that a new test fails without the change: in a temporary worktree at the commit before the change (`git worktree add /tmp/bigbrain-verify <base-sha>`), copy in the new test and run it. Then remove that worktree.
-4. **Real run**, when cheap: drive the entry point the way a user does, through its production wiring (DI, providers, registry, config): a local HTTP request, a CLI invocation, a script that boots the app, or a browser if the harness has one. For a bugfix, rerun the original repro. Calling the functions behind the entry point is not a real run. Whatever cannot run this way is `unverified: wiring because <why>`.
+2. **Static.** Applicable lint, typecheck, or document/configuration validation on the smallest useful scope (changed package or files).
+3. **Tests.** Run the tests covering the changed code, and any tests added by the change. For new behavior or a bugfix, when cheap, check that a new test fails without the change: in a temporary worktree at the commit before the change (`git worktree add /tmp/bigbrain-verify <base-sha>`), copy in the new test and run it. Then remove that worktree. Refactor characterization tests should pass before and after; compare the same cases and expected outputs on both versions. For chores, check the requested operational outcome and unrelated contracts. A pre-existing failure does not prove preservation; identify any remaining verification gap.
+4. **Real run**, when cheap: drive the entry point the way a user does, through its production wiring (DI, providers, registry, config): a local HTTP request, a CLI invocation, a script that boots the app, or a browser if the harness has one. For a bugfix, rerun the original repro. For a chore, exercise the changed tool, build, configuration, or document as applicable; do not invent an application entry point. Calling the functions behind an affected entry point is not a real run. Whatever cannot run through its affected wiring is `unverified: wiring because <why>`.
 5. **Derived checks.** From the goal alone, the verifier names 1 to 3 cases the tests may miss (an edge input, an empty state, an error path) and runs them when cheap.
 
 ## Report

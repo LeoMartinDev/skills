@@ -4,7 +4,7 @@ Settle the shape before any code: data shape, types, signatures, and module boun
 
 ## Input
 
-The goal, the mental model from `bricks/how.md`, and the user's decisions from `bricks/grill.md`, if any.
+The goal, the mental model from `bricks/how.md`, and the user's decisions from `bricks/grill.md`, if any. For maintenance, include its flow, the concrete open structural decisions, transformation brief, baseline, preserved contracts, and applicable principles. Settle those decisions within scope and reuse still-valid work; do not reopen settled choices or propose unrelated architecture.
 
 Before a design keeps existing data or sessions working (backward compatibility, grandfathering, a migration), establish the fact that it must: the feature is live (flag default, rollout config), or stored data already has that shape. When nothing is live, design no compatibility and record the decision.
 
@@ -13,7 +13,7 @@ Before a design keeps existing data or sessions working (backward compatibility,
 - **The arena gate passes** for `arena.design`: run `bricks/arena.md` with the design task. Each candidate writes one design package.
 - **Otherwise**: one `designer` subagent produces one design package. Say in one line that the arena was skipped, and why.
 
-Brief the designers with the principle files `foundational-thinking`, `model-the-domain`, `type-system-discipline`, `boundary-discipline`, `redesign-from-first-principles`, and `exhaust-the-design-space`.
+Brief the designers with applicable principle files: `foundational-thinking`, `model-the-domain`, `type-system-discipline`, `boundary-discipline`, `redesign-from-first-principles`, and `exhaust-the-design-space`, plus core and task-specific principles from the brief. Maintenance commonly needs `laziness-protocol`, `follow-local-conventions`, `subtract-before-you-add`, and `minimize-reader-load`. Read them in full; do not apply principles outside their stated conditions.
 
 ## 2. Design package
 
@@ -32,6 +32,7 @@ Each package, at most 60 lines:
 
 Reject or revise any design with:
 
+- a violation of an applicable principle, success criterion, or preserved contract;
 - a shallow module, whose interface is as complex as its implementation;
 - pass-through methods, or wrappers with a single caller;
 - information leakage, where two modules must change together;
@@ -44,7 +45,7 @@ Pick the design that hides the most complexity behind the smallest public surfac
 
 One read-only `reviewer`, on a different model from the designers when possible, challenges the chosen sketch. It always runs after a single designer. After an arena, it runs only when the sketch has an unresolved major decision, a new public surface, or a cross-boundary change; otherwise skip it in one line.
 
-The reviewer gets the sketch location, mental model, invariants, and allowed paths, never the designers' reasoning. At most 15 lines: the weakest choice, one concrete failure scenario per risk, what to change, and any major decision still unresolved. Accept or reject each point in one line and revise the sketch. Record each rejected point per the Record rule in `SKILL.md`.
+The reviewer gets the sketch location, mental model, invariants, allowed paths, and applicable principle files, never the designers' reasoning. Check principle compliance as well as risks. At most 15 lines: the weakest choice, one concrete failure scenario per risk, what to change, and any major decision still unresolved. Accept or reject each point in one line and revise the sketch. Record each rejected point per the Record rule in `SKILL.md`.
 
 ## Output
 

@@ -21,8 +21,8 @@ When the user states a lasting execution preference ("from now on", "remember", 
 | `arena.design` | `auto`, `never` | `auto` |
 | `arena.candidates` | integer >= 2 | `2` |
 | `pr.max-lines` | changed lines per PR, tests included | `700` |
-| `grill.max-rounds` | `feature=<n> bugfix=<n> plan=<n> grill=<n>` | `feature=3 bugfix=3 plan=5 grill=5` |
-| `grill.max-questions` | same shape, per round | `feature=4 bugfix=4 plan=8 grill=4` |
+| `grill.max-rounds` | `feature=<n> bugfix=<n> maintenance=<n> plan=<n> grill=<n>` | `feature=3 bugfix=3 maintenance=3 plan=5 grill=5` |
+| `grill.max-questions` | same shape, per round | `feature=4 bugfix=4 maintenance=4 plan=8 grill=4` |
 | `verify.max-rounds` | integer | `3` |
 | `watch.after-ship` | `true`, `false` | `false` |
 | `watch.max-rounds` | positive integer, repair batches per watch run | `5` |
@@ -32,6 +32,7 @@ When the user states a lasting execution preference ("from now on", "remember", 
 | `models.<harness>` | `tier-or-role=model:effort, ...` (see below) | unset |
 
 A lower PR size cap documented in the repo (agent docs, `CONTRIBUTING.md`, a bot config) wins over `pr.max-lines`.
+For existing grill settings without a `maintenance` entry, use its default; preserve all configured entries.
 
 `later` means ask again on the next run. A setup older than 60 days earns a one-line suggestion to rerun `/bigbrain setup` in the final reply.
 
@@ -67,4 +68,6 @@ Example: `models.pi: smart=opencode-go/muse-spark-1.3-contributor:high, code=ope
 
 Pass the model explicitly on every spawn, per section 2 of the harness file. If the harness rejects it, fall back to the inherited model, or for an arena, drop it, and say so in one line.
 
-**Arena gate.** The one place that decides whether the design arena runs. It runs when `arena.design` is not `never`, the harness has subagents, and enough distinct selectable models exist for `arena.candidates`, one per candidate. With only one selectable model, use one distinct angle per candidate. When diversity is insufficient otherwise, skip the arena. Say in one line when an arena is skipped or runs on one model, and recheck the gate after any fallback.
+**Arena gate.** The one place that decides whether the design arena runs when a playbook calls for design. For maintenance, including plans, slices, and repairs, first require all three: multiple viable structures respecting criteria, preserved contracts, and applicable principles; consequential tradeoffs in coupling, maintenance, migration, or operations; and no answer already established by the request, local conventions, or grounded facts. Verify missing facts first. Size or architect invocation alone does not qualify. Then apply the capability conditions below, as for other flows.
+
+The arena runs when `arena.design` is not `never`, the harness has subagents, and enough distinct selectable models exist for `arena.candidates`, one per candidate. With only one selectable model, use one distinct angle per candidate. When diversity is insufficient otherwise, skip the arena. Say in one line when an arena is skipped or runs on one model, and recheck the gate after any fallback.

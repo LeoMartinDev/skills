@@ -6,7 +6,7 @@ Run state records a task's progress and evidence. It is neither configuration no
 
 Use the adapter's run-state tool when present. Otherwise keep a JSON checkpoint in `~/.agents/runs/bigbrain/<repo>/<run-id>/state.json`, outside the repo. Resolve a safe repo identity as in `references/memory.md`; generate a unique run ID and report its location. Update via a temporary file and atomic rename. Only the lead writes the checkpoint. If durable writes are unavailable, retain a compact conversation checkpoint and disclose that it will not survive session loss.
 
-Create state only for feature, bugfix, plan, or watch work that spans phases. A small factual answer or setup needs no run. Never write user secrets, raw private logs, or entire code files into state.
+Create state only for feature, bugfix, maintenance, plan, or watch work that spans phases. A small factual answer or setup needs no run. Never write user secrets, raw private logs, or entire code files into state.
 
 ## Fields
 
@@ -21,14 +21,14 @@ Use this small schema, omitting irrelevant fields:
   "branch": "task-branch",
   "baseCommit": "sha",
   "headCommit": "sha",
-  "flow": "feature | bugfix | plan | watch",
+  "flow": "feature | bugfix | maintenance | plan | watch",
   "phase": "current playbook step or watch phase",
   "status": "active | waiting | blocked | done",
   "goal": "observable outcome",
   "criteria": [],
   "invariants": [],
   "decisions": [],
-  "artifacts": {"grounding": "path", "sketch": "path"},
+  "artifacts": {"grounding": "path", "sketch": "path", "transformation": "path", "baseline": "path"},
   "verifyRound": 0,
   "reviewCommit": null,
   "lastPassingCommit": null,
@@ -42,7 +42,7 @@ Use this small schema, omitting irrelevant fields:
 }
 ```
 
-Evidence names the check, verdict, tested commit, command, scope, and output artifact or compact result. Findings have stable IDs, source, disposition, reason, and any fix commit. Decisions record the user's instruction and its scope, but a checkpoint never grants new authorization. Preserve the grounding, sketch, and proof artifacts needed for resume in the run directory or durable harness store. Missing temporary reports are a grounding gap, not evidence.
+Evidence names the check, verdict, tested commit, command, scope, and output artifact or compact result. Findings have stable IDs, source, disposition, reason, and any fix commit. Decisions record the user's instruction and its scope, but a checkpoint never grants new authorization. Preserve the grounding, sketch when present, maintenance brief and baseline when relevant, and proof artifacts needed for resume in the run directory or durable harness store. Missing temporary reports are a grounding gap, not evidence.
 
 ## Checkpoints
 
