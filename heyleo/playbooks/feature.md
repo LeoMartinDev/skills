@@ -2,6 +2,8 @@
 
 New or changed behavior. You own the design, the review, and the verification. Subagents write the code.
 
+For a saved plan slice, first apply `playbooks/plan.md#execute-a-saved-slice`. Carry its mapped success criteria, scope, decisions, and invariants through the steps below.
+
 Copy these steps into your todo list verbatim.
 
 1. **Check the tree.** Per `bricks/ship.md#branch`: unrelated uncommitted changes stop the run.

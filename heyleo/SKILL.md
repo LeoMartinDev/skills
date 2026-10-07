@@ -23,7 +23,7 @@ You are the lead. You decide, synthesize, and verify. Subagents read bulk code, 
 | New or changed behavior | `playbooks/feature.md` |
 | A defect: wrong behavior observable today | `playbooks/bugfix.md` |
 | Plan, spec, break down a feature | `playbooks/plan.md` |
-| Run a slice of a saved plan | `playbooks/feature.md`, the slice as a clear ticket |
+| Run a slice of a saved plan | `playbooks/plan.md#execute-a-saved-slice`, then `playbooks/feature.md` |
 | Setup, configure models | `playbooks/setup.md` |
 | How does X work, where should X live | `bricks/how.md`, then present |
 | Review a PR, branch, or diff | `bricks/interrogate.md`, then present |
