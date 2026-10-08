@@ -18,6 +18,12 @@ For features, fixes, refactors, and chores, the default outcome is an open pull 
 npx skills add LeoMartinDev/skills -g
 ```
 
+To update to the latest version:
+
+```bash
+npx skills update bigbrain -g
+```
+
 Then run this once in each coding agent to choose models for the different roles:
 
 ```text
