@@ -9,7 +9,7 @@ Copy these steps into your todo list verbatim.
 1. **Size.** Select feature or maintenance from the request and routing in `SKILL.md`; preserve the caller's flow. If the request clearly fits one PR with an obvious approach and no consequential uncertainty, say that no plan is needed, offer to run that playbook directly, and stop. For one PR with a risky migration, uncertain integration, or consequential product decisions, write a compact one-slice plan using the same steps; omit empty sections.
 2. **Clarify.** Apply the clarity gate from `SKILL.md`. For a raw idea, establish who has the problem, what happens today, the desired observable outcome, and the smallest useful scope, including what is out of scope. Run `bricks/grill.md` with the plan caps only for unresolved decisions; reuse answers already settled.
 3. **Ground.** Run `bricks/how.md`, choosing its simple or complex path for the subsystems touched. Collect the obligatory repo/CI check commands, their required scopes, and conventions, and record the repo identity and explored commit, plus relevant uncommitted changes. Write the success criteria per the Ticket items rule in `SKILL.md`: preserve explicit items verbatim, or define 2 to 6 observable behaviors for a feature; for maintenance, use the concrete cleanup or operational outcome and contracts to preserve, with the baseline per `playbooks/maintenance.md` step 3. If the code shows the work is simple and low-risk after all, stop per step 1.
-4. **Set the approach.** For a feature, run `bricks/architect.md`; its sketch is the target shape. For maintenance, write or reuse the compact transformation brief from `playbooks/maintenance.md` step 4 and apply its Conditional design gate only to open decisions necessary for the goal. Reuse a settled sketch when present; planning or slicing alone does not trigger architecture or arena.
+4. **Set the approach.** For a feature, apply `playbooks/feature.md#conditional-design`: use a compact implementation brief when the shape is settled, otherwise architect on the open decision. For maintenance, write or reuse the transformation brief and apply `playbooks/maintenance.md#conditional-design`. Reuse settled work; planning or slicing alone does not trigger architecture or arena. Structural returns after implementation retain the caller's limits per `references/loop-control.md`.
 5. **Slice.** Cut the work into vertical slices per `principles/sequence-verifiable-units.md`:
    - Each slice is one PR that works end to end, names and passes the obligatory repo/CI checks for its scope (including the full suite when required), fits the budget (PR budget rule in `references/config.md#pr-budget`), and can be checked by hand, or better, by running it.
    - The riskiest unknown goes first, as the thinnest slice that proves it.
@@ -44,11 +44,11 @@ Copy these steps into your todo list verbatim.
 - **Assumptions**: <important claim, source or evidence, and dependent slices>
 - **Invariants**: <contracts and behavior the slices must preserve>
 ## Success criteria
-- C1: <verbatim ticket item, or observable behavior>. Covered by slice <n>, verified by <case or real run>.
+- C1 (`required`): <verbatim ticket item, or observable behavior>. Covered by slice <n>, verified by <case or real run>. Extra criteria/checks are classified per `bricks/verify.md#delivery-gate`.
 ## Decisions
 - <decision> (by: user | agent). <why>
 ## Decisions to validate
-- <decision the agent took alone after the grill cap>
+- <still-open human decision and blocked dependent slices; authorized agent choices belong under Decisions>
 
 ## Slice <n>: <verb phrase>
 - **Depends on**: <slice or none>
@@ -70,6 +70,6 @@ Copy these steps into your todo list verbatim.
 
 Before entering the selected playbook, confirm the repo identity, compare the current code with the plan's reference, and recheck the chosen slice's prerequisites and sourced assumptions. Verify required earlier slices by their behavior in the current checkout, not by a completion label. A changed HEAD alone does not invalidate the plan. For an older plan without a reference or assumptions, reconstruct only the grounding needed for this slice and record it.
 
-If drift invalidates an assumption, refresh the affected grounding, sketch or maintenance brief, and dependent slices, then apply the plan challenge to the revised portion. Maintenance keeps its flow and applies `playbooks/maintenance.md#conditional-design` only to newly opened decisions. Preserve settled decisions and unaffected slices; ask only for newly exposed product or scope choices. Do not implement a slice whose prerequisites or structural decisions remain blocked.
+If drift invalidates an assumption, refresh the affected grounding, brief/sketch, and dependent slices, then challenge the revised portion. Retain the feature or maintenance conditional design gate. For a return after implementation, first apply `references/loop-control.md`; a changed HEAD alone is not a consumed return. Preserve settled decisions and unaffected slices; ask only newly exposed human decisions. Do not implement a slice whose prerequisites or structural decisions remain blocked.
 
 Once these checks pass, run the playbook named by **Flow** (`playbooks/feature.md` or `playbooks/maintenance.md`). For an older plan without **Flow**, infer maintenance only when its scope and criteria clearly describe a refactor or chore; otherwise keep the legacy feature flow. The selected playbook treats the slice as a clear, detailed ticket. Its mapped success criteria, **You see**, and **Verify** lines are its ticket items; carry the plan's scope, decisions, invariants, and baseline when applicable into the brief.

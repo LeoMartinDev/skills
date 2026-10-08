@@ -22,7 +22,7 @@ Read each file below in full before any other tool call.
 <Absolute paths, e.g. <skill-dir>/principles/model-the-domain.md. For a role that writes code, under each path, its file's **Rule** line and **Don't** list, verbatim.>
 
 ## Success criteria
-<Checkable statements. For code: the commands that must pass.>
+<Checkable statements and commands, each classified as required or supplementary per bricks/verify.md#delivery-gate. Ticket items, requested outcome, preserved contracts, and obligatory repo/CI checks are required; absent classification means required.>
 
 ## Invariants
 <Existing behavior and contracts to preserve, with source pointers. "None identified" when appropriate; do not manufacture compatibility requirements.>

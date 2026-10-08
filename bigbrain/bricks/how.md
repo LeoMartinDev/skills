@@ -4,7 +4,7 @@ Build a working mental model of the code a task touches, or answer "how does X w
 
 ## 1. Size the question
 
-- **Simple**: one module, one function, one narrow question. One `explorer (report)` explores and explains in a single pass.
+- **Simple**: one module, one function, one narrow question. The lead may settle it with targeted source reads and a compact sourced summary; use one `explorer (report)` when the needed reading is substantial. No explorer report is required for a direct lookup.
 - **Complex**: a subsystem across several files, packages, or services. Split it into 2 to 4 distinct angles, for example the data model, the runtime flow, the entry points, and the tests. One `explorer (report)` per angle, launched in parallel.
 
 When in doubt, take the simple path.
@@ -28,7 +28,7 @@ Use `references/subagent-brief.md`, role `explorer (report)`. Spawn it on the ag
 
 ## 3. Synthesize
 
-Merge the reports yourself. When a digest is not enough, or two explorers disagree, continue that explorer with a targeted question per `references/subagent-brief.md#continuing`. Read the source yourself only to check a blocker, as in `bricks/interrogate.md` section 5, or a disagreement the follow-up left open.
+For a direct simple lookup, synthesize the inspected facts and pointers yourself. Otherwise merge the reports. When a digest is not enough, or two explorers disagree, continue that explorer with a targeted question per `references/subagent-brief.md#continuing`. Keep any source reads targeted to a decision, blocker, or remaining disagreement.
 
 For flagged questions, the lead decides whether `bricks/why.md`'s conditional gate passes before dependent decisions. Give it the collected evidence; carry its sourced constraints and consequential gaps in the mental model.
 

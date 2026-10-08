@@ -65,11 +65,11 @@ Before a write workflow, the agent checks the working tree and clarifies unresol
 
 ### Features
 
-The [feature playbook](bigbrain/playbooks/feature.md) establishes observable criteria, settles a design, and implements it. A blocked design keeps dependent implementation paused. Large or over-budget changes move to [planning](#planning).
+The [feature playbook](bigbrain/playbooks/feature.md) establishes observable criteria and implements a grounded approach. When the request, contracts, and an inspected precedent settle the shape, the lead writes a compact brief. Open consequential structural decisions use architect; an arena additionally needs viable alternatives with consequential tradeoffs that facts and conventions cannot settle. A blocked approach keeps dependent implementation paused. Large or over-budget changes move to [planning](#planning).
 
 ```mermaid
 flowchart TD
-    H["Understand code and criteria"] --> A["Design with architect"]
+    H["Understand code and criteria"] --> A["Compact brief or architect when needed"]
     A --> Q{"Design settled?"}
     Q -->|Yes| I["Implement"]
     Q -->|No| B["Return blockers"]
@@ -142,11 +142,11 @@ flowchart TD
 
 ### Code explanations
 
-The [how brick](bigbrain/bricks/how.md) answers how code works or where something belongs. It uses one explorer for a narrow question, or independent angles for a wider subsystem, then synthesizes sourced findings.
+The [how brick](bigbrain/bricks/how.md) answers how code works or where something belongs. The lead may settle a narrow question with targeted reads; substantial reading uses an explorer, and a wider subsystem uses independent exploration angles. Findings remain sourced.
 
 ```mermaid
 flowchart TD
-    Q{"Question size?"} -->|Narrow| E["One explorer"]
+    Q{"Question size?"} -->|Narrow| E["Targeted lookup or one explorer"]
     Q -->|Wide| P["Parallel exploration angles"]
     E --> S["Synthesize source-backed findings"]
     P --> S
@@ -187,10 +187,10 @@ flowchart TD
     Q --> A["Use answers and looked-up facts"]
     A --> M{"More decisions within the caps?"}
     M -->|Yes| Q
-    M -->|No| O["Recap decisions and gaps; confirm; stop"]
+    M -->|No| O["Recap decisions and gaps; stop"]
 ```
 
-The direct route suggests a next step without starting it. When called by a playbook, the recap returns to that workflow; unresolved human choices keep dependent work paused.
+The direct route suggests a next step without starting it. When called by a playbook, the recap returns to that workflow; unresolved human choices keep dependent work paused. Authorized scope and reversible structural decisions need no recap confirmation or repeated go solely because an API or persisted shape changes.
 
 ### PR watch
 
@@ -224,7 +224,7 @@ flowchart TD
     E --> F["Continue the saved phase and flow"]
 ```
 
-A saved watch resumes its watch phase, retaining its limits. It does not open another PR or restart a completed design.
+A saved watch resumes its watch phase, retaining its limits. It does not open another PR or restart a completed design. [Loop control](bigbrain/references/loop-control.md) also bounds structural returns after implementation and bug reproduction: `loop.max-replans` and `repro.max-rounds` default to three, with reproduction counting its first pass. Counters and attempt evidence survive resume and workflow transitions; a repeated blocker without new discriminating evidence stops the dependent loop before its numeric limit.
 
 ### Setup
 
@@ -254,7 +254,7 @@ flowchart TD
     L -->|No valid result within the limit| B["Stop and report blockers"]
 ```
 
-Verification runs obligatory repo/CI checks, tests, and a real run through the affected entry point when feasible. A unique isolated worktree can prove the result against the base without changing the user's checkout. Unavailable or inconclusive checks stay explicit. Repairs need fresh review when scope or design changes materially.
+Verification runs obligatory repo/CI checks, tests, and a real run through the affected entry point when feasible. A unique isolated worktree can prove the result against the base without changing the user's checkout. Criteria and checks are classified before implementation: requested outcomes, ticket items, preserved contracts, and obligatory checks are required; extras may be supplementary. Missing classifications mean required. Required failed, inconclusive, absent, or stale proof blocks completion and delivery; supplementary gaps stay explicit. Configuring draft PRs does not waive the [delivery gate](bigbrain/bricks/verify.md#delivery-gate). An unfinished draft needs explicit authorization for that partial delivery, within repo/runtime rules, and remains incomplete. Repairs need fresh review when scope or design changes materially.
 
 ### Delivery and stacked branches
 
@@ -289,7 +289,7 @@ flowchart TD
     W -->|No| S["Report; stop"]
 ```
 
-An unresolved reference, failing required proof, or exceeded budget blocks delivery. `finish=stop` never starts a watch. A merged stack parent is handled according to publication state and repo policy before evidence is refreshed. The skill never merges PRs.
+An unresolved reference, required proof without a current PASS, or exceeded budget blocks normal delivery. The explicitly authorized unfinished-draft exception remains incomplete and skips post-ship watch. `finish=stop` never starts a watch. A merged stack parent is handled according to publication state and repo policy before evidence is refreshed. The skill never merges PRs.
 
 ## Preferences
 

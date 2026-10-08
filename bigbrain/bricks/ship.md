@@ -35,13 +35,13 @@ Before pushing, refresh the remote head and effective base. For a stack, check t
 
 After a late head/base mutation, checkpoint the new reference and return to the caller for affected static checks and proofs via `bricks/verify.md`, plus review for material changes. Preserve verification counters and budget; push only after affected evidence is fresh. Keep the source snapshot unchanged until observation ends and confirm the remote reference still matches before delivery.
 
-Read `finish` from configuration. Measure `git diff --shortstat <baseCommit>...<headCommit>`. Over budget, do not push: apply `references/config.md#pr-budget`.
+Apply `bricks/verify.md#delivery-gate` to the current reference before any push or PR update: required inconclusive, missing, stale, or failed proof blocks normal delivery. `finish` and disclosure of gaps never waive it. For the gate's explicitly authorized unfinished draft, use `draft-pr` even if configured `finish=pr`, retain incomplete/blocked status and all gaps, and skip post-ship watch. Otherwise read `finish` from configuration. In both cases measure `git diff --shortstat <baseCommit>...<headCommit>`; over budget, do not push, per `references/config.md#pr-budget`.
 
 - `stop`: leave the commits on the branch, do not push, and report.
 - `pr`: push, then open a ready PR.
 - `draft-pr`: push, then open a draft PR.
 
-Create with `gh pr create --base <baseBranch>` or update with `gh pr edit --base <baseBranch>` (native tools use the same explicit target). Confirm the PR's actual source/head branch, SHA, and base match the verified reference; checkpoint them and attach every created PR when supported. Never merge. When `watch.after-ship` is true, run `bricks/pr-watch.md` after opening or updating the PR; otherwise stop monitoring here. Post the URL and watch result. `finish=stop` never starts a watch.
+Create with `gh pr create --base <baseBranch>` or update with `gh pr edit --base <baseBranch>` (native tools use the same explicit target). Confirm the PR's actual source/head branch, SHA, and base match the examined reference; checkpoint them and attach every created PR when supported. Never merge. When `watch.after-ship` is true and this is not an unfinished-draft exception, run `bricks/pr-watch.md` after opening or updating the PR; otherwise stop monitoring here. Post the URL and watch result or incomplete status. `finish=stop` never starts a watch.
 
 ## PR body
 

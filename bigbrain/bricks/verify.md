@@ -7,7 +7,7 @@ Prove the change works on the real artifact. A `verifier` subagent does it, fres
 Use `references/subagent-brief.md`, role `verifier`, with the principle file `prove-it-works`. Include:
 
 - the goal, as observable behavior or a concrete maintenance outcome;
-- the success criteria from the implementer's brief;
+- the success criteria and check classifications from the implementer's brief, per Delivery gate below;
 - the invariants from grounding/design, with source pointers; verify preservation independently of implementation claims;
 - the ticket items, verbatim, per the Ticket items rule in `SKILL.md`;
 - the branch or worktree path and change reference per `references/run-state.md#change-reference`;
@@ -30,7 +30,7 @@ The verifier fixes nothing; temporary proof writes and a unique isolated base wo
 
 At most 30 lines:
 
-- A verdict per check, ticket item, and relevant invariant: `PASS`, `FAIL`, or `INCONCLUSIVE`, with the exact command and tested commit.
+- A verdict per check, ticket item, and relevant invariant: `required` or `supplementary`, then `PASS`, `FAIL`, or `INCONCLUSIVE`, with the exact command and tested change reference.
 - Verbatim output, trimmed to the lines that prove the verdict.
 - On `FAIL`: counterexamples (input, expected, actual), returned with the verdicts to the caller.
 - `unverified: <what> because <why>` for anything that could not run.
@@ -39,7 +39,15 @@ At most 30 lines:
 
 The caller owns repairs: wait for verification and any concurrent review on the fixed change reference, then send counterexamples and accepted findings in one batch through `bricks/implement.md` (see `references/subagent-brief.md#continuing`). The verifier returns its report and never triggers repairs. The caller charges each repair batch once to the flow's `verify.max-rounds` counter, checkpoints the new head, and requests re-verification; request a fresh review only for material scope or design changes.
 
+If a repair reopens the cause, grounding, design, or transformation approach, also apply `references/loop-control.md` before that return. Neither counter resets the other. A required `INCONCLUSIVE` calls for a targeted evidence probe or an explicit blocker, not a speculative code repair; no check retry escapes the stagnation rule there.
+
 A re-verification checks the fix round and its affected behaviors and invariants. Continue the same verifier, or give a fresh one the previous report and proof script paths. It reruns its proof scripts, adds a case per counterexample and applied finding, reruns covering tests, and static checks on the changed package, plus any obligatory checks required on the new head. Earlier verdicts remain evidence only for their recorded commit and scope; shared code, wiring, base, or design changes require affected checks to rerun. Preserve the single counter on resume. Out of rounds before shipping: the caller may have the implementer restore a previously passing result only if it still meets every required criterion, then verify that result before shipping and list unapplied optional fixes. Otherwise stop. After a PR is pushed, leave failed repairs unpushed and report the blocker; never rewrite pushed history to restore a checkpoint.
+
+## Delivery gate
+
+- Classify criteria and planned checks in the brief before implementation. Ticket items, the requested outcome, preserved contracts, and obligatory repo/CI checks are `required`; extra exploratory checks may be `supplementary`. Missing classifications default to required. Cost or unavailable tooling does not downgrade a requirement. A supplemental check revealing a violated required behavior or contract creates a required failure.
+- A flow is complete, and ship may deliver, only when every required criterion and check has `PASS` evidence valid for the current change reference and scope, with no unresolved required review finding. `FAIL`, `INCONCLUSIVE`, absent evidence, or stale evidence on a required item blocks completion and delivery. Recording `unverified` is disclosure, not a waiver. Supplementary gaps remain explicit and do not block by themselves.
+- On a required gap, preserve local work and report `blocked` with the missing proof and next action. `finish=pr` or `draft-pr` does not waive this gate. Publishing an unfinished change as a draft requires explicit user authorization for that partial delivery, allowed by repo/runtime rules; it remains incomplete with every gap visible. Never publish a ready PR or push failed watch repairs on that exception. Only an authorized scope decision can change a required criterion; record the original item, decision, and residual risk.
 
 ## Rules
 

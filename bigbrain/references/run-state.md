@@ -45,8 +45,10 @@ Use this small schema, omitting irrelevant fields:
   "criteria": [],
   "invariants": [],
   "decisions": [],
-  "artifacts": {"grounding": "path", "sketch": "path", "transformation": "path", "baseline": "path"},
+  "artifacts": {"grounding": "path", "sketch": "path", "transformation": "path", "baseline": "path", "loop": "path"},
   "verifyRound": 0,
+  "replanCount": 0,
+  "reproRound": 0,
   "reviewCommit": null,
   "lastPassingCommit": null,
   "evidence": [],
@@ -59,16 +61,16 @@ Use this small schema, omitting irrelevant fields:
 }
 ```
 
-Evidence names the check, verdict, tested change reference, command, scope, and output artifact or compact result. Findings have stable IDs, source, disposition, reason, and any fix commit. Decisions record the user's instruction and its scope, but a checkpoint never grants new authorization. Preserve the grounding, sketch when present, maintenance brief and baseline when relevant, and proof artifacts needed for resume in the run directory or durable harness store. Missing temporary reports are a grounding gap, not evidence.
+Criteria and evidence carry `required` or `supplementary` per `bricks/verify.md#delivery-gate`; absent classification means required. Evidence names the check, verdict, tested change reference, command, scope, and output artifact or compact result. Findings have stable IDs, source, disposition, reason, and any fix commit. Decisions record the user's instruction and its scope, but a checkpoint never grants new authorization. Preserve grounding, sketches/briefs, baselines, loop attempts, and proof artifacts needed for resume. Missing temporary reports are a grounding gap, not evidence.
 
 ## Checkpoints
 
-Save after grounding and design, each returned implementation or repair batch, verification and review, PR creation or push, and each actionable watch event. Save before yielding or ending a bounded watch. Do not serialize every tool call. Keep counters across resumption; `reviewCommit` records what was reviewed, not a timeless `reviewDone` flag. Save `waiting` at a deadline, `blocked` for a concrete blocker, and `done` only when the flow's goal is achieved or the PR is closed; include the next action on every unfinished exit.
+Save after grounding and design, each returned implementation or repair batch, verification and review, PR creation or push, and each actionable watch event; also before structural returns and reproduction passes per `references/loop-control.md`. Save before yielding or ending a bounded watch. Do not serialize every tool call. Keep counters across resumption; `reviewCommit` records what was reviewed, not a timeless `reviewDone` flag. Save `waiting` at a deadline, `blocked` for a concrete blocker, and `done` only when the flow's goal is achieved or the PR is closed; include the next action on every unfinished exit.
 
 ## Resume
 
 Route `/bigbrain resume <run-id or state-path>` here. For a run ID, look in `~/.agents/runs/bigbrain/<repo>/`; an explicit state path also works. Keep a resumed run in its existing directory. Load that run, confirm the repo identity and checkout exist, inspect the current branch, HEAD, uncommitted changes, PR state when present, and recover needed artifacts. Never overwrite unrelated changes or switch the user's checkout silently. Report a mismatch that prevents safe progress.
 
-Check a checkpoint's claims against reality before continuing. A PR's current head and target outrank the saved reference; reconstruct a missing `baseBranch` from current reality before using older state. Evidence only proves the reference and scope actually checked; never reuse wrong-base evidence. After HEAD, base, wiring, or relevant files change, rerun affected proofs and static checks; old verdicts remain history. Repairs retain the flow's verification counter per `bricks/verify.md`; material changes require a fresh review. Restore the flow's criteria and invariants before spawning any child.
+Check a checkpoint's claims against reality before continuing. A PR's current head and target outrank the saved reference; reconstruct a missing `baseBranch` from current reality before using older state. Evidence only proves the reference and scope actually checked; never reuse wrong-base evidence. After HEAD, base, wiring, or relevant files change, rerun affected proofs and static checks; old verdicts remain history. Restore criteria, invariants, verification counters, and the loop counters/attempts per `references/loop-control.md` before spawning any child; material changes require a fresh review. Missing criterion/check classifications default to required, never to a delivery waiver.
 
 Resume the named playbook at the next justified step. When its saved phase is post-ship watch, resume `bricks/pr-watch.md` directly instead of opening another PR. Reconstruct missing evidence rather than inventing it. A persisted deadline that expired stops the watch with its current blockers; an explicit new watch run may get a new budget. Completion stores `done` and the final artifact or PR; it does not turn task details into learned memory.
