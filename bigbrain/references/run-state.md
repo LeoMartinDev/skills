@@ -8,6 +8,16 @@ Use the adapter's run-state tool when present. Otherwise keep a JSON checkpoint 
 
 Create state only for feature, bugfix, maintenance, plan, or watch work that spans phases. A small factual answer or setup needs no run. Never write user secrets, raw private logs, or entire code files into state.
 
+## Working artifacts
+
+Keep scratch reports, briefs, command output, and other temporary working files outside every project checkout. Never create `.tmp-bigbrain` or another scratch directory in the repo, even if ignored by Git. This does not relocate requested deliverables such as a saved plan or project documentation.
+
+Use a unique per-task directory under the system temporary directory (for example, `mktemp -d "${TMPDIR:-/tmp}/bigbrain.XXXXXX"`). The lead gives each subagent an explicit absolute output path there. If temporary storage is unavailable, use another writable location outside the repo or return a compact result in the conversation; do not fall back to the checkout.
+
+Before checkpointing or yielding an unfinished run, preserve reports and proof artifacts needed for decisions, verification, or resume in the run directory or durable harness store, and record their durable locations in state. On completion, preserve the evidence supporting the final result there too. If durable storage is unavailable, keep a compact result in the conversation and disclose the resume limitation.
+
+After required evidence is preserved and no subagent still uses the scratch files, remove the temporary directory created for this task. Preserve the run directory for resume and inspection; never clean up another task's files.
+
 ## Fields
 
 Use this small schema, omitting irrelevant fields:

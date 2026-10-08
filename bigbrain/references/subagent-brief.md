@@ -41,6 +41,7 @@ Never paste whole files or long diffs. The lead reads the diff itself if needed.
 ## Rules
 
 - Give absolute paths to the skill files the subagent must read, since its working directory is the repo.
+- For file reports, name the absolute output path outside the repo in Scope's allowed writes, per `references/run-state.md#working-artifacts`. The lead owns evidence preservation and scratch cleanup.
 - Inline principle text only for the roles that write code (`implementer`): a fast code model may never open the files. This is skill text, not code, so "Paths, not pasted code" does not apply. Other roles get paths only.
 - An `explorer` runs in one of two cases, each mapped to an agent in section 1 of the harness file. An explorer (report), as in `bricks/how.md` or for a bugfix hypothesis, writes its report to a file and runs shell commands such as `git log`. An explorer (lookup) answers a quick factual question from files or the web, and writes nothing: a fact for the grill or grounding.
 - Each check runs once per round. An implementer's success criteria name the narrow checks: the tests covering the changed files after each commit, and the package typecheck after the last one. The full suite, lint, and any wider check run in `bricks/verify.md` only.
