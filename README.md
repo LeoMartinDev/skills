@@ -40,18 +40,18 @@ Write a request after `/bigbrain`. You can also pass a GitHub issue URL, a Notio
 
 | What you want | Example |
 |---|---|
-| Build a feature | `/bigbrain add a CSV export to the invoices list` |
-| Fix a bug | `/bigbrain the dashboard total is off by one cent` |
-| Refactor or simplify code | `/bigbrain simplify invoice calculation while preserving its behavior` |
-| Handle a chore | `/bigbrain update the lint configuration to the repo's new rules` |
-| Plan a larger change | `/bigbrain plan the migration to the new numbering` |
-| Implement part of a plan | `/bigbrain implement slice 2 of plans/numbering.md` |
-| Understand code | `/bigbrain how does invoice numbering work?` |
-| Investigate rationale | `/bigbrain why does invoice numbering retry at most three times?` |
-| Review changes | `/bigbrain review this branch` |
-| Challenge an idea | `/bigbrain grill my idea: cache VAT rates per org` |
-| Watch a pull request | `/bigbrain watch-pr 123` |
-| Continue saved work | `/bigbrain resume <run-id or state-path>` |
+| [Build a feature](#features) | `/bigbrain add a CSV export to the invoices list` |
+| [Fix a bug](#bugfixes) | `/bigbrain the dashboard total is off by one cent` |
+| [Refactor or simplify code](#maintenance-refactors-and-chores) | `/bigbrain simplify invoice calculation while preserving its behavior` |
+| [Handle a chore](#maintenance-refactors-and-chores) | `/bigbrain update the lint configuration to the repo's new rules` |
+| [Plan a larger change](#planning) | `/bigbrain plan the migration to the new numbering` |
+| [Implement part of a plan](#saved-plan-slices) | `/bigbrain implement slice 2 of plans/numbering.md` |
+| [Understand code](#code-explanations) | `/bigbrain how does invoice numbering work?` |
+| [Investigate rationale](#why-investigations) | `/bigbrain why does invoice numbering retry at most three times?` |
+| [Review changes](#code-reviews) | `/bigbrain review this branch` |
+| [Challenge an idea](#idea-discussions) | `/bigbrain grill my idea: cache VAT rates per org` |
+| [Watch a pull request](#pr-watch) | `/bigbrain watch-pr 123` |
+| [Continue saved work](#resume) | `/bigbrain resume <run-id or state-path>` |
 
 Plans, explanations, reviews, and idea discussions stop at their result. A PR watch checks CI and reviews, repairs verified findings, and stops when ready or when its limits are reached. The skill never merges pull requests.
 
@@ -59,27 +59,237 @@ The [why investigation](bigbrain/bricks/why.md) separates the historical reason 
 
 ## How it works
 
-A feature follows this flow:
+The lead applies the selected playbook, owns phase transitions and repair batches, and keeps decisions and short summaries in its context. Bricks can compose bounded local work, then return results or blockers. Subagents handle exploration, implementation, verification, and review.
 
-```text
-Understand → Design → Implement → Verify + Review → Open a PR
+Before a write workflow, the agent checks the working tree and clarifies unresolved goals or scope. Product decisions that only the user can make keep dependent work paused until settled. A consequential unknown rationale can trigger `why` during grounding, design, or a targeted return from implementation; still-valid work is reused.
+
+### Features
+
+The [feature playbook](bigbrain/playbooks/feature.md) establishes observable criteria, settles a design, and implements it. A blocked design keeps dependent implementation paused. Large or over-budget changes move to [planning](#planning).
+
+```mermaid
+flowchart TD
+    H["Understand code and criteria"] --> A["Design with architect"]
+    A --> Q{"Design settled?"}
+    Q -->|Yes| I["Implement"]
+    Q -->|No| B["Return blockers"]
+    I --> V["Verify + review"]
+    V --> S["Delivery after required repairs"]
 ```
 
-For a bug, the agent first reproduces the failure and identifies its cause. Large changes become a plan of smaller PRs.
+### Bugfixes
 
-Refactors and chores use the [maintenance workflow](bigbrain/playbooks/maintenance.md):
+The [bugfix playbook](bigbrain/playbooks/bugfix.md) requires a faithful repro before fixing anything. It checks competing hypotheses against evidence; a fix crossing a function or module boundary uses architect first. If two fixes based on the same hypothesis fail, it reopens the cause investigation.
 
-```text
-Understand + Baseline → Bound the change → Implement → Verify + Review → Open a PR
+```mermaid
+flowchart TD
+    H["Understand the symptom"] --> R{"Failure reproduced?"}
+    R -->|No, after investigation| B["Stop with remaining hypotheses"]
+    R -->|Yes| C["Establish the root cause"]
+    C --> I["Fix; design first when needed"]
+    I --> V["Verify original repro + review"]
+    V --> S["Delivery after required repairs"]
 ```
 
-Maintenance implements directly by default. It calls the architect only for open decisions about responsibilities, state ownership, or dependencies necessary to the requested goal. The design arena runs only when multiple viable structures have consequential tradeoffs that the request, conventions, and grounded facts cannot settle. Size alone triggers neither; plans and repairs keep the same rules and reuse valid work.
+### Maintenance: refactors and chores
 
-Refactors preserve behavior and contracts; chores verify the requested operational result and preserve unrelated contracts. A needed behavior or contract change outside the request goes back to the user as a scope decision. Applicable engineering principles constrain implementation, candidate designs, judging, and the final synthesis.
+The [maintenance playbook](bigbrain/playbooks/maintenance.md) records a baseline and the contracts to preserve. Refactors preserve behavior; chores verify the requested operational result and preserve unrelated contracts. A required change outside that scope returns to the user.
 
-The lead keeps decisions and short summaries in its context. Subagents handle the detailed work, and a fresh verifier checks the result independently. Verification includes relevant checks, tests, and a real run through the user entry point; anything it cannot check is reported explicitly.
+```mermaid
+flowchart TD
+    H["Understand + baseline"] --> B["Bound the transformation"]
+    B --> Q{"Open structural decision<br/>necessary for the goal?"}
+    Q -->|Yes| A["Architect"]
+    Q -->|No| I["Implement"]
+    A -->|Settled design| I
+    A -->|Unresolved| X["Return blockers"]
+    I --> V["Compare behavior + review"]
+    V --> S["Delivery after required repairs"]
+```
 
-If no result passes verification within the repair limit, the agent stops and explains the blocker.
+Responsibilities, state ownership, and dependencies can trigger architecture. Size or crossing module boundaries alone cannot. The design arena runs only for consequential alternatives that grounded facts, conventions, and the request cannot settle; candidates and the final synthesis must satisfy the same constraints. Plans and repairs retain these rules.
+
+### Planning
+
+The [plan playbook](bigbrain/playbooks/plan.md) produces independently verifiable slices, their prerequisites, and obligatory repo/CI checks. It preserves feature or maintenance mode and reuses existing grounding. A reviewer challenges the plan before it is saved; unresolved blockers remain explicit.
+
+```mermaid
+flowchart TD
+    Q{"Plan needed?"} -->|No| N["Offer the direct workflow; stop"]
+    Q -->|Yes| H["Clarify + understand"]
+    H --> A["Feature design or maintenance brief"]
+    A --> S["Define verifiable slices"]
+    S --> R["Review and revise the plan"]
+    R --> O["Save or present; stop"]
+```
+
+Planning stops at the plan. A small change with an obvious, low-risk approach needs no plan; a consequential unknown can justify even a one-slice plan.
+
+### Saved plan slices
+
+[Executing a slice](bigbrain/playbooks/plan.md#execute-a-saved-slice) first checks the current code, prerequisites, and assumptions. Earlier slices must work in the current checkout; a completion label is insufficient. Refresh only affected parts of a stale plan and challenge the revision before proceeding.
+
+```mermaid
+flowchart TD
+    L["Load the selected slice"] --> C["Check current prerequisites"]
+    C --> Q{"Ready to execute?"}
+    Q -->|Yes| F["Run its feature or maintenance flow"]
+    Q -->|No| R["Refresh affected plan and review it"]
+    R --> U{"Blockers settled?"}
+    U -->|Yes| F
+    U -->|No| B["Keep dependent work blocked"]
+```
+
+### Code explanations
+
+The [how brick](bigbrain/bricks/how.md) answers how code works or where something belongs. It uses one explorer for a narrow question, or independent angles for a wider subsystem, then synthesizes sourced findings.
+
+```mermaid
+flowchart TD
+    Q{"Question size?"} -->|Narrow| E["One explorer"]
+    Q -->|Wide| P["Parallel exploration angles"]
+    E --> S["Synthesize source-backed findings"]
+    P --> S
+    S --> O["Explain or recommend placement; stop"]
+```
+
+### Why investigations
+
+The [why brick](bigbrain/bricks/why.md) separates historical rationale from present necessity. Missing rationale remains unknown and never authorizes removal. An explicit why request ends at the answer; inside a change workflow, the findings return as sourced constraints and gaps.
+
+```mermaid
+flowchart LR
+    C["Current behavior"] --> H["Targeted history and related sources"]
+    H --> N["Check present necessity"]
+    N --> O["Facts, inferences, unknowns"]
+```
+
+### Code reviews
+
+The [review brick](bigbrain/bricks/interrogate.md) anchors the PR, branch, or diff to its actual head/base and matching source. Reviewers examine distinct angles. The lead ranks findings by severity and evidence, checks factual claims, and records each disposition.
+
+```mermaid
+flowchart LR
+    A["Anchor the change"] --> R["Parallel reviewers"]
+    R --> S["Assess and rank findings"]
+    S --> O["Present the verdict; stop"]
+```
+
+A direct review applies no changes unless requested. Inside a write workflow, its findings return to the caller's shared repair batch.
+
+### Idea discussions
+
+The [grill brick](bigbrain/bricks/grill.md) challenges the open decision frontier, looks up accessible facts, and asks the user for choices. A question or round limit never grants approval for an exclusively human choice.
+
+```mermaid
+flowchart TD
+    F["Map open decisions"] --> Q["Ask the current frontier"]
+    Q --> A["Use answers and looked-up facts"]
+    A --> M{"More decisions within the caps?"}
+    M -->|Yes| Q
+    M -->|No| O["Recap decisions and gaps; confirm; stop"]
+```
+
+The direct route suggests a next step without starting it. When called by a playbook, the recap returns to that workflow; unresolved human choices keep dependent work paused.
+
+### PR watch
+
+The [watch brick](bigbrain/bricks/pr-watch.md) owns a bounded loop. The [shell helper](bigbrain/references/pr-watch-script.md) collects one read-only observation; the agent investigates it, verifies findings, and owns repairs, waits, pushes, and saved limits.
+
+```mermaid
+flowchart TD
+    O["Observe current head, CI and reviews"] --> Q{"State and action?"}
+    Q -->|Verified repair needed| I["Batch repairs"]
+    I --> V["Verify; fresh review when required"]
+    V -->|Passing, fresh, within budget| P["Push normally"]
+    P --> O
+    Q -->|Pending or unknown| W["Wait or investigate within limits"]
+    W --> O
+    Q -->|Ready| R["Report current readiness; stop"]
+    Q -->|Human action, closed, or limit reached| S["Report state and blockers; stop"]
+```
+
+Failed or stale repairs are not pushed. A watch retains its deadline and counters on resume, reports meaningful changes, and never merges the PR. Draft status or missing approvals remains a human action; readiness is a current observation.
+
+### Resume
+
+[Resume](bigbrain/references/run-state.md#resume) restores the saved flow, criteria, counters, and evidence. Actual repo and PR state outrank the checkpoint; affected proofs must be refreshed after a relevant change.
+
+```mermaid
+flowchart TD
+    L["Load checkpoint and artifacts"] --> C["Compare with current repo and PR"]
+    C --> Q{"Safe to continue?"}
+    Q -->|No| B["Report the mismatch or blocker"]
+    Q -->|Yes| E["Refresh affected evidence"]
+    E --> F["Continue the saved phase and flow"]
+```
+
+A saved watch resumes its watch phase, retaining its limits. It does not open another PR or restart a completed design.
+
+### Setup
+
+The [setup playbook](bigbrain/playbooks/setup.md) configures supported model/effort choices and offers an optional PR size limit. Confirmed choices are stored in the skill configuration and the harness-native configuration when supported.
+
+```mermaid
+flowchart LR
+    A["Available capabilities"] --> P["Propose supported choices"]
+    P --> C["User confirms preferences"]
+    C --> S["Save choices and report"]
+```
+
+### Shared verification and repair
+
+Feature, bugfix, and maintenance launch verification and review on the same fixed source/head/base. The lead waits for both reports before changing that snapshot, then sends counterexamples and accepted findings in one repair batch. Each batch costs one verification round, retained on resume.
+
+```mermaid
+flowchart TD
+    H["Fixed change reference"] --> V["Independent verifier"]
+    H --> R["Reviewers"]
+    V --> L["Lead collects reports and decides"]
+    R --> L
+    L -->|Repair needed; rounds remain| I["One repair batch"]
+    I --> N["Reverify the affected behavior"]
+    N --> L
+    L -->|Passing; no required fixes| S["Delivery"]
+    L -->|No valid result within the limit| B["Stop and report blockers"]
+```
+
+Verification runs obligatory repo/CI checks, tests, and a real run through the affected entry point when feasible. A unique isolated worktree can prove the result against the base without changing the user's checkout. Unavailable or inconclusive checks stay explicit. Repairs need fresh review when scope or design changes materially.
+
+### Delivery and stacked branches
+
+[Ship](bigbrain/bricks/ship.md) uses the same effective base/head/source for the diff, PR budget, proofs, review, and PR target. A new child branch starts from its resolved parent, and only the child's changes count against that parent.
+
+```mermaid
+flowchart LR
+    M["main"] --> A["Parent branch"]
+    A --> B["Child branch"]
+    B -. "Child PR targets parent" .-> A
+```
+
+Before delivery, refresh the remote head and base. A late merge, rebase, or target change requires affected proofs and static checks again, plus review for material changes. The designated implementer owns branch/commit mutations; the lead pushes the returned commits and creates or updates the PR with an explicit target. Never rewrite pushed history or force-push.
+
+```mermaid
+flowchart TD
+    R["Refresh head and effective base"] --> Q{"Reference changed?"}
+    Q -->|Yes| V["Refresh affected proofs and review"]
+    V --> B["Confirm fresh evidence and budget"]
+    Q -->|No| B
+```
+
+Once the evidence and budget permit delivery, the configured finish determines the outcome:
+
+```mermaid
+flowchart TD
+    F{"Configured finish?"}
+    F -->|stop| L["Leave local commits; report"]
+    F -->|pr or draft-pr| P["Push and create or update the PR"]
+    P --> W{"Watch after ship enabled?"}
+    W -->|Yes| O["Run PR watch"]
+    W -->|No| S["Report; stop"]
+```
+
+An unresolved reference, failing required proof, or exceeded budget blocks delivery. `finish=stop` never starts a watch. A merged stack parent is handled according to publication state and repo policy before evidence is refreshed. The skill never merges PRs.
 
 ## Preferences
 
