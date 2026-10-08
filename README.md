@@ -76,7 +76,7 @@ Refactors preserve behavior and contracts; chores verify the requested operation
 
 The lead keeps decisions and short summaries in its context. Subagents handle the detailed work, and a fresh verifier checks the result independently. Verification includes relevant checks, tests, and a real run through the user entry point; anything it cannot check is reported explicitly.
 
-PRs default to a limit of 700 changed lines, including tests, with a 5% tolerance. If no result passes verification within the repair limit, the agent stops and explains the blocker.
+If no result passes verification within the repair limit, the agent stops and explains the blocker.
 
 ## Preferences
 

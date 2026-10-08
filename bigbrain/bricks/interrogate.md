@@ -35,5 +35,5 @@ A finding with no concrete failure scenario is a nit at most.
 
 Merge the duplicates. Rank findings raised by both reviewers first. Check each blocker yourself against the code, with one targeted read, before accepting it. Give the same read to any finding you would reject on a factual claim (already handled, out of scope, fixed by an existing contract) before rejecting it. Then accept or reject each finding with a one-line reason.
 
-- **In a playbook**: send the accepted findings to the implementer, then verify again. Record each rejected blocker per the Record rule in `SKILL.md`. A `should` whose fix adds more than about 30 lines needs a failure scenario in normal use; otherwise do not apply it, and list it as unapplied in the PR body. The fixes you send stay within the Budget rule in `SKILL.md`.
+- **In a playbook**: send the accepted findings to the implementer, then verify again. Record each rejected blocker per the Record rule in `SKILL.md`. A `should` whose fix adds more than about 30 lines needs a failure scenario in normal use; otherwise do not apply it, and list it as unapplied in the PR body. The fixes you send stay within the PR budget rule in `references/config.md#pr-budget`.
 - **In the review route**: present the verdict: accepted findings, most severe first, then rejected findings with their reasons. Apply nothing unless the user asks.

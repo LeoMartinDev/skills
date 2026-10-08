@@ -15,7 +15,7 @@ Every delegation uses this template. A subagent starts with no context: the brie
 ## Scope
 - Allowed to write: <paths or globs, or "nothing, read-only">.
 - Out of scope: <what not to touch or decide>.
-- Budget (roles that write code): <the budget from the Budget rule in `SKILL.md`, minus the branch's current diff, tests included>. A stop condition, not a target: when the next change would cross it, stop and report the measure. Never compact, reflow, or reindent code to fit, and extend existing code and tests in place rather than rewriting a block you only need to extend.
+- Budget (roles that write code): <the remaining budget from `references/config.md#pr-budget`, tests included, or "no size limit" when no cap applies>. With a cap, it is a stop condition, not a target: when the next change would cross it, stop and report the measure. Never compact, reflow, or reindent code to fit, and extend existing code and tests in place rather than rewriting a block you only need to extend.
 
 ## Principles to read first
 Read each file below in full before any other tool call.

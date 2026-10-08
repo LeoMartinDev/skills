@@ -20,7 +20,7 @@ When the user states a lasting execution preference ("from now on", "remember", 
 | `finish` | `pr`, `draft-pr`, `stop` | `pr` |
 | `arena.design` | `auto`, `never` | `auto` |
 | `arena.candidates` | integer >= 2 | `2` |
-| `pr.max-lines` | changed lines per PR, tests included | `700` |
+| `pr.max-lines` | `none` or a positive integer of changed lines per PR, tests included | `none` |
 | `grill.max-rounds` | `feature=<n> bugfix=<n> maintenance=<n> plan=<n> grill=<n>` | `feature=3 bugfix=3 maintenance=3 plan=5 grill=5` |
 | `grill.max-questions` | same shape, per round | `feature=4 bugfix=4 maintenance=4 plan=8 grill=4` |
 | `verify.max-rounds` | integer | `3` |
@@ -31,10 +31,16 @@ When the user states a lasting execution preference ("from now on", "remember", 
 | `setup.<harness>` | `done <YYYY-MM-DD>`, `later`, `never` | unset (ask) |
 | `models.<harness>` | `tier-or-role=model:effort, ...` (see below) | unset |
 
-A lower PR size cap documented in the repo (agent docs, `CONTRIBUTING.md`, a bot config) wins over `pr.max-lines`.
+A PR size cap documented in the repo (agent docs, `CONTRIBUTING.md`, a bot config) still applies when `pr.max-lines` is absent or `none`; when both define a cap, use the lower one.
 For existing grill settings without a `maintenance` entry, use its default; preserve all configured entries.
 
 `later` means ask again on the next run. A setup older than 60 days earns a one-line suggestion to rerun `/bigbrain setup` in the final reply.
+
+## PR budget
+
+With `pr.max-lines` absent or `none` and no repo cap, there is no PR size limit: skip size-budget checks and never slice solely for line count. Setup offers the user a choice between no limit and a positive integer; it never assigns a numeric cap without their choice. Preserve existing explicit settings.
+
+When a cap applies, a PR never exceeds the effective cap of changed lines plus a 5 % tolerance, tests included, measured with `git diff --shortstat <default>...HEAD`. A stricter repo rule also constrains the tolerance. Within the tolerance, ship as is: never slice for it. The budget is a stop condition, never a target: no subagent compacts, reflows, or reindents code to fit under it, and it is never a success criterion. Measure after each implementer or fix round returns. Over budget: no verify, no review, no push. Switch to `playbooks/plan.md` and slice, preserving the flow and reusing the grounding, transformation brief or sketch, and branch commits; keep the branch unpushed as a reference. A review fix that would cross the budget stays unapplied and is listed in the PR body, unless it is a blocker: then the whole change is over budget.
 
 ## Models
 

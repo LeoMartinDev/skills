@@ -11,7 +11,7 @@ Copy these steps into your todo list verbatim.
 3. **Ground.** Run `bricks/how.md`, choosing its simple or complex path for the subsystems touched. Collect the test commands and conventions, and record the repo identity and explored commit, plus relevant uncommitted changes. Write the success criteria per the Ticket items rule in `SKILL.md`: preserve explicit items verbatim, or define 2 to 6 observable behaviors for a feature; for maintenance, use the concrete cleanup or operational outcome and contracts to preserve, with the baseline per `playbooks/maintenance.md` step 3. If the code shows the work is simple and low-risk after all, stop per step 1.
 4. **Set the approach.** For a feature, run `bricks/architect.md`; its sketch is the target shape. For maintenance, write or reuse the compact transformation brief from `playbooks/maintenance.md` step 4 and apply its Conditional design gate only to open decisions necessary for the goal. Reuse a settled sketch when present; planning or slicing alone does not trigger architecture or arena.
 5. **Slice.** Cut the work into vertical slices per `principles/sequence-verifiable-units.md`:
-   - Each slice is one PR that works end to end, passes the repo's full checks, fits the budget (Budget rule in `SKILL.md`), and can be checked by hand, or better, by running it.
+   - Each slice is one PR that works end to end, passes the repo's full checks, fits the budget (PR budget rule in `references/config.md#pr-budget`), and can be checked by hand, or better, by running it.
    - The riskiest unknown goes first, as the thinnest slice that proves it.
    - A foundation slice (schema, types) comes first only when later slices cannot start without it.
    - Never slice by layer ("all the backend, then all the frontend").
