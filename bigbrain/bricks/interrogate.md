@@ -4,8 +4,8 @@ Adversarial review of a diff. Reviewers challenge the change from distinct angle
 
 ## 1. Scope
 
-- **In a playbook**: the working branch against the default branch, `git diff <default>...HEAD`.
-- **In the review route**: the PR (`gh pr diff <n>`), branch, or paths the user named.
+- **In a playbook**: the fixed change reference and task diff per `references/run-state.md#change-reference`.
+- **In the review route**: anchor the named PR, branch, or paths to the actual head and effective base per that contract. For a PR, resolve its current head/base and inspect the exact PR diff plus matching read-only source; never assume the local checkout matches. If matching source is unavailable, review only supported diff claims and report the source gap.
 
 ## 2. Intent
 
@@ -21,19 +21,19 @@ Angles:
 - **B. Simplicity**: needless layers, one-caller wrappers, dead code, workaround code, comments that fail `comment-the-why`, departures from local conventions, including a file (test, doc, config) the closest siblings do not have. Principle files `laziness-protocol`, `minimize-reader-load`, `follow-local-conventions`, and `comment-the-why`.
 - **C. Domain and tests**: domain modeling, types, boundaries, and whether the tests assert observable behavior. Principle files `model-the-domain`, `type-system-discipline`, and `test-behavior-not-implementation`.
 
-Each brief carries the intent, diff location (not the diff), criteria, grounded invariants, and angles.
+Each brief carries the intent, change reference, matching source and diff locations (not the diff), criteria, grounded invariants, and angles. Reviewers independently confirm source/head before using surrounding code.
 
 ## 4. Findings format
 
 One finding per line, at most 15 per reviewer:
 
-`<blocker|should|nit> · <path:line> · <claim> · <failure scenario: input or state, then the wrong result> · <suggested fix>`
+`<blocker|should|nit> · <path:line> · <claim> · <failure scenario: input or state, then the wrong result> · <source or command evidence at the reviewed commit> · <suggested fix>`
 
 A finding with no concrete failure scenario is a nit at most.
 
 ## 5. Synthesize
 
-Merge the duplicates. Rank findings raised by both reviewers first. Check each blocker yourself against the code, with one targeted read, before accepting it. Give the same read to any finding you would reject on a factual claim (already handled, out of scope, fixed by an existing contract) before rejecting it. Then accept or reject each finding with a one-line reason.
+Merge the duplicates. Rank by severity and evidence first; agreement strengthens a finding only where both reviewers examined the same coverage. Check each blocker yourself against matching source, with one targeted read, before accepting it. Give the same read to any finding you would reject on a factual claim (already handled, out of scope, fixed by an existing contract) before rejecting it. Then accept or reject each finding with a one-line reason; report the reviewed head/base and coverage gaps.
 
-- **In a playbook**: send the accepted findings to the implementer, then verify again. Record each rejected blocker per the Record rule in `SKILL.md`. A `should` whose fix adds more than about 30 lines needs a failure scenario in normal use; otherwise do not apply it, and list it as unapplied in the PR body. The fixes you send stay within the PR budget rule in `references/config.md#pr-budget`.
+- **In a playbook**: return findings and dispositions to the caller; it owns the repair batch and re-verification per `bricks/verify.md#rounds`. Record each rejected blocker per the Record rule in `SKILL.md`. A `should` whose fix adds more than about 30 lines needs a failure scenario in normal use; otherwise leave it unapplied and list it in the PR body. Accepted fixes stay within the PR budget rule in `references/config.md#pr-budget`.
 - **In the review route**: present the verdict: accepted findings, most severe first, then rejected findings with their reasons. Apply nothing unless the user asks.

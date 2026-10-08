@@ -5,10 +5,11 @@ Branch, commit, and deliver per the repo's conventions and the `finish` key in c
 ## Branch
 
 Feature, bugfix, and maintenance check the tree first, and create the branch only just before their first write.
+The lead resolves `references/run-state.md#change-reference`; a designated implementer owns branch, commit, integration, and history mutations. The lead owns push and PR operations, using returned commits without recommitting them.
 
 - **Unrelated uncommitted changes**: touch nothing. Stop and tell the user.
-- **On the default branch**: create a branch named per the repo's pattern.
-- **On another branch**: continue on it if the task belongs there. Otherwise, create a new branch from the up-to-date default branch.
+- **On the default branch**: create a branch named per the repo's pattern from the resolved `baseCommit`; use a resolved parent even when this checkout is on default.
+- **On another branch**: continue on it if the task belongs there. Otherwise, create a new branch from the resolved `baseCommit` of `baseBranch`; use default only when it is the intended target.
 
 ## Conventions
 
@@ -24,21 +25,23 @@ With no convention: Conventional Commits (`type(scope): subject`, imperative, no
 ## Commits
 
 - Small ordered commits, each a verifiable unit, per `principles/sequence-verifiable-units.md`. For a bugfix, the repro test comes just before the fix, as the only allowed red commit.
-- Before committing, remove debug leftovers and commented-out code. Then list the comments the branch adds (`git diff <default>...HEAD`, the added lines holding a comment) and keep only those that pass `principles/comment-the-why.md`.
+- Before committing, remove debug leftovers and commented-out code. Then list the comments the change adds (`git diff <baseCommit>...<headCommit>`, the added lines holding a comment) and keep only those that pass `principles/comment-the-why.md`.
 - Clean up local history if needed. Never rewrite pushed history.
 - Follow the harness or user rules on commit attribution.
 
 ## Finish
 
-Before pushing a branch stacked on another branch, check that its base still exists on the remote (`git ls-remote --heads origin <base>`) and that its PR is still open. If it was merged, rebase with `git rebase --onto origin/<default> <old base tip>`, rerun the tests covering the change, and target the default branch.
+Before pushing, refresh the remote head and effective base. For a stack, check the parent branch (`git ls-remote --heads origin <baseBranch>`) and its PR. If merged, target the grounded default: the implementer may rebase an entirely unpushed child with `git rebase --onto origin/<default> <old base tip>`. For a pushed child, use a normal merge per repo policy; stop if removing the parent requires rewriting pushed history. Never force-push.
 
-Read `finish` from configuration. Measure the diff with `git diff --shortstat <default>...HEAD`. Over budget, do not push: apply the PR budget rule in `references/config.md#pr-budget`.
+After a late head/base mutation, checkpoint the new reference and return to the caller for affected static checks and proofs via `bricks/verify.md`, plus review for material changes. Preserve verification counters and budget; push only after affected evidence is fresh. Keep the source snapshot unchanged until observation ends and confirm the remote reference still matches before delivery.
+
+Read `finish` from configuration. Measure `git diff --shortstat <baseCommit>...<headCommit>`. Over budget, do not push: apply `references/config.md#pr-budget`.
 
 - `stop`: leave the commits on the branch, do not push, and report.
 - `pr`: push, then open a ready PR.
 - `draft-pr`: push, then open a draft PR.
 
-Attach every created PR when the harness has a PR attachment tool, and checkpoint its URL and head per `references/run-state.md`. Never merge. When `watch.after-ship` is true, run `bricks/pr-watch.md` after opening or updating the PR (ready or draft); otherwise stop monitoring here. Post the URL and any watch result in the final reply. `finish=stop` never starts a watch.
+Create with `gh pr create --base <baseBranch>` or update with `gh pr edit --base <baseBranch>` (native tools use the same explicit target). Confirm the PR's actual source/head branch, SHA, and base match the verified reference; checkpoint them and attach every created PR when supported. Never merge. When `watch.after-ship` is true, run `bricks/pr-watch.md` after opening or updating the PR; otherwise stop monitoring here. Post the URL and watch result. `finish=stop` never starts a watch.
 
 ## PR body
 

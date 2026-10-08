@@ -8,10 +8,10 @@ Copy these steps into your todo list verbatim.
 
 1. **Size.** Select feature or maintenance from the request and routing in `SKILL.md`; preserve the caller's flow. If the request clearly fits one PR with an obvious approach and no consequential uncertainty, say that no plan is needed, offer to run that playbook directly, and stop. For one PR with a risky migration, uncertain integration, or consequential product decisions, write a compact one-slice plan using the same steps; omit empty sections.
 2. **Clarify.** Apply the clarity gate from `SKILL.md`. For a raw idea, establish who has the problem, what happens today, the desired observable outcome, and the smallest useful scope, including what is out of scope. Run `bricks/grill.md` with the plan caps only for unresolved decisions; reuse answers already settled.
-3. **Ground.** Run `bricks/how.md`, choosing its simple or complex path for the subsystems touched. Collect the test commands and conventions, and record the repo identity and explored commit, plus relevant uncommitted changes. Write the success criteria per the Ticket items rule in `SKILL.md`: preserve explicit items verbatim, or define 2 to 6 observable behaviors for a feature; for maintenance, use the concrete cleanup or operational outcome and contracts to preserve, with the baseline per `playbooks/maintenance.md` step 3. If the code shows the work is simple and low-risk after all, stop per step 1.
+3. **Ground.** Run `bricks/how.md`, choosing its simple or complex path for the subsystems touched. Collect the obligatory repo/CI check commands, their required scopes, and conventions, and record the repo identity and explored commit, plus relevant uncommitted changes. Write the success criteria per the Ticket items rule in `SKILL.md`: preserve explicit items verbatim, or define 2 to 6 observable behaviors for a feature; for maintenance, use the concrete cleanup or operational outcome and contracts to preserve, with the baseline per `playbooks/maintenance.md` step 3. If the code shows the work is simple and low-risk after all, stop per step 1.
 4. **Set the approach.** For a feature, run `bricks/architect.md`; its sketch is the target shape. For maintenance, write or reuse the compact transformation brief from `playbooks/maintenance.md` step 4 and apply its Conditional design gate only to open decisions necessary for the goal. Reuse a settled sketch when present; planning or slicing alone does not trigger architecture or arena.
 5. **Slice.** Cut the work into vertical slices per `principles/sequence-verifiable-units.md`:
-   - Each slice is one PR that works end to end, passes the repo's full checks, fits the budget (PR budget rule in `references/config.md#pr-budget`), and can be checked by hand, or better, by running it.
+   - Each slice is one PR that works end to end, names and passes the obligatory repo/CI checks for its scope (including the full suite when required), fits the budget (PR budget rule in `references/config.md#pr-budget`), and can be checked by hand, or better, by running it.
    - The riskiest unknown goes first, as the thinnest slice that proves it.
    - A foundation slice (schema, types) comes first only when later slices cannot start without it.
    - Never slice by layer ("all the backend, then all the frontend").
@@ -57,7 +57,7 @@ Copy these steps into your todo list verbatim.
 - **Files**: <paths to create, edit, or delete>
 - **Build**: <responsibilities, interfaces, and invariants; relevant existing symbols>
 - **You see**: <observable behavior, concrete simplification, or operational result>
-- **Verify**: <test command and the case it adds>, then <the real run and its expected result>
+- **Verify**: <obligatory repo/CI commands and scopes, including full suite when required>; <test command and the case it adds>; <real run and expected result>
 - **Size**: <estimated changed lines including tests, and main source of uncertainty>
 
 ## Risks

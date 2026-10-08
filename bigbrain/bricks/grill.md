@@ -1,6 +1,6 @@
 # Brick: grill
 
-Interview the user until the request is clear enough to build. Runs in the main thread: it is the only brick that talks to the user.
+Interview the user until the request is clear enough to build. Runs in the main thread and owns structured product/scope interviews. Targeted setup, review, or inaccessible-fact questions elsewhere are not grill rounds.
 
 ## Mindset
 
@@ -19,8 +19,8 @@ Work in rounds. A round asks the whole frontier at once. After the answers, reco
 
 Read `grill.max-rounds` and `grill.max-questions` in configuration, for the current flow (`feature`, `bugfix`, `maintenance`, `plan`, or `grill` for the grill route).
 
-- More frontier than `max-questions`: ask the most structural ones, decide the rest yourself, and list those decisions in the round.
-- `max-rounds` reached: stop asking. Decide what is left and flag each decision. In a plan, list them under "Decisions to validate".
+- More frontier than `max-questions`: ask the most structural ones; choose defaults only for reversible choices within authorized scope and list them in the round. Keep exclusively human choices unresolved.
+- `max-rounds` reached: stop asking. Apply the same default rule and flag each decision or unresolved choice. In a plan, list them under "Decisions to validate". A cap is no approval: pause work dependent on unresolved human choices and proceed only with independent authorized work.
 
 ## Asking
 
@@ -40,7 +40,7 @@ Without a choice tool, use this text format:
 
 ## End
 
-The session ends when the frontier is empty or a cap is reached. Recap one line per decision: the decision, then who took it (user or you).
+The session ends when the frontier is empty or a cap is reached. Recap one line per decision: the decision, then who took it (user or you); name unresolved choices explicitly. Existing authorizations persist, but silence or a cap does not settle an unresolved choice.
 
 - Called from feature, bugfix, or maintenance: present the recap. Ask once for confirmation only when you decided alone on at least one structural choice (scope, behavior, data shape), or when a cap left open decisions. In maintenance, internal restructuring within preserved contracts needs no confirmation. Otherwise continue without asking.
 - Called from plan: ask once whether the recap matches the user's understanding, then continue the plan.

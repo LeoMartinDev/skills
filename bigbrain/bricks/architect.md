@@ -1,6 +1,6 @@
 # Brick: architect
 
-Settle the shape before any code: data shape, types, signatures, and module boundaries. Produce designs, pick one, then have a fresh reviewer challenge it.
+Settle the shape before any code: data shape, types, signatures, and module boundaries. Produce designs, pick one, then have a fresh reviewer challenge it. Designers never implement production code; return a settled design or concrete blockers to the caller.
 
 ## Input
 
@@ -8,9 +8,11 @@ The goal, the mental model from `bricks/how.md`, and the user's decisions from `
 
 Before a design keeps existing data or sessions working (backward compatibility, grandfathering, a migration), establish the fact that it must: the feature is live (flag default, rollout config), or stored data already has that shape. When nothing is live, design no compatibility and record the decision.
 
+Apply `bricks/why.md`'s conditional gate before dependent choices, reusing evidence from grounding. Include its sourced constraints and gaps in the package; unknown live/data state is a gap, not proof that compatibility is unnecessary.
+
 ## 1. Produce candidate designs
 
-- **The arena gate passes** for `arena.design`: run `bricks/arena.md` with the design task. Each candidate writes one design package.
+- **The arena gate passes** for `arena.design`: run `bricks/arena.md` with the design task. It returns a viable synthesized design or blockers; blockers do not trigger the single-designer fallback below.
 - **Otherwise**: one `designer` subagent produces one design package. Say in one line that the arena was skipped, and why.
 
 Brief the designers with applicable principle files: `foundational-thinking`, `model-the-domain`, `type-system-discipline`, `boundary-discipline`, `redesign-from-first-principles`, and `exhaust-the-design-space`, plus core and task-specific principles from the brief. Maintenance commonly needs `laziness-protocol`, `follow-local-conventions`, `subtract-before-you-add`, and `minimize-reader-load`. Read them in full; do not apply principles outside their stated conditions.
@@ -39,7 +41,7 @@ Reject or revise any design with:
 - temporal decomposition, split by "what runs first" instead of by knowledge;
 - a new pattern where the codebase already has one that fits.
 
-Pick the design that hides the most complexity behind the smallest public surface, and fits the existing patterns. When two tie, pick the smaller diff. With a single package, screen it and revise it.
+Pick the design that hides the most complexity behind the smallest public surface, and fits the existing patterns. When two tie, pick the smaller diff. Screen a single package by the same rules. For blockers or unsupported major choices, allow one targeted lookup/probe and sketch revision; add no arena retry beyond its own one reframe. If still unsupported, return blockers and stop dependent work, never choose a violating sketch.
 
 ## 4. Challenge
 
@@ -49,7 +51,7 @@ The reviewer gets the sketch location, mental model, invariants, allowed paths, 
 
 ## Output
 
-One settled sketch, including grafts and review fixes, invariants, sourced assumptions, and only minor open choices. The lead settles structural decisions; unresolved product decisions follow the paragraph below. If a major uncertainty needs runtime evidence, obtain a scoped temporary probe before finalizing the design, not competing production implementations.
+One settled sketch, including grafts and review fixes, invariants, sourced assumptions, and only minor open choices, or concrete blockers after the bounded correction above. Apply that bound also to major uncertainties from the challenge; never finalize an unsupported major choice. The lead settles supported structural decisions; unresolved product decisions follow the paragraph below. If runtime evidence is needed, use a scoped temporary probe, not competing production implementations.
 
 An open choice that is a product call, because it changes what a user sees or which users or sessions get the behavior, is not yours to settle. Neither is an open question a judge or reviewer raises for product. Put them to the user in one grill round, per the Decide rule in `SKILL.md`, before implementing. Ask as soon as the pick is made: when the challenge runs, ask while it runs, never after it. The same round carries the go that `playbooks/feature.md` step 4 requires, if any. A product question raised by the challenge itself gets its own round.
 

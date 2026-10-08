@@ -8,7 +8,9 @@ The goal, grounding, sketch when needed, allowed paths, ticket items, success cr
 
 In maintenance mode, choose local structure directly within the brief's scope and contracts, including established cross-module transformations. A newly opened decision about responsibilities, state ownership, or dependency direction returns to the lead per `playbooks/maintenance.md#conditional-design`; pause dependent edits and preserve still-valid work. A conflict with scope or preserved contracts follows its Scope rules. Neither situation automatically restarts the workflow.
 
-Use `references/subagent-brief.md`. One `implementer` owns coupled code. Parallel implementers require disjoint files and no shared state. Continue the existing implementer for repairs when supported.
+In every mode, including repairs and slices, return new evidence that invalidates an assumption or reveals an unknown rationale affecting safety or contracts: the fact, source/probe, affected assumption or contract, and paused dependent edit. Preserve valid work. The lead refreshes only affected grounding, choosing a targeted lookup, probe, or conditional `bricks/why.md`, then resumes without a full restart.
+
+Use `references/subagent-brief.md` and the lead's `references/run-state.md#change-reference`. One `implementer` owns coupled code. Parallel implementers require disjoint files, no shared state, and separate branches/worktrees; the lead integrates their returned commits through one designated implementer before verification. Continue the existing implementer for repairs when supported.
 
 Give writers the principle files `laziness-protocol`, `follow-local-conventions`, `comment-the-why`, `test-behavior-not-implementation`, and `sequence-verifiable-units`, plus task-specific principles such as `fix-root-causes` for a bugfix, or `subtract-before-you-add` and `minimize-reader-load` for simplification. Include applicable architecture principles from the maintenance brief or sketch.
 
@@ -30,7 +32,7 @@ For repairs, fix only accepted findings and counterexamples. Preserve the establ
 
 ## 3. Inspect the final diff
 
-Inspect `git diff <base>...HEAD`, its stat, and any uncommitted changes before handing off:
+Inspect `git diff <baseCommit>...<headCommit>` from the effective change reference, its stat, and any uncommitted changes before handing off:
 
 - Every touched file and behavior is justified by the task or accepted repair.
 - Existing abstractions and caller paths are reused; no needless wrappers or compatibility code remain.

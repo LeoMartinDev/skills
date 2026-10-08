@@ -31,11 +31,11 @@ Reject or revise candidates violating an applicable principle, criterion, or pre
 ## 5. Graft
 
 Take at most one or two ideas per losing candidate that are worth porting, and fold them into the base so it stays one coherent design. Never paste mechanically.
-Recheck the whole synthesis against the shared constraints and applicable principles after grafting. Fix violations before returning it.
+Recheck the whole synthesis against the shared constraints and applicable principles after grafting. Return concrete blockers if no viable synthesis can satisfy them; never return a violating design.
 
 - All candidates converged: keep the consensus shape, no graft needed.
-- Candidates diverged wildly: the frame was underspecified. Reframe and rerun once, then pick.
+- Candidates diverged wildly: the frame was underspecified. Reframe and rerun once, then pick a viable design or return blockers; do not repeat the loop.
 
 ## Output
 
-The synthesized design, plus a note for the final reply: the base, each graft and its source, what you rejected and why, and any dropouts. The caller settles remaining design decisions before implementation.
+Either a viable synthesized design, plus a note for the final reply (the base, each graft and its source, what you rejected and why, and any dropouts), or concrete blockers. Return to architect, which settles remaining design decisions or stops dependent work before implementation.

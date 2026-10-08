@@ -47,12 +47,15 @@ Write a request after `/bigbrain`. You can also pass a GitHub issue URL, a Notio
 | Plan a larger change | `/bigbrain plan the migration to the new numbering` |
 | Implement part of a plan | `/bigbrain implement slice 2 of plans/numbering.md` |
 | Understand code | `/bigbrain how does invoice numbering work?` |
+| Investigate rationale | `/bigbrain why does invoice numbering retry at most three times?` |
 | Review changes | `/bigbrain review this branch` |
 | Challenge an idea | `/bigbrain grill my idea: cache VAT rates per org` |
 | Watch a pull request | `/bigbrain watch-pr 123` |
 | Continue saved work | `/bigbrain resume <run-id or state-path>` |
 
 Plans, explanations, reviews, and idea discussions stop at their result. A PR watch checks CI and reviews, repairs verified findings, and stops when ready or when its limits are reached. The skill never merges pull requests.
+
+The [why investigation](bigbrain/bricks/why.md) separates the historical reason from whether it still applies today. It starts with current code, Git history, and relevant GitHub PRs, then follows targeted related sources available through existing tools. Claims carry source links, confidence, and explicit gaps. It also runs during grounding or design when unclear rationale for a limit, workaround, compatibility path, or protection could affect safety, scope, or a design choice; it does not investigate every odd detail or authorize removal by itself.
 
 ## How it works
 
@@ -123,6 +126,7 @@ bigbrain reshapes that foundation into a smaller personal workflow:
 | Packaging | A Cursor plugin with separately invokable skills and subagents. | One `/bigbrain` skill, with internal bricks and principles loaded as needed. |
 | Coding agents | Built around Cursor's tools, rules, and runtime. | Adapters for Claude Code, Cursor, Delta, omp, opencode, Pi, and Zed, plus a generic fallback. |
 | Scope | Broader playbooks, including performance, runtime forensics, prototypes, and multi-day orchestration. | Focused on features, bugs, maintenance, plans, explanations, reviews, idea discussions, and bounded PR watches. |
+| Rationale | A dedicated why investigation across engineering context. | A bounded `why` brick, explicitly routed or used for consequential grounding/design questions, with historical rationale and present necessity assessed separately. |
 | Arena | Parallel candidates can produce different kinds of artifacts. | Candidates propose designs before implementation; one implementer builds the settled design. |
 | Review | Each configured reviewer gets the same prompt and rubric. | Two reviewers take assigned angles, alongside a fresh verifier on the same commit; repairs are batched and reverified. |
 | Delivery | Includes workflows for landing verified PR stacks and autonomous merges. | Opens a PR by default and never merges; large changes become smaller planned PRs. |

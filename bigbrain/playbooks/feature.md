@@ -12,7 +12,7 @@ Copy these steps into your todo list verbatim.
 4. **Design.** Run `bricks/architect.md`. It returns a settled sketch, invariants, important assumptions and their evidence, and only minor open choices. When the sketch changes an external public surface (published API, CLI, file format) or a persisted data shape, ask once for a go, in the same round as the design's product calls (`bricks/architect.md#output`). Any other structural choice is yours: decide and record it, without asking. Estimate the diff from the sketch, tests included. Over budget (PR budget rule in `references/config.md#pr-budget`), apply the Scope rules below.
 5. **Branch.** Follow `bricks/ship.md#branch`.
 6. **Implement.** Run `bricks/implement.md` with the settled sketch, invariants, allowed paths, and success criteria.
-7. **Verify and review.** Launch `bricks/verify.md` and `bricks/interrogate.md` together, on the same commit. Send counterexamples and accepted findings in one batch through `bricks/implement.md`, then verify again per the Rounds of `bricks/verify.md`. No second review unless the scope or design materially changes.
+7. **Verify and review.** Launch `bricks/verify.md` and `bricks/interrogate.md` together on the same fixed change reference per `references/run-state.md#change-reference`. Wait for both reports before any repair; own the single repair batch, counter, and re-verification per `bricks/verify.md#rounds`.
 8. **Ship.** Run `bricks/ship.md` per `finish`.
 9. **Learn.** Apply `references/memory.md#learn-at-the-end-of-a-workflow`; save only qualifying durable knowledge, otherwise write nothing.
 10. **Reply.** Follow the Final reply rule in `SKILL.md`. Add a table when you weighed design alternatives.

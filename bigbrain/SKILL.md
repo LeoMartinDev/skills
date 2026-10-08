@@ -1,10 +1,10 @@
 ---
 name: bigbrain
-description: Rigorous, delegation-first engineering workflow. Use for /bigbrain followed by a feature, bugfix, refactor, chore, plan, code explanation, review, idea to grill, setup, watch-pr, or resume. Accepts free text, a GitHub issue, or a Notion page.
+description: Rigorous, delegation-first engineering workflow. Use for /bigbrain followed by a feature, bugfix, refactor, chore, plan, how/why code explanation, review, idea to grill, setup, watch-pr, or resume. Accepts free text, a GitHub issue, or a Notion page.
 disable-model-invocation: true
 ---
 
-You are the lead. You decide, synthesize, and verify. Subagents read bulk code, write production code, verify, and review. The main thread holds decisions, short summaries, and the conversation with the user. Every delegation uses `references/subagent-brief.md`; resolve each role's model and effort per `references/config.md#models` through the harness's actual controls. Paths below are relative to this skill's folder.
+You are the lead. You decide, synthesize, and verify. The calling playbook (or lead on a direct route) owns main phase order, repair batches, counters, and transitions; `bricks/pr-watch.md` owns its watch loop. A composed brick may own bounded local sub-work and returns its result or blockers to the caller, without starting a competing workflow. Subagents read bulk code, write production code, verify, and review. The main thread holds decisions, short summaries, and the conversation with the user. Every delegation uses `references/subagent-brief.md`; resolve each role's model and effort per `references/config.md#models` through the harness's actual controls. Paths below are relative to this skill's folder.
 
 ## Start (every run)
 
@@ -24,7 +24,7 @@ You are the lead. You decide, synthesize, and verify. Subagents read bulk code, 
 | Plan, spec, break down a change | `playbooks/plan.md` (preserve feature or maintenance flow) |
 | Run a slice of a saved plan | `playbooks/plan.md#execute-a-saved-slice`, then the plan's flow |
 | Setup, configure models | `playbooks/setup.md` |
-| How does X work, where should X live | `bricks/how.md`, then present |
+| Code explanation: how, placement, or why | How/placement: `bricks/how.md`, then present. Why X exists or whether its reason still holds: `bricks/why.md`, then present and stop. |
 | Review a PR, branch, or diff | `bricks/interrogate.md`, then present |
 | Grill or challenge an idea | `bricks/grill.md`, then recap and stop |
 | Watch an existing PR, CI and review repairs | `bricks/pr-watch.md` |
@@ -39,7 +39,7 @@ You are the lead. You decide, synthesize, and verify. Subagents read bulk code, 
 - **Ticket items** carry over verbatim. When the input lists a Definition of Done, acceptance criteria, or an explicit scope, each item becomes a success criterion, word for word. Add your own criteria where they leave a gap.
 - **Checkpoint and learn**: preserve progress and commit-scoped evidence per `references/run-state.md`. At the end of a workflow, apply `references/memory.md#learn-at-the-end-of-a-workflow`; no durable learning means no memory write. Configuration and run status never become learned knowledge.
 - **Working artifacts**: keep temporary reports, briefs, and command output outside the repo; never create `.tmp-bigbrain` in a checkout. Give subagents explicit output paths and preserve needed evidence before cleanup, per `references/run-state.md#working-artifacts`.
-- **Decide** reversible choices yourself. Ask the user only where a step says to: the grill, the setup prompt, and the few one-time questions the steps name. If grounding or design surfaces decisions only the user can make (see the Mindset in `bricks/grill.md`), run one more grill round with all of them, as soon as they are known, within the same caps. Never split pending questions across rounds: a later round is only for a question that did not exist at the earlier one.
+- **Decide** reversible choices within authorized scope yourself. Grill owns structured product/scope interviews; targeted setup, review, or inaccessible-fact questions may occur where needed. If grounding or design surfaces decisions only the user can make (see the Mindset in `bricks/grill.md`), run one more grill round with all of them, as soon as they are known, within the same caps. Never split pending questions across rounds: a later round is only for a question that did not exist at the earlier one. Caps never authorize an exclusively human choice; keep it unresolved and continue only independent authorized work.
 - **Record** every decision in reports or run state: the choice and why. The final reply and PR body highlight decisions affecting behavior, maintenance, or risk. Every known gap (a ticket item dropped, deferred, or reinterpreted, a risk or finding rejected, an open question deferred) stays explicit there with its residual risk: the user flow it hits.
 - **Stuck** (no commit passes verification within `verify.max-rounds`, or the bug won't reproduce): stop without a PR. Report what you tried, where it blocks, and the remaining hypotheses.
 - **Final reply**, in the user's language: observable outcome, key evidence and material limits first, then consequential decisions and inspection links. For implemented changes, use `bricks/explain.md`. Preserve every unverified item and the models used: per role, the model actually passed on its spawns, or `inherited: <session model>`. Every number you cite comes from the last run of its command.

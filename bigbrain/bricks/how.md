@@ -24,11 +24,13 @@ Use `references/subagent-brief.md`, role `explorer (report)`. Spawn it on the ag
 - **Gotchas**: surprising behavior, invariants, known traps.
 - **Structural facts**: relevant symbol → definition, key callers/wiring, tests, and closest sibling, with `path:line` pointers and uncertainty noted. Include only facts useful for the goal; retrieval results are leads to verify, not proof by themselves.
 - **Known risks**: each risk, dependency, or caveat passed in the brief, mapped to `path:line`, and whether the change must handle it.
-- **Why**: when a shape looks odd, one line from `git log` or `git blame` on why it is that way.
+- **Rationale leads**: relevant historical sources already encountered, with pointers and uncertainty; code or a commit subject alone does not establish intent. If unclear rationale affects a material safety, scope, or design choice, return the concrete question to the lead; explorers do not expand the workflow.
 
 ## 3. Synthesize
 
 Merge the reports yourself. When a digest is not enough, or two explorers disagree, continue that explorer with a targeted question per `references/subagent-brief.md#continuing`. Read the source yourself only to check a blocker, as in `bricks/interrogate.md` section 5, or a disagreement the follow-up left open.
+
+For flagged questions, the lead decides whether `bricks/why.md`'s conditional gate passes before dependent decisions. Give it the collected evidence; carry its sourced constraints and consequential gaps in the mental model.
 
 - **In a playbook**: keep a mental model of at most 20 lines (entry points, flow, key types, conventions, templates, test commands, gotchas, known risks) plus the report paths. Pass both to every later brief; a subagent that doubts the digest re-reads the file.
 - **In the how route**: present the explanation to the user with the sections Overview, Key concepts, How it works, Where things live, and Gotchas. Drop any that are empty. Give `path:line` references, not code dumps.

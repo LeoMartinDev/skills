@@ -18,6 +18,12 @@ Before checkpointing or yielding an unfinished run, preserve reports and proof a
 
 After required evidence is preserved and no subagent still uses the scratch files, remove the temporary directory created for this task. Preserve the run directory for resume and inspection; never clean up another task's files.
 
+## Change reference
+
+The lead resolves one effective change reference before measuring or delegating a task diff: `baseBranch`, its actual tip `baseCommit`, and the examined `headCommit`. Use the existing PR's actual target, or a grounded parent branch for a real stack; use the remote default only when it is the intended target. Before a PR exists, inspect branch ancestry and task intent; an unresolved target is a grounding gap, not permission to assume default. Record the actual checkout/source and head branch too.
+
+Use `git diff <baseCommit>...<headCommit>` for implementation inspection, review, comments, and size; the same `baseBranch` must be the PR target. Bind evidence to that source, head and base identity, plus its scope. Keep the source snapshot unchanged until verification/review observation ends; if it moves, invalidate affected evidence and repeat those checks against the new reference.
+
 ## Fields
 
 Use this small schema, omitting irrelevant fields:
@@ -29,6 +35,7 @@ Use this small schema, omitting irrelevant fields:
   "repo": "owner/name",
   "checkout": "/absolute/path",
   "branch": "task-branch",
+  "baseBranch": "target-branch",
   "baseCommit": "sha",
   "headCommit": "sha",
   "flow": "feature | bugfix | maintenance | plan | watch",
@@ -52,7 +59,7 @@ Use this small schema, omitting irrelevant fields:
 }
 ```
 
-Evidence names the check, verdict, tested commit, command, scope, and output artifact or compact result. Findings have stable IDs, source, disposition, reason, and any fix commit. Decisions record the user's instruction and its scope, but a checkpoint never grants new authorization. Preserve the grounding, sketch when present, maintenance brief and baseline when relevant, and proof artifacts needed for resume in the run directory or durable harness store. Missing temporary reports are a grounding gap, not evidence.
+Evidence names the check, verdict, tested change reference, command, scope, and output artifact or compact result. Findings have stable IDs, source, disposition, reason, and any fix commit. Decisions record the user's instruction and its scope, but a checkpoint never grants new authorization. Preserve the grounding, sketch when present, maintenance brief and baseline when relevant, and proof artifacts needed for resume in the run directory or durable harness store. Missing temporary reports are a grounding gap, not evidence.
 
 ## Checkpoints
 
@@ -62,6 +69,6 @@ Save after grounding and design, each returned implementation or repair batch, v
 
 Route `/bigbrain resume <run-id or state-path>` here. For a run ID, look in `~/.agents/runs/bigbrain/<repo>/`; an explicit state path also works. Keep a resumed run in its existing directory. Load that run, confirm the repo identity and checkout exist, inspect the current branch, HEAD, uncommitted changes, PR state when present, and recover needed artifacts. Never overwrite unrelated changes or switch the user's checkout silently. Report a mismatch that prevents safe progress.
 
-Check a checkpoint's claims against reality before continuing. A pushed PR's current head outranks the saved head. Evidence only proves the commit and scope actually checked. After HEAD, base, wiring, or relevant files change, rerun the affected proofs and static checks; old verdicts remain history. Review repairs follow `bricks/verify.md`'s rounds; material scope or design changes require a fresh review. Restore the flow's criteria and invariants before spawning any child.
+Check a checkpoint's claims against reality before continuing. A PR's current head and target outrank the saved reference; reconstruct a missing `baseBranch` from current reality before using older state. Evidence only proves the reference and scope actually checked; never reuse wrong-base evidence. After HEAD, base, wiring, or relevant files change, rerun affected proofs and static checks; old verdicts remain history. Repairs retain the flow's verification counter per `bricks/verify.md`; material changes require a fresh review. Restore the flow's criteria and invariants before spawning any child.
 
 Resume the named playbook at the next justified step. When its saved phase is post-ship watch, resume `bricks/pr-watch.md` directly instead of opening another PR. Reconstruct missing evidence rather than inventing it. A persisted deadline that expired stops the watch with its current blockers; an explicit new watch run may get a new budget. Completion stores `done` and the final artifact or PR; it does not turn task details into learned memory.
