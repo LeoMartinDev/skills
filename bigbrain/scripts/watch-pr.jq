@@ -52,10 +52,14 @@ def fingerprint($s):
     ($rules[] | .type as $type | select(["pull_request","required_status_checks","creation","deletion","non_fast_forward"] | index($type) | not)
       | blocker(if .type == "merge_queue" then "NEEDS_HUMAN" else "UNKNOWN" end;"unsupported branch rule: \(.type)")),
     if .pr.mergeable == "CONFLICTING" then blocker("NEEDS_FIX";"merge conflict")
-      elif .pr.mergeable != "MERGEABLE" then blocker("UNKNOWN";"mergeability unknown") else empty end,
+      elif .pr.mergeable == "UNKNOWN" then blocker("WAITING";"GitHub is computing mergeability")
+      elif .pr.mergeable != "MERGEABLE" then blocker("UNKNOWN";"mergeability unavailable") else empty end,
     if .pr.mergeStateStatus == "BEHIND" then blocker("NEEDS_FIX";"branch is behind required base")
       elif .pr.mergeStateStatus == "UNSTABLE" then blocker("WAITING";"GitHub reports unstable checks")
       elif .pr.mergeStateStatus == "DIRTY" then blocker("NEEDS_FIX";"merge conflict")
+      elif .pr.mergeStateStatus == "UNKNOWN" then blocker("WAITING";"GitHub is computing merge state")
+      # BLOCKED is explained by the other blockers; an unexplained one is checked below.
+      elif .pr.mergeStateStatus == "BLOCKED" or (.pr.mergeStateStatus == "DRAFT" and .pr.isDraft == true) then empty
       elif .pr.mergeStateStatus != "CLEAN" then blocker("UNKNOWN";"merge state is not CLEAN: \(.pr.mergeStateStatus)") else empty end,
     if .pr.isDraft == true then blocker("NEEDS_HUMAN";"PR is draft") elif (.pr.isDraft|type) != "boolean" then blocker("UNKNOWN";"draft state unavailable") else empty end,
     if .pr.state != "OPEN" and .pr.state != "CLOSED" and .pr.state != "MERGED" then blocker("UNKNOWN";"PR state unavailable") else empty end,
@@ -80,7 +84,9 @@ def fingerprint($s):
       | [$statuses[] | select(.context == $r.context)] as $legacy
       | if $r.app != -1 and ($legacy|length) > 0 then blocker("UNKNOWN";"app identity unavailable for required legacy status: \($r.context)")
         elif ($runs|length) + ($legacy|length) == 0 then blocker("WAITING";"required check missing: \($r.context)") else empty end)
-  ] | unique) as $blockers
+  ] | unique) as $found
+| ($found + if .pr.mergeStateStatus == "BLOCKED" and all($found[]; .kind == "UNKNOWN")
+    then [blocker("UNKNOWN";"merge blocked for an unidentified reason")] else [] end | unique) as $blockers
 | (if (.pr.state == "CLOSED" or .pr.state == "MERGED") and .pr.state == .end.state then "STOP"
    elif any($blockers[]; .kind == "UNKNOWN") then "UNKNOWN"
    elif any($blockers[]; .kind == "NEEDS_FIX") then "NEEDS_FIX"
