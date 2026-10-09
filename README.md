@@ -55,17 +55,15 @@ Write a request after `/bigbrain`. You can also pass a GitHub issue URL, a Notio
 
 Plans, explanations, reviews, and idea discussions stop at their result. A PR watch checks CI and reviews, repairs verified findings, and stops when ready or when its limits are reached. The skill never merges pull requests.
 
-The [why investigation](bigbrain/bricks/why.md) separates the historical reason from whether it still applies today. It starts with current code, Git history, and relevant GitHub PRs, then follows targeted related sources available through existing tools. Claims carry source links, confidence, and explicit gaps. It also runs during grounding or design when unclear rationale for a limit, workaround, compatibility path, or protection could affect safety, scope, or a design choice; it does not investigate every odd detail or authorize removal by itself.
-
 ## How it works
 
-The lead applies the selected playbook, owns phase transitions and repair batches, and keeps decisions and short summaries in its context. Bricks can compose bounded local work, then return results or blockers. Subagents handle exploration, implementation, verification, and review.
+The lead follows the selected playbook and keeps only decisions and short summaries in its context. Subagents handle exploration, implementation, verification, and review.
 
-Before a write workflow, the agent checks the working tree and clarifies unresolved goals or scope. Product decisions that only the user can make keep dependent work paused until settled. A consequential unknown rationale can trigger `why` during grounding, design, or a targeted return from implementation; still-valid work is reused.
+Before changing code, the agent checks the working tree and clarifies open goals or scope. Decisions only you can make pause the work that depends on them; everything else proceeds.
 
 ### Features
 
-The [feature playbook](bigbrain/playbooks/feature.md) establishes observable criteria and implements a grounded approach. When the request, contracts, and an inspected precedent settle the shape, the lead writes a compact brief. Open consequential structural decisions use architect; an arena, at most once per run, additionally needs viable alternatives with consequential tradeoffs that facts and conventions cannot settle. A blocked approach keeps dependent implementation paused. Large or over-budget changes move to [planning](#planning).
+The [feature playbook](bigbrain/playbooks/feature.md) sets observable criteria, then implements. When existing code already settles the shape, the lead writes a short brief; an open structural decision goes through a design step first, sometimes with competing designs from several models. Large changes move to [planning](#planning).
 
 ```mermaid
 flowchart TD
@@ -79,7 +77,7 @@ flowchart TD
 
 ### Bugfixes
 
-The [bugfix playbook](bigbrain/playbooks/bugfix.md) requires a faithful repro before fixing anything. It checks competing hypotheses against evidence; a fix crossing a function or module boundary uses architect first. A new wave of hypotheses after none is confirmed, or two failed fixes based on the same hypothesis, reopens the cause investigation as a bounded structural return.
+The [bugfix playbook](bigbrain/playbooks/bugfix.md) requires a faithful repro before fixing anything, then tests competing hypotheses in parallel until one cause is confirmed. Two failed fixes on the same hypothesis reopen the investigation.
 
 ```mermaid
 flowchart TD
@@ -93,7 +91,7 @@ flowchart TD
 
 ### Maintenance: refactors and chores
 
-The [maintenance playbook](bigbrain/playbooks/maintenance.md) records a baseline and the contracts to preserve. Refactors preserve behavior; chores verify the requested operational result and preserve unrelated contracts. A required change outside that scope returns to the user.
+The [maintenance playbook](bigbrain/playbooks/maintenance.md) records a baseline and the contracts to preserve. Refactors preserve behavior; chores deliver the requested operational result. A change outside that scope comes back to you.
 
 ```mermaid
 flowchart TD
@@ -107,11 +105,9 @@ flowchart TD
     V --> S["Delivery after required repairs"]
 ```
 
-Responsibilities, state ownership, and dependencies can trigger architecture. Size or crossing module boundaries alone cannot. The design arena runs at most once per run, only for consequential alternatives that grounded facts, conventions, and the request cannot settle; candidates and the final synthesis must satisfy the same constraints. Plans and repairs retain these rules.
-
 ### Planning
 
-The [plan playbook](bigbrain/playbooks/plan.md) produces independently verifiable slices, their prerequisites, and obligatory repo/CI checks. It preserves feature or maintenance mode and reuses existing grounding. A reviewer challenges the plan before it is saved; unresolved blockers remain explicit.
+The [plan playbook](bigbrain/playbooks/plan.md) produces independently verifiable slices, each one PR, with prerequisites and checks. A reviewer challenges the plan before it is saved.
 
 ```mermaid
 flowchart TD
@@ -127,7 +123,7 @@ Planning stops at the plan. A small change with an obvious, low-risk approach ne
 
 ### Saved plan slices
 
-[Executing a slice](bigbrain/playbooks/plan.md#execute-a-saved-slice) first checks the current code, prerequisites, and assumptions. Earlier slices must work in the current checkout; a completion label is insufficient. Refresh only affected parts of a stale plan and challenge the revision before proceeding.
+[Executing a slice](bigbrain/playbooks/plan.md#execute-a-saved-slice) first checks that its prerequisites hold in the current code. A stale plan is refreshed where it drifted before proceeding.
 
 ```mermaid
 flowchart TD
@@ -142,7 +138,7 @@ flowchart TD
 
 ### Code explanations
 
-The [how brick](bigbrain/bricks/how.md) answers how code works or where something belongs. The lead may settle a narrow question with targeted reads; substantial reading uses an explorer, and a wider subsystem uses independent exploration angles. Findings remain sourced.
+The [how brick](bigbrain/bricks/how.md) answers how code works or where something belongs, with `path:line` sources. A wide question is split into parallel exploration angles.
 
 ```mermaid
 flowchart TD
@@ -155,7 +151,7 @@ flowchart TD
 
 ### Why investigations
 
-The [why brick](bigbrain/bricks/why.md) separates historical rationale from present necessity. Missing rationale remains unknown and never authorizes removal. An explicit why request ends at the answer; inside a change workflow, the findings return as sourced constraints and gaps.
+The [why brick](bigbrain/bricks/why.md) separates the historical reason from whether it still applies, starting from code, Git history, and PRs. Claims carry sources and confidence; missing rationale stays unknown and never justifies a removal. It also runs inside a change when an unexplained workaround or limit affects the design.
 
 ```mermaid
 flowchart LR
@@ -166,7 +162,7 @@ flowchart LR
 
 ### Code reviews
 
-The [review brick](bigbrain/bricks/interrogate.md) anchors the PR, branch, or diff to its actual head/base and matching source. Reviewers examine distinct angles. The lead ranks findings by severity and evidence, checks factual claims, and records each disposition.
+The [review brick](bigbrain/bricks/interrogate.md) reviews the exact PR, branch, or diff from distinct angles. The lead checks each finding against the code and ranks them by severity.
 
 ```mermaid
 flowchart LR
@@ -179,7 +175,7 @@ A direct review applies no changes unless requested. Inside a write workflow, it
 
 ### Idea discussions
 
-The [grill brick](bigbrain/bricks/grill.md) challenges the open decision frontier, looks up accessible facts, and asks the user for choices. A question or round limit never grants approval for an exclusively human choice.
+The [grill brick](bigbrain/bricks/grill.md) asks you the open decisions in rounds, looking up facts itself rather than asking you.
 
 ```mermaid
 flowchart TD
@@ -190,11 +186,11 @@ flowchart TD
     M -->|No| O["Recap decisions and gaps; stop"]
 ```
 
-The direct route suggests a next step without starting it. When called by a playbook, the recap returns to that workflow; unresolved human choices keep dependent work paused. Authorized scope and reversible structural decisions need no recap confirmation or repeated go solely because an API or persisted shape changes.
+Called directly, it ends with a recap and a suggested next step. Inside a workflow, the recap feeds back into that workflow.
 
 ### PR watch
 
-The [watch brick](bigbrain/bricks/pr-watch.md) owns a bounded loop. The [shell helper](bigbrain/references/pr-watch-script.md) collects one read-only observation; the agent investigates it, verifies findings, and owns repairs, waits, pushes, and saved limits.
+The [watch brick](bigbrain/bricks/pr-watch.md) runs a bounded loop. A [shell helper](bigbrain/references/pr-watch-script.md) takes one read-only snapshot of the PR; the agent verifies findings, repairs, and pushes.
 
 ```mermaid
 flowchart TD
@@ -209,11 +205,11 @@ flowchart TD
     Q -->|Human action, closed, or limit reached| S["Report state and blockers; stop"]
 ```
 
-Failed or stale repairs are not pushed. A watch has its own repair budget (`watch.max-rounds`): repair batches, probes, and CI reruns charge it, not the flow's verification rounds. In Claude Code, waits run as a background poll loop around the helper. A watch retains its deadline and counters on resume, reports meaningful changes, and never merges the PR. Draft status or missing approvals remains a human action; readiness is a current observation.
+Only verified repairs are pushed. A watch stops at its own round and time limits (`watch.max-rounds`, `watch.timeout-minutes`) and never merges; draft status and missing approvals are left to you.
 
 ### Resume
 
-[Resume](bigbrain/references/run-state.md#resume) restores the saved flow, criteria, counters, and evidence. Actual repo and PR state outrank the checkpoint; affected proofs must be refreshed after a relevant change.
+[Resume](bigbrain/references/run-state.md#resume) restores the saved flow, criteria, counters, and evidence, after checking them against the actual repo and PR.
 
 ```mermaid
 flowchart TD
@@ -224,7 +220,7 @@ flowchart TD
     E --> F["Continue the saved phase and flow"]
 ```
 
-A saved watch resumes its watch phase, retaining its limits. It does not open another PR or restart a completed design. [Loop control](bigbrain/references/loop-control.md) bounds every retry loop from one table: reproduction passes, structural returns (including a root-cause wave that confirms no mechanism), repair and watch rounds, the arena, and grill rounds. Counters and attempt evidence survive resume and workflow transitions; a retry without an observation absent from earlier attempts stops the loop before its numeric limit.
+Every retry loop is bounded by [loop control](bigbrain/references/loop-control.md), and its counters survive resume. A retry that brings no new observation stops the loop early.
 
 ### Setup
 
@@ -239,7 +235,7 @@ flowchart LR
 
 ### Shared verification and repair
 
-Feature, bugfix, and maintenance launch verification and review on the same fixed source/head/base. The lead waits for both reports before changing that snapshot, then sends counterexamples and accepted findings in one repair batch. Each batch, and each probe for a required inconclusive check, costs one verification round, retained on resume.
+Feature, bugfix, and maintenance run an independent verifier and reviewers on the same commit, then send all fixes in one repair batch.
 
 ```mermaid
 flowchart TD
@@ -254,11 +250,11 @@ flowchart TD
     L -->|No valid result within the limit| B["Stop and report blockers"]
 ```
 
-Verification runs obligatory repo/CI checks, tests, and a real run through the affected entry point when feasible. A unique isolated worktree can prove the result against the base without changing the user's checkout. Criteria and checks are classified before implementation: requested outcomes, ticket items, preserved contracts, and obligatory checks are required; extras may be supplementary. Missing classifications mean required. Required failed, inconclusive, absent, or stale proof blocks completion and delivery; supplementary gaps stay explicit. Configuring draft PRs does not waive the [delivery gate](bigbrain/bricks/verify.md#delivery-gate). An unfinished draft needs explicit authorization for that partial delivery, within repo/runtime rules, and remains incomplete. Repairs need fresh review when scope or design changes materially.
+Verification runs the repo's CI checks, the tests, and a real run through the affected entry point when feasible. The [delivery gate](bigbrain/bricks/verify.md#delivery-gate) defines done: every required criterion (ticket items, requested outcome, preserved contracts, CI checks) needs passing evidence on the current commit, or nothing ships.
 
 ### Delivery and stacked branches
 
-[Ship](bigbrain/bricks/ship.md) uses the same effective base/head/source for the diff, PR budget, proofs, review, and PR target. A new child branch starts from its resolved parent, and only the child's changes count against that parent.
+[Ship](bigbrain/bricks/ship.md) measures, verifies, and targets the PR against the same base. A child branch in a stack targets its parent, and only its own changes count.
 
 ```mermaid
 flowchart LR
@@ -267,7 +263,7 @@ flowchart LR
     B -. "Child PR targets parent" .-> A
 ```
 
-Before delivery, refresh the remote head and base. A late merge, rebase, or target change requires affected proofs and static checks again, plus review for material changes. The designated implementer owns branch/commit mutations; the lead pushes the returned commits and creates or updates the PR with an explicit target. Never rewrite pushed history or force-push.
+Before delivery, the agent refreshes the remote head and base and reruns the proofs a late change affects. It never rewrites pushed history or force-pushes.
 
 ```mermaid
 flowchart TD
@@ -289,8 +285,6 @@ flowchart TD
     W -->|No| S["Report; stop"]
 ```
 
-An unresolved reference, required proof without a current PASS, or exceeded budget blocks normal delivery. The explicitly authorized unfinished-draft exception remains incomplete and skips post-ship watch. `finish=stop` never starts a watch. A merged stack parent is handled according to publication state and repo policy before evidence is refreshed. The skill never merges PRs.
-
 ## Preferences
 
 Change lasting preferences in plain language:
@@ -299,7 +293,7 @@ Change lasting preferences in plain language:
 /bigbrain from now on, open PRs as drafts here
 ```
 
-Settings live in `~/.agents/config/bigbrain.md`, with global defaults and optional overrides per repository. Project knowledge and resumable checkpoints are stored separately, outside your checkout.
+Settings live in `~/.agents/config/bigbrain.md`, with global defaults and optional overrides per repository. Project knowledge and resumable checkpoints are stored separately, outside your checkout; finished checkpoints are deleted after 30 days.
 
 For the exact settings and defaults, see [configuration](bigbrain/references/config.md).
 
@@ -322,8 +316,9 @@ The skill is organized into small files loaded as needed:
 - [Bricks](bigbrain/bricks/): reusable steps such as exploration, implementation, review, and shipping.
 - [Principles](bigbrain/principles/): engineering rules applied when relevant.
 - [References](bigbrain/references/): settings, memory, checkpoints, and agent adapters.
+- [Scripts](bigbrain/scripts/): the read-only PR watch helper and its offline tests.
 
-Keep each skill file under 80 lines and check referenced paths when editing. To validate behavior, run a clear feature request and a vague request in a sandbox repository: the first should proceed, and the second should ask for the missing decisions.
+Keep each skill file within 1,000 words, and add a rule only for an observed failure it prevents. After editing, run `bash scripts/check-skill.sh` (word budget and referenced paths) and `bash bigbrain/scripts/tests/run.sh` (PR watch helper). To validate behavior, run a clear feature request and a vague request in a sandbox repository: the first should proceed, and the second should ask for the missing decisions.
 
 ## Inspired by pstack
 
