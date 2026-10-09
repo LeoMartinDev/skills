@@ -4,13 +4,11 @@ Turn a settled design, an evidence-backed fix, or a maintenance brief into a sma
 
 ## Input and delegation
 
-The goal, grounding, implementation brief or sketch when needed, allowed paths, ticket items, classified criteria/checks per `bricks/verify.md#delivery-gate`, and invariants. For a bugfix include the original repro and confirmed cause. For maintenance include the transformation brief, baseline, and sketch only when conditional design produced one. For a repair include accepted findings/counterexamples and current commit. A feature's newly open structural choice returns to its lead's `playbooks/feature.md#conditional-design`; other non-maintenance structural choices return to architect. Pause dependent writes until settled; preserve existing authorization for behavior already specified.
+The goal, grounding, implementation brief or sketch when needed, allowed paths, ticket items, classified criteria/checks per `bricks/verify.md#delivery-gate`, and invariants. For a bugfix include the original repro and confirmed cause. For maintenance include the transformation brief, baseline, and sketch only when conditional design produced one. For a repair include accepted findings/counterexamples and current commit.
 
-In maintenance mode, choose local structure directly within the brief's scope and contracts, including established cross-module transformations. A newly opened decision about responsibilities, state ownership, or dependency direction returns to the lead per `playbooks/maintenance.md#conditional-design`; pause dependent edits and preserve still-valid work. A conflict with scope or preserved contracts follows its Scope rules. Neither situation automatically restarts the workflow.
+Settle local structure yourself within the brief's scope and contracts, including established cross-module transformations in maintenance. Stop dependent edits and return to the lead on a newly open structural decision (responsibilities, state ownership, dependency direction), a conflict with scope or preserved contracts, or evidence that invalidates an assumption or reveals an unknown rationale affecting safety or contracts. Report the fact, its source or probe, and what it affects; keep valid work. The lead routes it through its playbook's conditional design (architect outside feature and maintenance) and `references/loop-control.md`, refreshes only affected grounding with a lookup, probe, or `bricks/why.md`, then resumes without a full restart.
 
-In every mode, including repairs and slices, return new evidence that invalidates an assumption or reveals an unknown rationale affecting safety or contracts: the fact, source/probe, affected assumption or contract, and paused dependent edit. Preserve valid work. The lead applies `references/loop-control.md` before a structural return, refreshes only affected grounding with a lookup, probe, or conditional `bricks/why.md`, then resumes without a full restart.
-
-Use `references/subagent-brief.md` and the lead's `references/run-state.md#change-reference`. One `implementer` owns coupled code. Parallel implementers require disjoint files, no shared state, and separate branches/worktrees; the lead integrates their returned commits through one designated implementer before verification. Continue the existing implementer for repairs when supported.
+Use `references/subagent-brief.md` and the lead's `references/run-state.md#change-reference`. One `implementer` owns coupled code and continues for repairs when supported. Parallel implementers need disjoint files, no shared state, and separate worktrees; one designated implementer integrates their commits before verification.
 
 Give writers the principle files `laziness-protocol`, `follow-local-conventions`, `comment-the-why`, `test-behavior-not-implementation`, and `sequence-verifiable-units`, plus task-specific principles such as `fix-root-causes` for a bugfix, or `subtract-before-you-add` and `minimize-reader-load` for simplification. Include applicable architecture principles from the maintenance brief or sketch.
 
@@ -18,15 +16,15 @@ Give writers the principle files `laziness-protocol`, `follow-local-conventions`
 
 Before editing, inspect the closest existing implementation and test of the same kind. Start with grounding's templates; confirm they fit. Record their paths and the patterns reused in the report artifact. If none fits, say so and justify the chosen shape.
 
-List the expected files to modify within the allowed scope and the checks for each behavior. This needs no user checkpoint. A newly discovered file inside scope may be added with a reason; changes outside scope or contradicting the sketch go back to the lead before editing. Return evidence for a design correction rather than patching around it.
+List the expected files within the allowed scope and the checks for each behavior; this needs no user checkpoint. A new in-scope file may be added with a reason; anything out of scope or contradicting the sketch goes back to the lead first, never patched around.
 
-Carry the invariants alongside the new behavior. For a complex task, keep a compact mapping of criterion → implementation → test or other proof → entry point, with gaps explicit. For each important safety assumption, name its evidence (type, boundary validation, inspected caller, or executed check); an assertion without evidence is unverified.
+Carry the invariants alongside the new behavior. Map each criterion and invariant to its proof, gaps explicit; an important safety assumption without evidence (a type, boundary validation, inspected caller, or executed check) is unverified.
 
 ## 2. Implement verifiable units
 
 Extend local patterns, with the smallest change that satisfies the contract. Each unit delivers a behavior, maintenance outcome, or necessary prerequisite and its relevant proof, leaving the branch working. Maintenance characterization tests pass against the baseline and transformed code. Avoid dividing commits solely by technical layer. The bugfix repro commit remains the only permitted red commit.
 
-Run the narrow checks before committing each unit; run the package typecheck after the last one. A check run on unchanged code need not be repeated. Broad checks stay with `bricks/verify.md`. Remove instrumentation and debug leftovers. Measure the total diff against the configured budget; never compress code to fit.
+Run the narrow checks before committing each unit; run the package typecheck after the last one. A check run on unchanged code need not be repeated. Broad checks stay with `bricks/verify.md`. Remove instrumentation and debug leftovers.
 
 For repairs, fix only accepted findings and counterexamples. Preserve the established criteria and invariants. If evidence refutes the cause or design, report it to the caller rather than expanding the patch.
 

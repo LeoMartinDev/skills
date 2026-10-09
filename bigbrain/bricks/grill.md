@@ -42,7 +42,7 @@ Without a choice tool, use this text format:
 
 The session ends when the frontier is empty or a cap is reached. Recap one line per decision: the decision, then who took it (user or you); name unresolved choices explicitly. Existing authorizations persist, but silence or a cap does not settle an unresolved choice.
 
-- Called from feature, bugfix, maintenance, or plan: present the recap and continue authorized work without a confirmation checkpoint. Reversible structural choices within scope and already authorized behavior need no new go. Ask only a still-open human decision within the caps; exhausted caps keep dependent work blocked, never trigger an extra recap-approval round. A plan continues planning, not implementation; retain unresolved human decisions and block their dependent slices.
+- Called from feature, bugfix, maintenance, or plan: present the recap and continue authorized work without a confirmation checkpoint. Exhausted caps keep dependent work blocked; they never trigger an extra approval round. A plan continues planning, not implementation; retain unresolved human decisions and block their dependent slices.
 - In the grill route: present the recap, then stop. Suggest the next step in one line (plan or feature), without starting it. Do not ask for approval of decisions the user already made.
 
 When the input came from a ticket (GitHub issue, Notion page): after the recap is settled, append it to the ticket as a comment (`gh issue comment`, Notion comment), never by rewriting the original request. The comment lists each decision, who took it, and the open points still flagged. Give its link in the final reply.

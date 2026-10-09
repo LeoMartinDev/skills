@@ -16,13 +16,13 @@ Use `references/subagent-brief.md`, role `verifier`, with the principle file `pr
 - for a bugfix, the symptom entry point, original repro command, and its failing output;
 - for maintenance, the baseline commands, results, and pre-existing failures, plus the affected contracts and entry points to compare or exercise.
 
-The verifier fixes nothing; temporary proof writes and a unique isolated base worktree follow `references/subagent-brief.md#rules` and `references/run-state.md#working-artifacts`.
+The verifier fixes nothing; it writes only its report and proof files, per `references/subagent-brief.md#rules`.
 
 ## Checks, in order
 
-1. **Confirm source and commands.** Independently confirm the tested source matches the recorded head commit; unexplained local edits are a gap. Find commands in package scripts, Makefile, CI config, and the repo's agent docs; add any obligatory check omitted from the brief.
+1. **Confirm source and commands.** Confirm the tested source is the recorded head commit. Find commands in package scripts, Makefile, CI config, and the repo's agent docs; add any obligatory check omitted from the brief.
 2. **Static.** Run obligatory lint, typecheck, or document/configuration validation; use the smallest useful scope only where the repo/CI permits it.
-3. **Tests.** Run the obligatory tests, tests covering changed code, and tests added by the change. For new behavior or a bugfix, when cheap, check that a new test fails without the change: use a unique isolated proof worktree at the recorded base commit, copy in the new test, run it, and remove that worktree per the shared scope rules. Refactor characterization tests should pass before and after; compare the same cases and expected outputs on both versions. For chores, check the requested operational outcome and unrelated contracts. A pre-existing failure does not prove preservation; identify any remaining verification gap.
+3. **Tests.** Run the obligatory tests, tests covering changed code, and tests added by the change. For new behavior or a bugfix, when cheap, check that a new test fails at the base commit (see Rules). Refactor characterization tests should pass before and after; compare the same cases and expected outputs on both versions. For chores, check the requested operational outcome and unrelated contracts. A pre-existing failure does not prove preservation; identify any remaining verification gap.
 4. **Real run**, when cheap: drive the entry point the way a user does, through its production wiring (DI, providers, registry, config): a local HTTP request, a CLI invocation, a script that boots the app, or a browser if the harness has one. For a bugfix, rerun the original repro and exercise the symptom's same surface when cheap; report a gap if the repro bypasses it. For a chore, exercise the changed tool, build, configuration, or document as applicable; do not invent an application entry point. Calling the functions behind an affected entry point is not a real run. Whatever cannot run through its affected wiring is `unverified: wiring because <why>`.
 5. **Derived checks.** From the goal alone, the verifier names 1 to 3 cases the tests may miss (an edge input, an empty state, an error path) and runs them when cheap.
 
@@ -45,9 +45,11 @@ Out of rounds before shipping: the implementer may restore a previously passing 
 
 ## Delivery gate
 
-- Classify criteria and planned checks in the brief before implementation. Ticket items, the requested outcome, preserved contracts, and obligatory repo/CI checks are `required`; extra exploratory checks may be `supplementary`. Missing classifications default to required. Cost or unavailable tooling does not downgrade a requirement. A supplemental check revealing a violated required behavior or contract creates a required failure.
-- A flow is complete, and ship may deliver, only when every required criterion and check has `PASS` evidence valid for the current change reference and scope, with no unresolved required review finding. `FAIL`, `INCONCLUSIVE`, absent evidence, or stale evidence on a required item blocks completion and delivery. Recording `unverified` is disclosure, not a waiver. Supplementary gaps remain explicit and do not block by themselves.
-- On a required gap, preserve local work and report `blocked` with the missing proof and next action. `finish=pr` or `draft-pr` does not waive this gate. Publishing an unfinished change as a draft requires explicit user authorization for that partial delivery, allowed by repo/runtime rules; it remains incomplete with every gap visible. Never publish a ready PR or push failed watch repairs on that exception. Only an authorized scope decision can change a required criterion; record the original item, decision, and residual risk.
+The single definition of done; other files point here.
+
+- Criteria and checks are classified in the brief before implementation, `required` unless marked `supplementary`. Ticket items, the requested outcome, preserved contracts, and obligatory repo/CI checks are always required, whatever their cost. A supplementary check that reveals a broken required behavior is a required failure.
+- A flow is complete, and ship may deliver, only when every required item has `PASS` evidence for the current change reference and scope, and no required review finding is unresolved. `FAIL`, `INCONCLUSIVE`, missing, or stale evidence blocks; `unverified` discloses a gap but never waives it. Supplementary gaps stay visible without blocking.
+- On a required gap, keep local work and report `blocked` with the missing proof and next action; `finish` never waives this. Only the user can drop a required item (record it with its residual risk) or authorize publishing the unfinished change as a draft PR, which stays visibly incomplete and is never marked ready or watched.
 
 ## Rules
 

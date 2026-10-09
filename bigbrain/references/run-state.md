@@ -10,19 +10,15 @@ Create state only for feature, bugfix, maintenance, plan, or watch work that spa
 
 ## Working artifacts
 
-Keep scratch reports, briefs, command output, and other temporary working files outside every project checkout. Never create `.tmp-bigbrain` or another scratch directory in the repo, even if ignored by Git. This does not relocate requested deliverables such as a saved plan or project documentation.
+Scratch reports, briefs, and command output go in one unique per-task directory outside every checkout (for example `mktemp -d "${TMPDIR:-/tmp}/bigbrain.XXXXXX"`). Never create `.tmp-bigbrain` or any scratch directory in the repo, even an ignored one; without temporary storage, use another location outside the repo or the conversation. Requested deliverables, such as a saved plan, keep their destination. The lead gives each subagent an absolute output path there.
 
-Use a unique per-task directory under the system temporary directory (for example, `mktemp -d "${TMPDIR:-/tmp}/bigbrain.XXXXXX"`). The lead gives each subagent an explicit absolute output path there. If temporary storage is unavailable, use another writable location outside the repo or return a compact result in the conversation; do not fall back to the checkout.
-
-Before checkpointing or yielding an unfinished run, preserve reports and proof artifacts needed for decisions, verification, or resume in the run directory or durable harness store, and record their durable locations in state. On completion, preserve the evidence supporting the final result there too. If durable storage is unavailable, keep a compact result in the conversation and disclose the resume limitation.
-
-After required evidence is preserved and no subagent still uses the scratch files, remove the temporary directory created for this task. Preserve the run directory for resume and inspection; never clean up another task's files.
+Before yielding or finishing, copy the reports and proofs needed for resume or for the final result into the run directory and record their paths in state. Then, once no subagent uses it, delete this task's scratch directory, never another task's.
 
 ## Change reference
 
-The lead resolves one effective change reference before measuring or delegating a task diff: `baseBranch`, its actual tip `baseCommit`, and the examined `headCommit`. Use the existing PR's actual target, or a grounded parent branch for a real stack; use the remote default only when it is the intended target. Before a PR exists, inspect branch ancestry and task intent; an unresolved target is a grounding gap, not permission to assume default. Record the actual checkout/source and head branch too.
+Before measuring or delegating a task diff, the lead resolves `baseBranch`, its tip `baseCommit`, and the examined `headCommit`, plus the checkout and head branch. `baseBranch` is the PR's actual target, a grounded stacked parent, or the default only when it is the intended target; an unresolved target is a grounding gap, never an assumed default.
 
-Use `git diff <baseCommit>...<headCommit>` for implementation inspection, review, comments, and size; the same `baseBranch` must be the PR target. Bind evidence to that source, head and base identity, plus its scope. Keep the source snapshot unchanged until verification/review observation ends; if it moves, invalidate affected evidence and repeat those checks against the new reference.
+Every diff for inspection, review, comments, and size is `git diff <baseCommit>...<headCommit>`, and the PR targets that `baseBranch`. Evidence binds to that reference and its scope; if it moves before verification and review end, rerun the affected checks.
 
 ## Fields
 
@@ -61,16 +57,16 @@ Use this small schema, omitting irrelevant fields:
 }
 ```
 
-Criteria and evidence carry `required` or `supplementary` per `bricks/verify.md#delivery-gate`; absent classification means required. Evidence names the check, verdict, tested change reference, command, scope, and output artifact or compact result. Findings have stable IDs, source, disposition, reason, and any fix commit. Decisions record the user's instruction and its scope, but a checkpoint never grants new authorization. Preserve grounding, sketches/briefs, baselines, loop attempts, and proof artifacts needed for resume. Missing temporary reports are a grounding gap, not evidence.
+Criteria and evidence carry `required` or `supplementary` per `bricks/verify.md#delivery-gate`. Evidence names the check, verdict, tested change reference, command, scope, and output artifact or compact result. Findings have stable IDs, source, disposition, reason, and any fix commit. Decisions record the user's instruction and its scope, but a checkpoint never grants new authorization.
 
 ## Checkpoints
 
-Save after grounding and design, each returned implementation or repair batch, verification and review, PR creation or push, and each actionable watch event; also before structural returns and reproduction passes per `references/loop-control.md`. Save before yielding or ending a bounded watch. Do not serialize every tool call. Keep counters across resumption; `reviewCommit` records what was reviewed, not a timeless `reviewDone` flag. Save `waiting` at a deadline, `blocked` for a concrete blocker, and `done` only when the flow's goal is achieved or the PR is closed; include the next action on every unfinished exit.
+Save after each phase and each returned batch, after PR creation or push and each actionable watch event, and before structural returns, reproduction passes, and yielding; not after every tool call. `reviewCommit` records what was reviewed, not a timeless flag. Status is `waiting` at a deadline, `blocked` for a concrete blocker, and `done` only when the goal is achieved or the PR is closed; every unfinished exit records `nextAction`.
 
 ## Resume
 
 Route `/bigbrain resume <run-id or state-path>` here. For a run ID, look in `~/.agents/runs/bigbrain/<repo>/`; an explicit state path also works. Keep a resumed run in its existing directory. Load that run, confirm the repo identity and checkout exist, inspect the current branch, HEAD, uncommitted changes, PR state when present, and recover needed artifacts. Never overwrite unrelated changes or switch the user's checkout silently. Report a mismatch that prevents safe progress.
 
-Check a checkpoint's claims against reality before continuing. A PR's current head and target outrank the saved reference; reconstruct a missing `baseBranch` from current reality before using older state. Evidence only proves the reference and scope actually checked; never reuse wrong-base evidence. After HEAD, base, wiring, or relevant files change, rerun affected proofs and static checks; old verdicts remain history. Restore criteria, invariants, verification counters, and the loop counters/attempts per `references/loop-control.md` before spawning any child; material changes require a fresh review. Missing criterion/check classifications default to required, never to a delivery waiver.
+A checkpoint is a claim; check it against reality before continuing. A PR's current head and target outrank the saved reference, and evidence counts only for the reference and scope it checked: after HEAD, base, wiring, or relevant files change, rerun the affected proofs. Restore criteria, invariants, and counters per `references/loop-control.md` before spawning any child; material changes require a fresh review.
 
-Resume the named playbook at the next justified step. When its saved phase is post-ship watch, resume `bricks/pr-watch.md` directly instead of opening another PR. Reconstruct missing evidence rather than inventing it. A persisted deadline that expired stops the watch with its current blockers; an explicit new watch run may get a new budget. Completion stores `done` and the final artifact or PR; it does not turn task details into learned memory.
+Resume the named playbook at the next justified step. When its saved phase is post-ship watch, resume `bricks/pr-watch.md` directly instead of opening another PR. Reconstruct missing evidence rather than inventing it. An expired deadline stops the watch with its current blockers. Completion stores `done` and the final artifact or PR; it does not turn task details into learned memory.

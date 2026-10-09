@@ -4,7 +4,7 @@ Explicit execution settings live in `~/.agents/config/bigbrain.md`, outside any 
 
 ## Read
 
-Read the file at the start of every run. Missing keys take their defaults. If it is absent, use the defaults until the next setup or explicit settings write. An existing config key always wins.
+Read the file at the start of every run. Missing keys or entries take their defaults. If it is absent, use the defaults until the next setup or explicit settings write. An existing config key always wins.
 
 The file has a `## global` section and optional `## repo: <owner>/<name>` sections. Resolve the repo name from `git remote get-url origin`, or from the top-level folder name when there is no remote. A repo section overrides the global section key by key.
 
@@ -33,14 +33,13 @@ When the user states a lasting execution preference ("from now on", "remember", 
 | `setup.<harness>` | `done <YYYY-MM-DD>`, `later`, `never` | unset (ask) |
 | `models.<harness>` | `tier-or-role=model:effort, ...` (see below) | unset |
 
-A PR size cap documented in the repo (agent docs, `CONTRIBUTING.md`, a bot config) still applies when `pr.max-lines` is absent or `none`; when both define a cap, use the lower one.
-For existing grill settings without a `maintenance` entry, use its default; preserve all configured entries. Loop limits follow `references/loop-control.md` and persist across resume. `later` means ask again on the next run. A setup older than 60 days earns a one-line suggestion to rerun `/bigbrain setup` in the final reply.
+Loop limits are charged per `references/loop-control.md`. `later` means ask again on the next run. A setup older than 60 days earns a one-line suggestion to rerun `/bigbrain setup` in the final reply.
 
 ## PR budget
 
-With `pr.max-lines` absent or `none` and no repo cap, there is no PR size limit: skip size-budget checks and never slice solely for line count. Setup offers the user a choice between no limit and a positive integer; it never assigns a numeric cap without their choice. Preserve existing explicit settings.
+A cap applies only when `pr.max-lines` sets one or the repo documents one (agent docs, `CONTRIBUTING.md`, a bot config); when both do, the lower wins. Without a cap, skip size checks and never slice for line count.
 
-When a cap applies, a PR never exceeds the effective cap of changed lines plus a 5 % tolerance, tests included, measured with `git diff --shortstat <baseCommit>...<headCommit>` using `references/run-state.md#change-reference`. A stricter repo rule also constrains the tolerance. Within the tolerance, ship as is: never slice for it. The budget is a stop condition, never a target: no subagent compacts, reflows, or reindents code to fit under it, and it is never a success criterion. Measure after each implementer or fix round returns. Over budget: no verify, no review, no push. Switch to `playbooks/plan.md` and slice, preserving the flow and reusing the grounding, transformation brief or sketch, and branch commits; keep the branch unpushed as a reference. A review fix that would cross the budget stays unapplied and is listed in the PR body, unless it is a blocker: then the whole change is over budget.
+With a cap, measure `git diff --shortstat <baseCommit>...<headCommit>` (`references/run-state.md#change-reference`), tests included, after each implementer or fix round. Up to the cap plus 5 %, ship as is. Beyond it: no verify, review, or push; switch to `playbooks/plan.md` and slice, reusing grounding, brief or sketch, and branch commits. The cap is a stop condition, never a target or a success criterion: no subagent compacts, reflows, or reindents code to fit. A non-blocking review fix that would cross it stays unapplied and is listed in the PR body; a blocking one puts the whole change over budget.
 
 ## Models
 
@@ -56,15 +55,11 @@ A value is a native model slug, or a profile model for Delta, optionally followe
 
 Resolve a role's model: its role key in `models.<harness>` (e.g. `reviewer=...`), else its tier key, else the harness-native config named in its harness file, else your judgment with the tier rules in `playbooks/setup.md`. `none` means the role has no model, and for an arena role, no arena.
 
-Resolve model and effort together from the selected entry: an explicit role override replaces the tier's entire pair. A bare role override does not borrow the effort of a different tier model. When selecting a different model for a challenge or arena fallback, resolve its effort again. Different efforts on the same model do not count as distinct models.
+Model and effort come from the same selected entry; never pair one entry's model with another's effort. Different efforts on one model are not distinct models.
 
 ## Effort
 
-The suffix is an execution setting, not part of the model ID. Recognized labels are `off`, `minimal`, `low`, `medium`, `high`, `xhigh`, `max`, and `ultra`; accept a label only when the installed harness and selected model support it. An absent suffix or `:inherit` preserves the native effort/default. Existing native selectors such as OMP's `:high` keep their meaning.
-
-Translate the pair through section 2 of the harness adapter: a separate thinking/effort parameter, native model selector/variant, or profile setting. Never pass the skill suffix as an opaque model ID to a tool expecting a bare slug. Inspect actual controls before translating; do not invent an equivalent variant or silently promise the requested depth. If effort cannot be controlled or is clamped, retain the selected model, use its native supported behavior, and state the limitation once. A model without reasoning support has no adjustable effort.
-
-Setup recommends and stores an explicit supported effort with each model, including every arena entry. Typical starting points are `high` for smart, `medium` for code, and `low` for fast; adapt to the user's preferences and model controls. Use `:inherit` when no explicit effort can be applied. These are setup recommendations, not defaults retroactively applied to existing bare entries.
+The `:effort` suffix is an execution setting, not part of the model ID: never pass it inside a model slug. Translate it through section 2 of the harness file, using only levels the harness and model actually support. An absent suffix or `:inherit` keeps the native default. If effort cannot be applied, keep the model and say so once.
 
 Example: `models.pi: smart=opencode-go/muse-spark-1.3-contributor:high, code=opencode-go/muse-spark-1.3-contributor:high, fast=opencode-go/deepseek-v4.1-flash:low, arena.design=[opencode-go/mimo-v2.6-pro:high, opencode-go/glm-5.3-flash:high]`.
 
@@ -74,6 +69,6 @@ Example: `models.pi: smart=opencode-go/muse-spark-1.3-contributor:high, code=ope
 
 Pass the model explicitly on every spawn, per section 2 of the harness file. If the harness rejects it, fall back to the inherited model, or for an arena, drop it, and say so in one line.
 
-**Arena gate.** The one place that decides whether the design arena runs: at most once per run, per `references/loop-control.md`. In every flow, including plans, slices, and repairs, first require all three: multiple viable structures respecting criteria, preserved contracts, and applicable principles; consequential tradeoffs in coupling, maintenance, migration, or operations; and no answer already established by the request, local conventions, or grounded facts. Name the unresolved decision and tradeoff. Verify missing facts first; never manufacture candidates. Size, architect invocation, or available models alone do not qualify. Then apply the capability conditions below.
+**Arena gate.** The one place that decides whether the design arena runs, at most once per run. It needs a named structural decision with several viable shapes and consequential tradeoffs (coupling, maintenance, migration, operations) that the request, local conventions, and grounded facts do not settle. Verify missing facts first; never manufacture candidates. Size or available models alone never qualify. Then apply the capability conditions below.
 
 The arena runs when `arena.design` is not `never`, the harness has subagents, and enough distinct selectable models exist for `arena.candidates`, one per candidate. With only one selectable model, use one distinct angle per candidate. When diversity is insufficient otherwise, skip the arena. Say in one line when an arena is skipped or runs on one model, and recheck the gate after any fallback.
