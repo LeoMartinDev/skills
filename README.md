@@ -65,7 +65,7 @@ Before a write workflow, the agent checks the working tree and clarifies unresol
 
 ### Features
 
-The [feature playbook](bigbrain/playbooks/feature.md) establishes observable criteria and implements a grounded approach. When the request, contracts, and an inspected precedent settle the shape, the lead writes a compact brief. Open consequential structural decisions use architect; an arena additionally needs viable alternatives with consequential tradeoffs that facts and conventions cannot settle. A blocked approach keeps dependent implementation paused. Large or over-budget changes move to [planning](#planning).
+The [feature playbook](bigbrain/playbooks/feature.md) establishes observable criteria and implements a grounded approach. When the request, contracts, and an inspected precedent settle the shape, the lead writes a compact brief. Open consequential structural decisions use architect; an arena, at most once per run, additionally needs viable alternatives with consequential tradeoffs that facts and conventions cannot settle. A blocked approach keeps dependent implementation paused. Large or over-budget changes move to [planning](#planning).
 
 ```mermaid
 flowchart TD
@@ -79,7 +79,7 @@ flowchart TD
 
 ### Bugfixes
 
-The [bugfix playbook](bigbrain/playbooks/bugfix.md) requires a faithful repro before fixing anything. It checks competing hypotheses against evidence; a fix crossing a function or module boundary uses architect first. If two fixes based on the same hypothesis fail, it reopens the cause investigation.
+The [bugfix playbook](bigbrain/playbooks/bugfix.md) requires a faithful repro before fixing anything. It checks competing hypotheses against evidence; a fix crossing a function or module boundary uses architect first. A new wave of hypotheses after none is confirmed, or two failed fixes based on the same hypothesis, reopens the cause investigation as a bounded structural return.
 
 ```mermaid
 flowchart TD
@@ -107,7 +107,7 @@ flowchart TD
     V --> S["Delivery after required repairs"]
 ```
 
-Responsibilities, state ownership, and dependencies can trigger architecture. Size or crossing module boundaries alone cannot. The design arena runs only for consequential alternatives that grounded facts, conventions, and the request cannot settle; candidates and the final synthesis must satisfy the same constraints. Plans and repairs retain these rules.
+Responsibilities, state ownership, and dependencies can trigger architecture. Size or crossing module boundaries alone cannot. The design arena runs at most once per run, only for consequential alternatives that grounded facts, conventions, and the request cannot settle; candidates and the final synthesis must satisfy the same constraints. Plans and repairs retain these rules.
 
 ### Planning
 
@@ -209,7 +209,7 @@ flowchart TD
     Q -->|Human action, closed, or limit reached| S["Report state and blockers; stop"]
 ```
 
-Failed or stale repairs are not pushed. A watch retains its deadline and counters on resume, reports meaningful changes, and never merges the PR. Draft status or missing approvals remains a human action; readiness is a current observation.
+Failed or stale repairs are not pushed. A watch has its own repair budget (`watch.max-rounds`): repair batches, probes, and CI reruns charge it, not the flow's verification rounds. In Claude Code, waits run as a background poll loop around the helper. A watch retains its deadline and counters on resume, reports meaningful changes, and never merges the PR. Draft status or missing approvals remains a human action; readiness is a current observation.
 
 ### Resume
 
@@ -224,7 +224,7 @@ flowchart TD
     E --> F["Continue the saved phase and flow"]
 ```
 
-A saved watch resumes its watch phase, retaining its limits. It does not open another PR or restart a completed design. [Loop control](bigbrain/references/loop-control.md) also bounds structural returns after implementation and bug reproduction: `loop.max-replans` and `repro.max-rounds` default to three, with reproduction counting its first pass. Counters and attempt evidence survive resume and workflow transitions; a repeated blocker without new discriminating evidence stops the dependent loop before its numeric limit.
+A saved watch resumes its watch phase, retaining its limits. It does not open another PR or restart a completed design. [Loop control](bigbrain/references/loop-control.md) bounds every retry loop from one table: reproduction passes, structural returns (including a root-cause wave that confirms no mechanism), repair and watch rounds, the arena, and grill rounds. Counters and attempt evidence survive resume and workflow transitions; a retry without an observation absent from earlier attempts stops the loop before its numeric limit.
 
 ### Setup
 
@@ -239,7 +239,7 @@ flowchart LR
 
 ### Shared verification and repair
 
-Feature, bugfix, and maintenance launch verification and review on the same fixed source/head/base. The lead waits for both reports before changing that snapshot, then sends counterexamples and accepted findings in one repair batch. Each batch costs one verification round, retained on resume.
+Feature, bugfix, and maintenance launch verification and review on the same fixed source/head/base. The lead waits for both reports before changing that snapshot, then sends counterexamples and accepted findings in one repair batch. Each batch, and each probe for a required inconclusive check, costs one verification round, retained on resume.
 
 ```mermaid
 flowchart TD
