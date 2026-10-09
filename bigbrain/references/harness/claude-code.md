@@ -8,7 +8,7 @@ Tool `Agent`, with the parameters `description` (3-5 words), `prompt` (the brief
 
 - Explorer (lookup): `subagent_type: "Explore"`. It has no Edit or Write and is built for search, not judgment.
 - Every other role (explorer (report), designer, implementer, verifier, reviewer, judge, arena candidate): `subagent_type: "general-purpose"`. The brief's scope line keeps the read-only roles read-only.
-- Separate worktrees (parallel implementers, a bugfix hypothesis needing temporary instrumentation): pass `isolation: "worktree"`. The child works on an isolated copy of the repo; a worktree it changed is kept and its path and branch come back with the result. The designated implementer integrates kept commits; remove probe worktrees once their verdict is recorded. The verifier's base-comparison worktree still follows `bricks/verify.md#rules`.
+- Separate worktrees (parallel implementers, a bugfix hypothesis needing temporary instrumentation): pass `isolation: "worktree"`. The child works on an isolated copy of the repo; a worktree it changed is kept and its path and branch come back with the result. The designated implementer integrates kept commits; remove probe worktrees once their verdict is recorded. The verifier's base-comparison worktree still follows `bricks/verify.md#checks-in-order`.
 - Parallel: put several `Agent` calls in one message. Subagents run in the background by default and notify you on completion. Never poll them.
 - Continue a subagent that already returned with `SendMessage`, addressed to its agent ID. Its context stays intact.
 - The user does not see a subagent's report. Relay what matters.
@@ -17,7 +17,7 @@ Tool `Agent`, with the parameters `description` (3-5 words), `prompt` (the brief
 
 Parameter `model` on the `Agent` call. It takes the aliases listed in the tool's schema (for example `opus`, `sonnet`, `haiku`, `fable`). Omit it only when the role has no model per `references/config.md#models`: the subagent then inherits the lead's model.
 
-Strip the skill's `:effort` suffix from the alias and pass it as the `effort` parameter when the schema lists that level; otherwise omit `effort`, keeping the native default, and report the limitation per `references/config.md#effort`. Do not change the lead's effort to simulate a child override.
+Strip the skill's `:effort` suffix from the alias and pass it as the `effort` parameter when the schema lists that level; otherwise omit `effort`, keeping the native default, and report the limitation per `references/config.md#models`. Do not change the lead's effort to simulate a child override.
 
 ## 3. List available models
 
@@ -39,7 +39,7 @@ None needed: the model is chosen per call. Setup writes only `models.claude-code
 
 ## 7. Additional capabilities
 
-Apply `references/capabilities.md`. Core delegation, continuation, parallelism, model selection, and choice UI follow sections 1–4. Retrieval extensions and wake-up support must be inspected; file state and memory use the shared fallbacks.
+Apply `references/capabilities.md`. Core delegation, continuation, parallelism, model selection, and choice UI follow sections 1–4. Retrieval extensions and wake-up support must be inspected; memory uses the shared fallback.
 
 **PR watch waits.** Foreground `sleep` is blocked. Start one `Bash` call per PR with `run_in_background: true` that reruns `scripts/watch-pr.sh` against the saved snapshot every `watch.poll-seconds` and exits on a change (0), a script failure, or the saved deadline (3). Set every variable in that same command; `DEADLINE` is the saved deadline in epoch seconds:
 

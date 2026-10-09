@@ -94,4 +94,4 @@ def fingerprint($s):
    elif any($blockers[]; .kind == "WAITING") then "WAITING" else "READY" end) as $verdict
 | fingerprint($s) as $current
 | (if $previous[0] == null then ["initial"] else fingerprint($previous[0]) as $old | [$current|keys[]|select($current[.] != $old[.])] end) as $changes
-| {version:1,snapshot:$s,verdict:$verdict,blockers:$blockers,changes:$changes}
+| {snapshot:$s,verdict:$verdict,blockers:$blockers,changes:$changes}

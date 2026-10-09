@@ -13,9 +13,9 @@ Tool `spawn_agent`, with the parameters `label` (a short UI label), `message` (t
 
 ## 2. Pick the model
 
-Parameter `model` on the `spawn_agent` call (Zed 1.22 and later), as the exact `provider/model-id` that `list_agents_and_models` returns for the native agent (for example `anthropic/claude-opus-5-5`, `openai-subscribed/gpt-5.6-sol`). Omit it only when the role has no model per `references/config.md#models`: the subagent then runs on `agent.subagent_model`, else the thread's model. An unavailable model fails the spawn, and the error names `list_agents_and_models`. If `spawn_agent` has no `model` parameter, Zed is older than 1.22: every subagent shares one model, so say so in one line.
+Parameter `model` on the `spawn_agent` call, as the exact `provider/model-id` that `list_agents_and_models` returns for the native agent (for example `anthropic/claude-opus-5-5`, `openai-subscribed/gpt-5.6-sol`). Omit it only when the role has no model per `references/config.md#models`: the subagent then runs on `agent.subagent_model`, else the thread's model. An unavailable model fails the spawn, and the error names `list_agents_and_models`.
 
-Strip the skill's `:effort` suffix before passing `model`. This adapter documents no per-call effort parameter; native settings and the limits in section 6 apply. Use an explicit level only if the installed runtime exposes a matching control, per `references/config.md#effort`.
+Strip the skill's `:effort` suffix before passing `model`. This adapter documents no per-call effort parameter; native settings and the limits in section 6 apply. Use an explicit level only if the installed runtime exposes a matching control, per `references/config.md#models`.
 
 ## 3. List available models
 
@@ -37,4 +37,4 @@ None required: configuration holds `models.zed`, and each spawn passes its role'
 
 ## 7. Additional capabilities
 
-Apply `references/capabilities.md`. Delegation, continuation, parallelism, and model selection follow sections 1–4. Choice UI falls back to text. Inspect retrieval and wake-up tools; state and memory use file fallbacks.
+Apply `references/capabilities.md`. Delegation, continuation, parallelism, and model selection follow sections 1–4. Choice UI falls back to text. Inspect retrieval and wake-up tools; memory uses the file fallback.

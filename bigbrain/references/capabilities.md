@@ -11,9 +11,8 @@ Read with the selected harness adapter. Adapters map mechanisms; playbooks and b
 | `choiceUI` | Questions and answers accessible in this session | Text questions per `bricks/grill.md` |
 | `semanticSearch` | Conceptual retrieval returning source paths and snippets | `rg`/lexical search followed by targeted reads |
 | `symbolNavigation` | Definitions, references, callers with source pointers | Exact search and inspect callers; do not claim completeness |
-| `persistentState` | Read/update this run's checkpoint across turns | File checkpoint per `references/run-state.md`; if unwritable, report no durable resume |
 | `projectMemory` | Scoped durable facts with source and deduplication | Markdown store per `references/memory.md` |
-| `wakeUp` | Scheduler or event can resume this task and its checkpoint | Bounded live polling; if the session ends, report paused monitoring, never promise background work |
+| `wakeUp` | Scheduler or event can resume this task | Bounded live polling; if the session ends, report paused monitoring, never promise background work |
 
 Each adapter's section 7 specifies extension dependencies and extra mechanisms. Unlisted optional capabilities require inspecting tools before use. Read-only roles' scopes still apply when a tool or profile does not enforce them.
 

@@ -73,4 +73,4 @@ Configuration stays the source of truth. Whenever a model or effort in `models.o
 
 ## 7. Additional capabilities
 
-Apply `references/capabilities.md`. Delegation, continuation, parallelism, model profiles, and choice UI follow sections 1–4. Inspect retrieval and wake-up tools; state and memory use file fallbacks.
+Apply `references/capabilities.md`. Delegation, continuation, parallelism, model profiles, and choice UI follow sections 1–4. Inspect retrieval and wake-up tools; memory uses the file fallback.

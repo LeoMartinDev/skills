@@ -20,7 +20,7 @@ Delegate through the subagent mechanism in your tool list: read its schema and p
 
 There is no per-call model. Each profile has a default model and thinking effort in Settings > Subagents; provider-specific Model Preferences in LLM Providers take precedence, then Delta's built-in default (Worker follows the parent's model). Custom profiles are TOML files in the `profiles` folder beside `settings.json`. A role mapped to a profile in configuration means: delegate with that profile.
 
-Apply the effort from a model/profile pair through the native profile setting, checking its actual supported fields. Strip the skill suffix from profile IDs. Roles needing different efforts require distinct profiles; report provider-level overrides that prevent the requested effort per `references/config.md#effort`.
+Apply the effort from a model/profile pair through the native profile setting, checking its actual supported fields. Strip the skill suffix from profile IDs. Roles needing different efforts require distinct profiles; report provider-level overrides that prevent the requested effort per `references/config.md#models`.
 
 ## 3. List available models
 
@@ -42,4 +42,4 @@ Setup sets the Worker, Scout, and Reviewer profile models, or writes custom `<id
 
 ## 7. Additional capabilities
 
-Apply `references/capabilities.md`. Delegation, continuation, parallelism, and model profiles depend on the enabled settings in sections 1–4. Choice UI falls back to text. Inspect retrieval and wake-up tools; state and memory use file fallbacks.
+Apply `references/capabilities.md`. Delegation, continuation, parallelism, and model profiles depend on the enabled settings in sections 1–4. Choice UI falls back to text. Inspect retrieval and wake-up tools; memory uses the file fallback.

@@ -1,59 +1,53 @@
 # Subagent brief
 
-Every delegation uses this template. A subagent starts with no context: the brief is its whole world. Fill every section, drop none.
+Every delegation uses this template. A subagent starts with no context: the brief is its whole world.
 
 ```markdown
 ## Role
-<explorer (report) | explorer (lookup) | designer | implementer | verifier | reviewer | judge | arena candidate>. <One sentence on what you produce.>
+<explorer (report) | explorer (lookup) | designer | implementer | verifier | reviewer | judge | arena candidate>. <What you produce.>
 
 ## Goal
-<The outcome, in one or two sentences. For code: the behavior a user observes when you are done.>
+<The outcome in one or two sentences; for code, the behavior a user observes when you are done.>
 
 ## Grounding
-<Only what this subagent needs: the lead's mental model (<= 20 lines), file pointers, the chosen sketch, conventions, test commands. Paths, not pasted code.>
+<Only what this role needs: the lead's mental model (<= 20 lines), file pointers, the chosen sketch, conventions, test commands. Paths, not pasted code.>
 
 ## Scope
-- Allowed to write: <paths or globs, or "nothing, read-only">.
+- Allowed to write: <paths, or "nothing, read-only">; your report goes to <absolute path in the scratch directory>.
 - Out of scope: <what not to touch or decide>.
-- Budget (roles that write code): <the remaining budget from `references/config.md#pr-budget`, tests included, or "no size limit">. Stop and report the measure before a change would cross it. Never compact, reflow, or reindent code to fit; extend existing code and tests in place rather than rewriting a block.
+- Budget (writing roles): <remaining PR budget, tests included, or "no size limit">. Stop and report before crossing it.
 
 ## Principles to read first
 Read each file below in full before any other tool call.
-<Absolute paths, e.g. <skill-dir>/principles/model-the-domain.md. For a role that writes code, under each path, its file's **Rule** line and **Don't** list, verbatim.>
+<Absolute paths. For an implementer, also each file's **Rule** line and **Don't** list, verbatim.>
 
 ## Success criteria
-<Checkable statements and commands, each `required` (the default) or `supplementary` per bricks/verify.md#delivery-gate.>
+<Checkable statements and commands; mark any optional one `optional`.>
 
 ## Invariants
-<Existing behavior and contracts to preserve, with source pointers. "None identified" when appropriate; do not manufacture compatibility requirements.>
+<Existing behavior and contracts to preserve, with source pointers, or "None identified".>
 
 ## Return format
 <= 30 lines unless told otherwise:
-- Result: <done | blocked | partial> and one line why.
+- Result: <done | blocked | partial> and why, in one line.
 - Pointers: <paths and symbols touched or found>.
 - Decisions: <choice, alternatives, why>, one line each.
-- Evidence: <commands run and their verbatim output, trimmed to the relevant lines>.
-- Principles applied: <file> → <one concrete application in this work>, one line per file given.
-- Open questions: <only what you could not settle yourself>.
-If the same check fails twice with no new observation, stop and return `blocked` with the evidence.
-Never paste whole files or long diffs. The lead reads the diff itself if needed.
+- Evidence: <commands run and their output, trimmed to the relevant lines>.
+- Open questions: <only what you could not settle>.
+If the same check fails twice with nothing new, stop and return `blocked` with the evidence. Never paste whole files or long diffs.
 ```
 
 ## Rules
 
-- Give absolute paths to the skill files the subagent must read, since its working directory is the repo.
-- For file reports, put the absolute output path in the run scratch directory (`references/run-state.md#working-artifacts`) in Scope's allowed writes.
-- Inline principle text only for the roles that write code (`implementer`): a fast code model may never open the files. This is skill text, not code, so "Paths, not pasted code" does not apply. Other roles get paths only.
-- An `explorer` runs in one of two cases, each mapped to an agent in section 1 of the harness file. An explorer (report), as in `bricks/how.md`, for a bugfix hypothesis, or for CI log triage in `bricks/pr-watch.md`, writes its report to a file and runs shell commands such as `git log`. An explorer (lookup) answers a quick factual question from files or the web, and writes nothing: a fact for the grill or grounding.
-- Each check runs once per role on unchanged code; the verifier may rerun an implementer's. Implementers run narrow checks per `bricks/implement.md`; the full suite, lint, and wider checks run only in `bricks/verify.md`.
-- The budget stays in the Scope section, never in the success criteria: a criterion invites the subagent to optimize toward it.
-- One subagent, one role. A verifier never sees the implementer's reasoning, only the goal, diff location, success criteria, and independently grounded invariants.
-- Guardrails are never in the allowed paths unless the task is about them: lint, type, format, test, and CI config, and disable comments (`eslint-disable`, `@ts-expect-error`, `# noqa`). When a guardrail blocks the code, change the code to satisfy it. If that is truly impossible, the subagent reports it as an open question, and the lead asks the user: a repo rule is the team's call.
-- Each write brief names the implementer that owns branch and commit changes; parallel writers use separate worktrees, and one designated implementer integrates their commits. The lead pushes and updates PRs, never recommitting returned commits. No other role runs `git stash`, `reset`, `checkout`, `switch`, `clean`, or `commit` in the user's checkout, and no role pops or drops another's stash.
-- A verifier's Scope may allow only its own proof worktree under the run scratch, with the tests it needs copied in, removed with `git worktree remove` before it returns: no fixes, commits, or changes to the source checkout.
-- Independent subagents launch together, in parallel, when the harness allows it.
-- A returned report that breaks the format gets one retry with the format restated, then the lead extracts what it needs.
+- Give absolute paths to skill files: the subagent's working directory is the repo.
+- Inline principle text only for implementers, which may run on a fast model that never opens the files.
+- One subagent, one role. A verifier never sees the implementer's reasoning.
+- An explorer (report) writes a report file and may run shell commands such as `git log`; an explorer (lookup) answers a quick factual question from files or the web and writes nothing. Section 1 of the adapter maps each to an agent.
+- Implementers run narrow checks; the full suite and wider checks belong to `bricks/verify.md`.
+- Guardrails (lint, type, format, test, and CI config, disable comments) are never in the allowed paths unless the task is about them. When one blocks the code, change the code; if that is impossible, report it as an open question for the user.
+- Independent subagents launch together when the harness allows it.
+- A report that breaks the format gets one retry with the format restated; then extract what you need.
 
 ## Continuing
 
-To send follow-up work (counterexamples, review findings) to a subagent that already returned, continue that same subagent if the harness allows it (section 1 of its file). Otherwise, spawn a fresh one of the same role with the original brief, a note on the current branch state, and the follow-up only.
+Send follow-up work (counterexamples, findings) to the same subagent when the adapter supports it (section 1). Otherwise spawn a fresh one of the same role with the original brief, the current branch state, and the follow-up.

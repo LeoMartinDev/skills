@@ -51,7 +51,7 @@ Write a request after `/bigbrain`. You can also pass a GitHub issue URL, a Notio
 | [Review changes](#code-reviews) | `/bigbrain review this branch` |
 | [Challenge an idea](#idea-discussions) | `/bigbrain grill my idea: cache VAT rates per org` |
 | [Watch a pull request](#pr-watch) | `/bigbrain watch-pr 123` |
-| [Continue saved work](#resume) | `/bigbrain resume <run-id or state-path>` |
+| [Continue earlier work](#resume) | `/bigbrain resume feat/csv-export` |
 
 Plans, explanations, reviews, and idea discussions stop at their result. A PR watch checks CI and reviews, repairs verified findings, and stops when ready or when its limits are reached. The skill never merges pull requests.
 
@@ -59,7 +59,7 @@ Plans, explanations, reviews, and idea discussions stop at their result. A PR wa
 
 The lead follows the selected playbook and keeps only decisions and short summaries in its context. Subagents handle exploration, implementation, verification, and review.
 
-Before changing code, the agent checks the working tree and clarifies open goals or scope. Decisions only you can make pause the work that depends on them; everything else proceeds.
+Before changing code, the agent checks the working tree and clarifies open goals or scope. Decisions only you can make pause the work that depends on them; everything else proceeds. There are no retry counters: an attempt is retried only when something new has appeared since the last one, otherwise the agent stops and reports what it tried.
 
 ### Features
 
@@ -181,7 +181,7 @@ The [grill brick](bigbrain/bricks/grill.md) asks you the open decisions in round
 flowchart TD
     F["Map open decisions"] --> Q["Ask the current frontier"]
     Q --> A["Use answers and looked-up facts"]
-    A --> M{"More decisions within the caps?"}
+    A --> M{"Decisions still open?"}
     M -->|Yes| Q
     M -->|No| O["Recap decisions and gaps; stop"]
 ```
@@ -205,22 +205,18 @@ flowchart TD
     Q -->|Human action, closed, or limit reached| S["Report state and blockers; stop"]
 ```
 
-Only verified repairs are pushed. A watch stops at its own round and time limits (`watch.max-rounds`, `watch.timeout-minutes`) and never merges; draft status and missing approvals are left to you.
+Only verified repairs are pushed. A watch stops at its deadline (`watch.timeout-minutes`) or when repairs stop making progress, and never merges; draft status and missing approvals are left to you.
 
 ### Resume
 
-[Resume](bigbrain/references/run-state.md#resume) restores the saved flow, criteria, counters, and evidence, after checking them against the actual repo and PR.
+[Resume](bigbrain/playbooks/resume.md) picks up earlier work from its branch or PR, like pstack's session pickup. There is no saved state file: git, the PR, and the previous conversation when available are the trail. The agent reuses what is done and verified instead of redoing it.
 
 ```mermaid
 flowchart TD
-    L["Load checkpoint and artifacts"] --> C["Compare with current repo and PR"]
-    C --> Q{"Safe to continue?"}
-    Q -->|No| B["Report the mismatch or blocker"]
-    Q -->|Yes| E["Refresh affected evidence"]
-    E --> F["Continue the saved phase and flow"]
+    L["Read the branch, PR, and previous conversation"] --> D["Compare what landed with the goal"]
+    D --> V["Verify the inherited claims the rest depends on"]
+    V --> F["Continue at the resume point"]
 ```
-
-Every retry loop is bounded by [loop control](bigbrain/references/loop-control.md), and its counters survive resume. A retry that brings no new observation stops the loop early.
 
 ### Setup
 
@@ -293,7 +289,7 @@ Change lasting preferences in plain language:
 /bigbrain from now on, open PRs as drafts here
 ```
 
-Settings live in `~/.agents/config/bigbrain.md`, with global defaults and optional overrides per repository. Project knowledge and resumable checkpoints are stored separately, outside your checkout; finished checkpoints are deleted after 30 days.
+Settings live in `~/.agents/config/bigbrain.md`, with global defaults and optional overrides per repository. Project knowledge is stored separately, outside your checkout.
 
 For the exact settings and defaults, see [configuration](bigbrain/references/config.md).
 
@@ -312,10 +308,10 @@ ln -s ~/.agents/skills/bigbrain ~/.claude/skills/bigbrain
 The skill is organized into small files loaded as needed:
 
 - [SKILL.md](bigbrain/SKILL.md): entry point, routing, and lead rules.
-- [Playbooks](bigbrain/playbooks/): feature, bugfix, maintenance, plan, and setup workflows.
+- [Playbooks](bigbrain/playbooks/): feature, bugfix, maintenance, plan, resume, and setup workflows.
 - [Bricks](bigbrain/bricks/): reusable steps such as exploration, implementation, review, and shipping.
 - [Principles](bigbrain/principles/): engineering rules applied when relevant.
-- [References](bigbrain/references/): settings, memory, checkpoints, and agent adapters.
+- [References](bigbrain/references/): settings, memory, and agent adapters.
 - [Scripts](bigbrain/scripts/): the read-only PR watch helper and its offline tests.
 
 Keep each skill file within 1,000 words, and add a rule only for an observed failure it prevents. After editing, run `bash scripts/check-skill.sh` (word budget and referenced paths) and `bash bigbrain/scripts/tests/run.sh` (PR watch helper). To validate behavior, run a clear feature request and a vague request in a sandbox repository: the first should proceed, and the second should ask for the missing decisions.

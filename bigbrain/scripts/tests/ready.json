@@ -1,5 +1,5 @@
 {
-  "version": 1, "repo": "acme/demo", "number": 123,
+  "repo": "acme/demo", "number": 123,
   "baseTip": "b", "endBaseTip": "b",
   "pr": {"number": 123, "url": "https://github.com/acme/demo/pull/123", "state": "OPEN", "isDraft": false, "headRefOid": "h", "baseRefOid": "b", "baseRefName": "main", "potentialMergeCommit": {"oid": "m"}, "mergeable": "MERGEABLE", "mergeStateStatus": "CLEAN", "reviewDecision": ""},
   "end": {"number": 123, "url": "https://github.com/acme/demo/pull/123", "state": "OPEN", "isDraft": false, "headRefOid": "h", "baseRefOid": "b", "baseRefName": "main", "potentialMergeCommit": {"oid": "m"}, "mergeable": "MERGEABLE", "mergeStateStatus": "CLEAN", "reviewDecision": ""},

@@ -16,7 +16,7 @@ Without one, run each delegated step yourself, in the main thread, in the same o
 
 Only if a per-call or per-agent model setting exists. Otherwise everything runs on the current model.
 
-Split model/effort pairs per `references/config.md#effort`. Pass effort only through a supported control; strip the suffix when sending a bare model ID. With no effort control, retain native behavior and state the limitation once.
+Split model/effort pairs per `references/config.md#models`. Pass effort only through a supported control; strip the suffix when sending a bare model ID. With no effort control, retain native behavior and state the limitation once.
 
 ## 3. List available models
 
@@ -36,4 +36,4 @@ None.
 
 ## 7. Additional capabilities
 
-Apply `references/capabilities.md`. Determine each optional capability from actual tools. Use the fallbacks in the shared contract; do not infer retrieval, durable resume, or background wake-up from the presence of shell or child-agent tools.
+Apply `references/capabilities.md`. Determine each optional capability from actual tools. Use the fallbacks in the shared contract; do not infer retrieval or background wake-up from the presence of shell or child-agent tools.

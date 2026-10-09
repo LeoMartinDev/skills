@@ -10,9 +10,9 @@ Explain why a concrete limit, workaround, retry, compatibility path, or protecti
 
 ## 1. Brief an explorer
 
-Use `references/subagent-brief.md`, role `explorer (report)`, and the selected harness's actual capabilities. One narrow question takes one explorer. Only wider, unresolved independent questions warrant parallel explorers within capability limits; the lead synthesizes them. No new role or model tier.
+Role `explorer (report)`. One narrow question takes one explorer; only wider independent questions warrant parallel explorers, which the lead synthesizes.
 
-Give the explorer the affected symbols and paths, relevant callers/tests, repo identity and current revision or version, relevant uncommitted changes, flag/use state if known, the decision in question, and already collected source pointers. Read `principles/guard-the-context-window.md` and `principles/prove-it-works.md` in full and pass their paths. Assign one report path in the lead's unique scratch directory outside the repo per `references/run-state.md#working-artifacts`. Source access is read-only; only that report may be written. Return a digest of at most 30 lines, with the evidence below and consequential gaps.
+Give the explorer the affected symbols and paths, relevant callers and tests, the current revision, relevant uncommitted changes, flag or usage state if known, the decision in question, and source pointers already collected, plus the principle files `guard-the-context-window` and `prove-it-works`. It reads sources only, writes only its report in the scratch directory, and returns a digest of at most 30 lines with the evidence below and consequential gaps.
 
 ## 2. Trace the reason
 
@@ -23,7 +23,7 @@ Make one bounded, targeted pass. Follow the strongest references; stop once the 
 3. **Extend only where relevant.** Follow directly linked or targeted related tickets, parent context, design docs, chats, or observability available through existing tools when they can settle the question. Do not sweep all categories, globally search transcripts, search unrelated private projects, install tools, or contact authors or teams. Do not ask the user to fetch facts observable through available tools.
 4. **Check present necessity.** Verify the original condition against current dependencies/versions, flag/use state, callers, stored data, contracts, or scoped read-only runtime evidence, whichever bears on it. A historical reason alone never establishes a current requirement. Missing source access or tools is a concrete evidence gap, not proof that a constraint disappeared.
 
-Keep compact source excerpts and proof pointers in the report, not code or log dumps. Reuse collected evidence only while its scope and relevant state remain valid; refresh changed assumptions. Collection alone never justifies a project-memory write; apply `references/memory.md`'s existing learning gate.
+Keep compact source excerpts and proof pointers in the report, not code or log dumps. Reuse collected evidence only while its scope and relevant state remain valid; refresh changed assumptions.
 
 ## 3. Synthesize and present
 
@@ -42,4 +42,4 @@ Present a concise answer containing:
 - **Coverage and gaps**: sources queried, relevant sources unavailable, contradictions, and missing evidence that could change the conclusion.
 - **For a change workflow**: **Preserve / Change / Avoid / Risk** constraints useful for the decision, each with proof pointers or explicit uncertainty. Pass them into the mental model, transformation brief, or design package and later verification/review.
 
-Absence of rationale never authorizes removal. An obsolete historical motive does not authorize a behavior or scope change: keep the existing maintenance scope rules and product gates. A factual gap does not require user confirmation; finish the read-only analysis with that gap explicit, preserving required contracts. Only a real product or scope preference invokes the existing grill gate.
+Absence of rationale never authorizes removal, and an obsolete motive alone never authorizes a behavior or scope change. A factual gap needs no user confirmation: finish the analysis with the gap explicit.

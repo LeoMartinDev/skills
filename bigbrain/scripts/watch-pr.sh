@@ -26,7 +26,7 @@ trap 'rm -rf "$tmp"' EXIT
 echo '[]' > "$tmp/errors"
 echo 'null' > "$tmp/previous"
 if [ -n "$previous" ]; then
-  jq -se 'select(length == 1) | .[0] | .snapshot // . | select(type == "object" and .version == 1)' "$previous" > "$tmp/previous" || fail 'invalid previous snapshot'
+  jq -se 'select(length == 1) | .[0] | .snapshot // . | select(type == "object")' "$previous" > "$tmp/previous" || fail 'invalid previous snapshot'
 fi
 error() {
   echo "watch-pr: $1" >&2
@@ -54,7 +54,7 @@ cursor_valid() {
   jq -e --arg old "$2" "$1 | (.hasNextPage|type == \"boolean\") and (if .hasNextPage then (.endCursor|type == \"string\" and length > 0) and .endCursor != \$old else true end)" "$3" >/dev/null
 }
 if [ -n "$replay" ]; then
-  jq -se 'select(length == 1) | .[0] | .snapshot // . | select(type == "object" and .version == 1)' "$replay" > "$tmp/snapshot" || fail 'invalid replay snapshot'
+  jq -se 'select(length == 1) | .[0] | .snapshot // . | select(type == "object")' "$replay" > "$tmp/snapshot" || fail 'invalid replay snapshot'
   [ -n "$repo" ] || repo=$(jq -r '.repo' "$tmp/snapshot")
 else
   command -v gh >/dev/null || fail 'install/authenticate gh, or use GitHub tools and the pr-watch brick directly'
@@ -117,10 +117,10 @@ else
   pages "$tmp/comments" "repos/$repo/issues/$number/comments?per_page=100" '[.[][]]'
   request "$tmp/end" pr view "$number" --repo "$repo" --json "$fields" || :
   if [ -n "${base:-}" ]; then request "$tmp/endBranch" api "repos/$repo/branches/$base" --method GET || :; fi
-  jq -n --arg repo "$repo" --argjson number "$number" --arg observedAt "$(date -u +%Y-%m-%dT%H:%M:%SZ)" --slurpfile branch "$tmp/branch" --slurpfile endBranch "$tmp/endBranch" --slurpfile pr "$tmp/pr" --slurpfile end "$tmp/end" --slurpfile rules "$tmp/rules" --slurpfile classic "$tmp/classic" --slurpfile protection "$tmp/protection" --slurpfile headChecks "$tmp/headChecks" --slurpfile headStatuses "$tmp/headStatuses" --slurpfile mergeChecks "$tmp/mergeChecks" --slurpfile mergeStatuses "$tmp/mergeStatuses" --slurpfile reviews "$tmp/reviews" --slurpfile comments "$tmp/comments" --slurpfile threads "$tmp/threads" --slurpfile errors "$tmp/errors" '{version:1,repo:$repo,number:$number,observedAt:$observedAt,baseTip:$branch[0].commit.sha,endBaseTip:$endBranch[0].commit.sha,pr:$pr[0],end:$end[0],policy:{rules:$rules[0],classic:$classic[0],protection:$protection[0]},checks:{head:$headChecks[0],merge:$mergeChecks[0]},statuses:{head:$headStatuses[0],merge:$mergeStatuses[0]},reviews:$reviews[0],comments:$comments[0],threads:$threads[0],errors:$errors[0]}' > "$tmp/snapshot"
+  jq -n --arg repo "$repo" --argjson number "$number" --arg observedAt "$(date -u +%Y-%m-%dT%H:%M:%SZ)" --slurpfile branch "$tmp/branch" --slurpfile endBranch "$tmp/endBranch" --slurpfile pr "$tmp/pr" --slurpfile end "$tmp/end" --slurpfile rules "$tmp/rules" --slurpfile classic "$tmp/classic" --slurpfile protection "$tmp/protection" --slurpfile headChecks "$tmp/headChecks" --slurpfile headStatuses "$tmp/headStatuses" --slurpfile mergeChecks "$tmp/mergeChecks" --slurpfile mergeStatuses "$tmp/mergeStatuses" --slurpfile reviews "$tmp/reviews" --slurpfile comments "$tmp/comments" --slurpfile threads "$tmp/threads" --slurpfile errors "$tmp/errors" '{repo:$repo,number:$number,observedAt:$observedAt,baseTip:$branch[0].commit.sha,endBaseTip:$endBranch[0].commit.sha,pr:$pr[0],end:$end[0],policy:{rules:$rules[0],classic:$classic[0],protection:$protection[0]},checks:{head:$headChecks[0],merge:$mergeChecks[0]},statuses:{head:$headStatuses[0],merge:$mergeStatuses[0]},reviews:$reviews[0],comments:$comments[0],threads:$threads[0],errors:$errors[0]}' > "$tmp/snapshot"
 fi
 jq -e --arg repo "$repo" --argjson number "$number" --slurpfile previous "$tmp/previous" '
-  .version == 1 and .repo == $repo and .number == $number and
+  .repo == $repo and .number == $number and
   (.errors|type == "array") and (.policy|type == "object") and (.policy.rules|type == "array") and
   ([.checks.head,.checks.merge,.statuses.head,.statuses.merge,.reviews,.comments,.threads]|all(.[];type == "array")) and
   ($previous[0] == null or ($previous[0].repo == .repo and $previous[0].number == .number))

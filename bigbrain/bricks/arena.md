@@ -2,9 +2,15 @@
 
 N candidates propose designs for the same task in parallel. A judge scores them. You pick a base and graft the best ideas of the others into it. Used by `bricks/architect.md` before implementation.
 
-## 0. Gate
+## Gate
 
-Apply the arena gate in `references/config.md#selection-and-fallback` for `arena.design`. If it fails, do not run: return to the caller, which falls back. If it passes, take the runners it gives, from different vendors when possible. A same-model arena is noted in the final reply.
+The single place that decides whether an arena runs; at most once per run, and only when all hold:
+
+- a named structural decision has several viable shapes with consequential tradeoffs (coupling, maintenance, migration, operations) that the request, conventions, and grounded facts do not settle; size or available models alone never qualify;
+- `arena.design` is not `never` and the harness has subagents;
+- `arena.candidates` distinct models are configured (`references/config.md#models`), from different vendors when possible. With a single model, give each candidate a distinct angle instead.
+
+Otherwise return to architect, which uses one designer. Say in one line why the arena was skipped, or that it ran on one model.
 
 ## 1. Frame
 
@@ -12,7 +18,7 @@ Apply the arena gate in `references/config.md#selection-and-fallback` for `arena
 - **Rubric**: 3 to 6 gradeable criteria for this task. Only you and the judge see it. Candidates see the task.
 - **Angles**: give each candidate one distinct stance, for example "smallest diff that reuses what exists" versus "the right domain model, even if the diff grows".
 - **Constraints**: every candidate sees the same applicable principle file paths, criteria, scope, and preserved contracts. Angles cannot relax them; rubric scores never offset a violation.
-- **Output paths**: `candidate-<n>.md` in a unique scratch directory allocated by the lead outside the repo per `references/run-state.md#working-artifacts`. Pass absolute paths in briefs. Candidates share the source checkout and change no project files or Git state, so they need no separate worktrees; apply read-only tool controls where available, allowing only their report write.
+- **Output paths**: `candidate-<n>.md` in the scratch directory, as absolute paths. Candidates share the source checkout and change no project files or Git state, so they need no separate worktrees; apply read-only tool controls where available, allowing only their report write.
 
 ## 2. Fan out
 
@@ -34,7 +40,7 @@ Take at most one or two ideas per losing candidate that are worth porting, and f
 Recheck the whole synthesis against the shared constraints and applicable principles after grafting. Return concrete blockers if no viable synthesis can satisfy them; never return a violating design.
 
 - All candidates converged: keep the consensus shape, no graft needed.
-- Candidates diverged wildly: the frame was underspecified. Reframe and rerun once, then pick a viable design or return blockers; do not repeat the loop.
+- Candidates diverged wildly: the frame was underspecified; pick a viable design or return blockers.
 
 ## Output
 

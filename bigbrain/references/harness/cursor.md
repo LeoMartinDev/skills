@@ -1,6 +1,6 @@
 # Harness: Cursor
 
-You are in Cursor when your tools include `Task` (also named `Agent` since Cursor 2.1.63) with a `readonly` parameter, and `AskQuestion`.
+You are in Cursor when your tools include `Task` or `Agent` with a `readonly` parameter, and `AskQuestion`.
 
 ## 1. Spawn a subagent
 
@@ -16,7 +16,7 @@ Tool `Task`, with the parameters `subagent_type` (`generalPurpose`, or the name 
 
 Parameter `model` on the `Task` call, as a Cursor slug (for example `claude-opus-5-5-max`, `gpt-5.6-sol-max`, `grok-4.7-xhigh-fast`). Omit it only when the role has no model per `references/config.md#models`. An invalid slug is rejected, and the error lists the valid slugs.
 
-Translate the skill's `:effort` suffix to a verified native slug or exposed effort parameter. Never manufacture a slug by appending `-high` or `-max`; without a matching control, preserve native behavior per `references/config.md#effort`. Strip `:inherit`.
+Translate the skill's `:effort` suffix to a verified native slug or exposed effort parameter. Never manufacture a slug by appending `-high` or `-max`; without a matching control, preserve native behavior per `references/config.md#models`. Strip `:inherit`.
 
 ## 3. List available models
 
@@ -41,4 +41,4 @@ Setup also writes `~/.cursor/rules/bigbrain-models.mdc`, with frontmatter `descr
 
 ## 7. Additional capabilities
 
-Apply `references/capabilities.md`. Core delegation, parallelism, model selection, and choice UI follow sections 1–4; continuation uses a fresh child. Use semantic/symbol tools only when exposed, not inferred from editor indexing. State and memory use file fallbacks; inspect wake-up support.
+Apply `references/capabilities.md`. Core delegation, parallelism, model selection, and choice UI follow sections 1–4; continuation uses a fresh child. Use semantic/symbol tools only when exposed, not inferred from editor indexing. Memory uses the file fallback; inspect wake-up support.

@@ -1,24 +1,18 @@
 # Playbook: bugfix
 
-A defect: wrong behavior observable today. Be scientific. Every shipped line traces to runtime evidence. A change that "might help" is a hypothesis, not a fix, and it does not ship.
+A defect: wrong behavior observable today. Be scientific: every shipped line traces to runtime evidence. A change that "might help" is a hypothesis, not a fix.
 
 Copy these steps into your todo list verbatim.
 
-1. **Check the tree.** Per `bricks/ship.md#branch`: unrelated uncommitted changes stop the run.
-2. **Clarify.** Apply the clarity gate from `SKILL.md`. If it fails, run `bricks/grill.md` with the bugfix caps. What you need: the observed behavior, the expected behavior, and where it happens.
-3. **Ground.** Run `bricks/how.md` on the code path of the symptom, usually the simple path. Name the symptom entry point and its wiring so repro and verification can exercise the same surface.
-4. **Branch.** Follow `bricks/ship.md#branch`.
-5. **Reproduce.** Charge each pass, including the first, per `references/loop-control.md`. One `implementer` subagent writes the cheapest faithful repro: a failing test when a local test path exists, a script otherwise. It returns the command and its failing output verbatim. It commits a repro test, the only red commit allowed; a repro script stays uncommitted.
-   - It won't reproduce: synthesize the trigger, tighten the conditions, add temporary instrumentation. Ask the user only for a specific thing the agent cannot reach (production data, a device), after trying.
-   - Stagnation or exhausted passes: stop per `references/loop-control.md`. No repro, no fix.
-6. **Find the root cause.** From the grounding and the repro, list 2 to 4 hypotheses. Spawn one subagent per hypothesis, in parallel. It is an `explorer (report)` when reading code, logs, and `git log` can settle the hypothesis. It is an `implementer` in its own worktree when settling it needs temporary instrumentation, which never lands. Each returns a verdict with its evidence. Eliminate until one mechanism survives, and confirm it against the repro. If none is confirmed, another wave of hypotheses is a structural return per `references/loop-control.md`. Principle files `fix-root-causes` and `attack-the-premise`.
-7. **Fix.** If the fix crosses a function or module boundary, run `bricks/architect.md` first. Establish the surrounding behaviors that must remain true, with source evidence. Run `bricks/implement.md` with the original repro, confirmed cause, invariants, and the settled sketch when needed. Commit the smallest justified fix on top of the repro test. Its success criteria: the repro passes, the expected behavior from step 2 holds, and the ticket items hold, per the Ticket items rule in `SKILL.md`. No defensive guard that hides the symptom, no unrelated cleanup.
-8. **Verify and review.** Launch `bricks/verify.md`, with the original repro and symptom entry point, and `bricks/interrogate.md` together on the same fixed change reference per `references/run-state.md#change-reference`. The repro now passes, and the surrounding tests still pass. Wait for both reports before any repair; own the single repair batch, counter, and re-verification per `bricks/verify.md#rounds`. If two fixes built on the same hypothesis fail, question the premise and return to step 6 as a structural return.
-9. **Ship.** Run `bricks/ship.md` per `finish`. For a repro script, put its command and its before and after output in the PR body.
-10. **Learn.** Apply `references/memory.md#learn-at-the-end-of-a-workflow`; save only qualifying durable knowledge, otherwise write nothing.
-11. **Reply.** Follow the Final reply rule in `SKILL.md`, with four parts: what was broken, the root cause, the fix, and the repro output before and after, verbatim.
+1. **Check the tree** per `bricks/ship.md#branch`.
+2. **Clarify** per the clarity gate in `SKILL.md`: the observed behavior, the expected behavior, and where it happens.
+3. **Ground.** Run `bricks/how.md` on the symptom's code path. Name the entry point and its wiring so the repro and verification exercise the same surface.
+4. **Branch** per `bricks/ship.md#branch`.
+5. **Reproduce.** One `implementer` writes the cheapest faithful repro, a failing test when a local test path exists, otherwise a script, and returns the command and its failing output verbatim. A repro test is committed as the only allowed red commit; a script stays uncommitted. If it won't reproduce, synthesize the trigger, tighten the conditions, or add temporary instrumentation; ask the user only for what you cannot reach (production data, a device). No repro, no fix.
+6. **Find the root cause.** List 2 to 4 hypotheses and test them in parallel: an `explorer (report)` when code, logs, and `git log` can settle one, or an `implementer` in its own worktree when it needs temporary instrumentation, which never lands. Eliminate until one mechanism survives and confirm it against the repro. A new wave of hypotheses needs a new observation, per the Loops rule in `SKILL.md`. Principles `fix-root-causes` and `attack-the-premise`.
+7. **Fix.** Apply `bricks/architect.md#when-to-run`, then run `bricks/implement.md` with the repro, the confirmed cause, and the invariants. Commit the smallest justified fix on top of the repro test. Criteria: the repro passes, the expected behavior from step 2 holds, and the ticket items hold. No guard that hides the symptom, no unrelated cleanup.
+8. **Verify and review.** Launch `bricks/verify.md`, with the repro and symptom entry point, and `bricks/interrogate.md` together on the same change reference, then repair per `bricks/verify.md#rounds`. When two fixes built on the same hypothesis fail, question the premise and return to step 6.
+9. **Ship** with `bricks/ship.md`; for a repro script, put its command and before/after output in the PR body.
+10. **Reply** per `SKILL.md`: what was broken, the root cause, the fix, and the repro output before and after, verbatim.
 
-## Rules
-
-- When evidence refutes a hypothesis, revert everything that hypothesis motivated.
-- A unit test proves a branch's behavior, not the bug's absence. The original repro is the proof.
+When evidence refutes a hypothesis, revert everything it motivated. A unit test proves a branch's behavior, not the bug's absence: the original repro is the proof.

@@ -15,12 +15,9 @@ Map the request as a tree of decisions: each decision opens the ones that depend
 
 Work in rounds. A round asks the whole frontier at once. After the answers, recompute the frontier. A question that depends on another open question waits for a later round.
 
-## Caps
+## Stopping
 
-Read `grill.max-rounds` and `grill.max-questions` in configuration, for the current flow (`feature`, `bugfix`, `maintenance`, `plan`, or `grill` for the grill route).
-
-- More frontier than `max-questions`: ask the most structural ones; choose defaults only for reversible choices within authorized scope and list them in the round. Keep exclusively human choices unresolved.
-- `max-rounds` reached: stop asking. Apply the same default rule and flag each decision or unresolved choice. In a plan, list them under "Decisions to validate". A cap is no approval: pause work dependent on unresolved human choices and proceed only with independent authorized work.
+Rounds continue until the frontier is empty or the user ends the session. Silence is never approval: an unresolved human choice stays open, flagged (in a plan, under "Decisions to validate"), and work depending on it stays paused.
 
 ## Asking
 
@@ -40,9 +37,9 @@ Without a choice tool, use this text format:
 
 ## End
 
-The session ends when the frontier is empty or a cap is reached. Recap one line per decision: the decision, then who took it (user or you); name unresolved choices explicitly. Existing authorizations persist, but silence or a cap does not settle an unresolved choice.
+Recap one line per decision: the decision, then who took it (user or you); name unresolved choices explicitly.
 
-- Called from feature, bugfix, maintenance, or plan: present the recap and continue authorized work without a confirmation checkpoint. Exhausted caps keep dependent work blocked; they never trigger an extra approval round. A plan continues planning, not implementation; retain unresolved human decisions and block their dependent slices.
+- Called from a playbook: present the recap and continue authorized work without a confirmation round; work depending on an unresolved choice stays paused, and in a plan its slices are marked blocked.
 - In the grill route: present the recap, then stop. Suggest the next step in one line (plan or feature), without starting it. Do not ask for approval of decisions the user already made.
 
 When the input came from a ticket (GitHub issue, Notion page): after the recap is settled, append it to the ticket as a comment (`gh issue comment`, Notion comment), never by rewriting the original request. The comment lists each decision, who took it, and the open points still flagged. Give its link in the final reply.
