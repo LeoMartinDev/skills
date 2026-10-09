@@ -12,10 +12,13 @@ Durable project facts and project-specific user decisions go in that store with 
 
 ## Learn
 
-Before the final reply of a workflow, save an entry only when all hold:
+Before the final reply of a workflow, save an entry only when a future task unrelated to this one, in the same repo, would need it. Test: would someone starting a different ticket tomorrow hit it? Good entries are about working in the repo: how to build, test, or run something, a hidden prerequisite, a tool quirk, or an invariant spanning modules that the code does not show. Inspected code, a reproduced result, or an explicit user decision must support it, and it must not already be in the project's agent docs, documentation, or memory.
 
-- it changes a concrete future decision or avoids a demonstrated trap;
-- inspected code, a reproduced result, or an explicit user decision supports it;
-- it is not already in the project's agent docs, documentation, or memory.
+Never save:
 
-Examples: a hidden prerequisite for an integration test, an invariant spanning modules, the reason a surprising constraint must stay. Never save generic advice, file inventories, task summaries, speculation, transient CI failures, or plans. Write the fact, when it matters, and a source pointer or command with the date checked. Correct an existing entry rather than appending; remove one only when evidence refutes it. Saving nothing is normal and needs no mention; mention a save in one line.
+- a lesson from one task about one code area: it belongs in the PR, a test, or a code comment;
+- a general lesson a principle states or should state: propose the principle change instead;
+- pointers to the scratch directory or other temporary files;
+- generic advice, file inventories, task summaries, speculation, transient CI failures, or plans.
+
+Each entry is at most 3 lines: the fact, when it matters, and a source or command with the date checked. Correct an existing entry rather than appending; remove one when evidence refutes it or it fails this test. Saving nothing is normal and needs no mention; mention a save in one line.
