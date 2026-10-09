@@ -1,25 +1,35 @@
 # Loop control
 
-The caller owns these limits in every flow, including repairs, planning transitions, slices, and watch work. They supplement local brick limits and verification/watch counters; none resets another. Read `loop.max-replans` and `repro.max-rounds` from `references/config.md`.
+Every bounded loop in the skill, in one place. The owner charges the counter and checkpoints it per `references/run-state.md` before the attempt, and stops before an attempt that would exceed the limit. The budget belongs to the run, not to a step or an agent: no counter resets another, and a new brief, another subagent, switching to plan, or resuming never grants a fresh one. Limits come from `references/config.md`.
+
+| Loop | Owner | Charge one for | Limit |
+|---|---|---|---|
+| Reproduction | bugfix playbook | each pass, including the first | `repro.max-rounds` |
+| Structural return | calling playbook | each return, defined below | `loop.max-replans` |
+| Repair | calling playbook | each batch of counterexamples and accepted findings; each probe for a required `INCONCLUSIVE` | `verify.max-rounds` |
+| Watch | `bricks/pr-watch.md` | each repair batch, failed ones included; each probe for a required `INCONCLUSIVE`; each CI rerun. Verification inside the watch charges nothing else. | `watch.max-rounds`, `watch.timeout-minutes` |
+| Arena | `references/config.md#selection-and-fallback` | each arena, its one reframe included | once per run; a saved slice is its own run |
+| Grill | `bricks/grill.md` | each round of user questions | `grill.max-rounds`, `grill.max-questions` |
+| Design correction, report-format retry | the brick | each retry | once |
+
+A repair that reopens the approach charges both its repair counter and one structural return.
 
 ## Structural returns
 
-A structural return reopens the cause, grounding, design, or transformation approach after implementation or repair exposes a contradiction or a newly necessary structural decision. Charge one `replanCount` before investigating and revising that approach, even if it needs only a targeted lookup rather than architect. The initial approach, a narrow factual lookup within it, and ordinary repairs that preserve it do not count. A repair that reopens it consumes both its repair round and one structural return.
+A structural return reopens the cause, grounding, design, or transformation approach because implementation or repair exposed a contradiction or a newly necessary structural decision, or because a root-cause wave confirmed no mechanism. The initial approach, a factual lookup within it, a repair that keeps it, and a changed HEAD alone do not count.
 
-Before dispatch, record the current reference, blocking fact or failed assumption, its evidence, the new information since the preceding attempt, and the next discriminating probe. Increment and checkpoint the counter before starting the return; keep valid work. Updating a brief, changing subagent, switching to plan, or resuming does not create a fresh budget. Stop before a return that would exceed `loop.max-replans`.
+Before the return, record the current reference, the blocking fact or failed assumption with its evidence, what is new since the previous attempt, and the next discriminating probe. Keep valid work.
 
 ## Reproduction
 
-A reproduction pass tests one concrete trigger or environment hypothesis through the symptom's entry point, with its faithful test/script and result. Increment and checkpoint `reproRound` before each pass, including the first. A pass may run its setup and targeted checks; a changed trigger or environment hypothesis starts another pass, not an uncounted continuation.
-
-If it fails to reproduce, use the observed result to select a different trigger or a discriminating probe. Ask only for a specific inaccessible fact or resource. Stop before a pass that would exceed `repro.max-rounds`; no reproduced failure means no speculative fix.
+A pass tests one concrete trigger or environment hypothesis through the symptom's entry point, with its test or script and result. A changed hypothesis is a new pass. When it fails to reproduce, let the result pick a different trigger or a discriminating probe. Ask the user only for a specific inaccessible fact or resource. No reproduced failure means no speculative fix.
 
 ## Progress and exit
 
-For both loops, a repeated blocker or hypothesis with no new evidence capable of changing the decision is stagnation: stop before retrying it. A rewritten explanation, another model's agreement, or a new commit without a new observation is not progress. An inconclusive probe is recorded, not treated as confirmation; another attempt needs a concrete reason its conditions can settle the uncertainty.
+Every loop stops on stagnation: a retry needs an observation absent from earlier attempt records, such as a changed check result, error, or location. A rewritten explanation, another model's agreement, or a new commit is not one. An inconclusive probe is recorded, not treated as confirmation.
 
-On stagnation or exhaustion, stop dependent work, preserve valid commits and artifacts, and checkpoint `blocked` with counters, attempts, unresolved hypotheses, and the next useful action. Do not ship a partial result or reset a counter to escape the limit. Continue only independent authorized work. Previously published PRs remain open; failed repairs stay unpushed.
+On stagnation or an exhausted limit, stop dependent work, keep valid commits and artifacts, and checkpoint `blocked` with counters, attempts, unresolved hypotheses, and the next useful action. Never ship a partial result; continue only independent authorized work. Published PRs stay open and failed repairs stay unpushed. Before shipping, an exhausted repair budget may still deliver a previously passing result per `bricks/verify.md#rounds`.
 
 ## Persistence
 
-Store `replanCount`, `reproRound`, and an `artifacts.loop` report per `references/run-state.md`. The report carries the attempt records above; without durable storage, retain the same compact records in the conversation and disclose the resume limit. Resume restores counters and the last blocker/evidence before any retry. For older checkpoints, reconstruct consumed attempts from artifacts/history; zero is valid only with evidence that none occurred. If usage cannot be reconstructed, keep dependent retries blocked and report that gap rather than granting a new budget.
+Counters and attempt records live in run state (`artifacts.loop`). Without durable storage, keep them in the conversation and disclose the resume limit. Resume restores them before any retry. For an older checkpoint, reconstruct consumed attempts from artifacts and history; if that is impossible, keep dependent retries blocked rather than granting a new budget. Only an explicit new watch run starts a new watch budget.

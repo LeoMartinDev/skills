@@ -41,7 +41,7 @@ Reject or revise any design with:
 - temporal decomposition, split by "what runs first" instead of by knowledge;
 - a new pattern where the codebase already has one that fits.
 
-Pick the design that hides the most complexity behind the smallest public surface, and fits the existing patterns. When two tie, pick the smaller diff. Screen a single package by the same rules. For blockers or unsupported major choices, allow one targeted lookup/probe and sketch revision; add no arena retry beyond its own one reframe. If still unsupported, return blockers and stop dependent work, never choose a violating sketch.
+Pick the design that hides the most complexity behind the smallest public surface, and fits the existing patterns. When two tie, pick the smaller diff. Screen a single package by the same rules. For blockers or unsupported major choices, allow one targeted lookup/probe and sketch revision. If still unsupported, return blockers and stop dependent work, never choose a violating sketch.
 
 ## 4. Challenge
 
@@ -55,4 +55,4 @@ One settled sketch, including grafts and review fixes, invariants, sourced assum
 
 A still-open product preference, scope extension, or consequential action not already authorized belongs to the user, including when raised by a judge or reviewer. An API, persisted shape, or user-visible change already specified by the request needs no repeated go. Put only the unresolved human decisions into one grill round per `SKILL.md` before dependent work; ask while the challenge runs when they are already known. A newly surfaced product question from the challenge may need a later round within the same caps.
 
-If implementation proves the sketch wrong, return the evidence to the caller. It applies `references/loop-control.md` and its conditional design gate before revising the affected approach; never restart this brick or its budgets autonomously.
+If implementation proves the sketch wrong, return the evidence to the caller. It applies `references/loop-control.md` and its conditional design gate before revising the affected approach; never restart this brick autonomously.
