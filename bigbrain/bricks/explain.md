@@ -25,4 +25,4 @@ A visual is optional, never a completion gate. Use plain language, concrete exam
 
 ## Evidence discipline
 
-Explain only what the diff and recorded checks establish; a diagram is never proof that the behavior ran. Missing, inconclusive, or stale evidence stays visible, and numbers come from the latest recorded output. After watch repairs, rebuild the explanation from the current diff and evidence. Keep optional visuals outside the production diff, with the evidence also available as text.
+Explain only what the diff and recorded checks establish; a diagram is never proof that the behavior ran, and an example not taken from recorded output is labeled illustrative. Missing, inconclusive, or stale evidence stays visible, and numbers come from the latest recorded output. After watch repairs, rebuild the explanation from the current diff and evidence. Keep optional visuals outside the production diff, with the evidence also available as text.

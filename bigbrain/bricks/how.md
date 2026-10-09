@@ -20,4 +20,4 @@ Each brief points to `references/prompts/explorer.md`, names its angle, and give
 Merge the digests. When one is thin or two disagree, ask that explorer a targeted follow-up (`references/subagent-brief.md#continuing`) rather than reading the code yourself. When an unclear reason could change a decision, run `bricks/why.md` with the evidence collected.
 
 - **In a use case:** keep a mental model of 20 lines at most (entry points, flow, key types, conventions, templates, test commands, gotchas, risks) plus the report paths. Every later brief gets both.
-- **In the how route:** present Overview, Key concepts, How it works, Where things live, and Gotchas, dropping empty sections. Cite `path:line`, not code. A placement question ends with a recommendation and its reason.
+- **In the how route:** present Overview, Key concepts, How it works, Where things live, and Gotchas, dropping empty sections. Cite `path:line`, not code. In How it works, name the step that decides the behavior, and keep inferred claims marked as such. A placement question ends with a recommendation and its reason.
