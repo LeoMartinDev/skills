@@ -1,6 +1,6 @@
 # Loop control
 
-Every bounded loop in the skill, in one place. The owner charges the counter and checkpoints it per `references/run-state.md` before the attempt, and stops before an attempt that would exceed the limit. The budget belongs to the run, not to a step or an agent: no counter resets another, and a new brief, another subagent, switching to plan, or resuming never grants a fresh one. Limits come from `references/config.md`.
+Every bounded loop in the skill, in one place. The owner charges the counter and checkpoints it per `references/run-state.md` before the attempt, and stops before an attempt that would exceed the limit. The budget belongs to the run, not to a step or an agent: no counter resets another, and a new brief, another subagent, switching to plan, or resuming never grants a fresh one. Running a saved plan slice later starts a new run with fresh budgets. Limits come from `references/config.md`.
 
 | Loop | Owner | Charge one for | Limit |
 |---|---|---|---|
@@ -8,8 +8,8 @@ Every bounded loop in the skill, in one place. The owner charges the counter and
 | Structural return | calling playbook | each return, defined below | `loop.max-replans` |
 | Repair | calling playbook | each batch of counterexamples and accepted findings; each probe for a required `INCONCLUSIVE` | `verify.max-rounds` |
 | Watch | `bricks/pr-watch.md` | each repair batch, failed ones included; each probe for a required `INCONCLUSIVE`; each CI rerun. Verification inside the watch charges nothing else. | `watch.max-rounds`, `watch.timeout-minutes` |
-| Arena | `references/config.md#selection-and-fallback` | each arena, its one reframe included | once per run; a saved slice is its own run |
-| Grill | `bricks/grill.md` | each round of user questions | `grill.max-rounds`, `grill.max-questions` |
+| Arena | `references/config.md#selection-and-fallback` | each arena, its one reframe included | once per run |
+| Grill | `bricks/grill.md` | each round of user questions | the current flow's `grill.max-rounds` and `grill.max-questions`; rounds already used still count |
 | Design correction, report-format retry | the brick | each retry | once |
 
 A repair that reopens the approach charges both its repair counter and one structural return.
@@ -22,7 +22,7 @@ Before the return, record the current reference, the blocking fact or failed ass
 
 ## Reproduction
 
-A pass tests one concrete trigger or environment hypothesis through the symptom's entry point, with its test or script and result. A changed hypothesis is a new pass. When it fails to reproduce, let the result pick a different trigger or a discriminating probe. Ask the user only for a specific inaccessible fact or resource. No reproduced failure means no speculative fix.
+A pass tests one concrete trigger or environment hypothesis through the symptom's entry point, with its test or script and result. A changed hypothesis is a new pass; the method lives in `playbooks/bugfix.md`.
 
 ## Progress and exit
 
@@ -32,4 +32,4 @@ On stagnation or an exhausted limit, stop dependent work, keep valid commits and
 
 ## Persistence
 
-Counters live in run-state fields (`reproRound`, `replanCount`, `verifyRound`, `watch.fixRounds`, `arenaRuns`, `grillRound`) and attempt records in the `artifacts.loop` report. Without durable storage, keep them in the conversation and disclose the resume limit. Resume restores them before any retry. For an older checkpoint, reconstruct consumed attempts from artifacts and history; if that is impossible, keep dependent retries blocked rather than granting a new budget. Only an explicit new watch run starts a new watch budget.
+Counters live in run-state fields (`reproRound`, `replanCount`, `verifyRound`, `watch.fixRounds`, `arenaRuns`, `grillRound`) and attempt records in the `artifacts.loop` report. Without durable storage, keep them in the conversation and disclose the resume limit. Resume restores them before any retry. For an older checkpoint, reconstruct consumed attempts from artifacts and history; if that is impossible, keep dependent retries blocked rather than granting a new budget. The watch deadline is saved with its counter; only an explicit new watch run starts a new watch budget and deadline.

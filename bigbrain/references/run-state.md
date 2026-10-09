@@ -63,7 +63,7 @@ Criteria and evidence carry `required` or `supplementary` per `bricks/verify.md#
 
 ## Checkpoints
 
-Save after each phase and each returned batch, after PR creation or push and each actionable watch event, and before structural returns, reproduction passes, and yielding; not after every tool call. `reviewCommit` records what was reviewed, not a timeless flag. Status is `waiting` at a deadline, `blocked` for a concrete blocker, and `done` only when the goal is achieved or the PR is closed; every unfinished exit records `nextAction`.
+Save after each phase and each returned batch, after PR creation or push and each actionable watch event, and before every charged attempt per `references/loop-control.md` and before yielding; not after every tool call. `reviewCommit` records what was reviewed, not a timeless flag. Status is `waiting` at a deadline, `blocked` for a concrete blocker, and `done` only when the goal is achieved or the PR is closed; every unfinished exit records `nextAction`.
 
 ## Resume
 

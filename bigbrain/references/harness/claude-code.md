@@ -4,7 +4,7 @@ You are in Claude Code when your tools include `Agent` with `subagent_type` and 
 
 ## 1. Spawn a subagent
 
-Tool `Agent`, with the parameters `description` (3-5 words), `prompt` (the brief), `subagent_type`, and optionally `run_in_background`, `model`, and `isolation`.
+Tool `Agent`, with the parameters `description` (3-5 words), `prompt` (the brief), `subagent_type`, and optionally `model`, `effort`, and `isolation`.
 
 - Explorer (lookup): `subagent_type: "Explore"`. It has no Edit or Write and is built for search, not judgment.
 - Every other role (explorer (report), designer, implementer, verifier, reviewer, judge, arena candidate): `subagent_type: "general-purpose"`. The brief's scope line keeps the read-only roles read-only.
@@ -16,7 +16,7 @@ Tool `Agent`, with the parameters `description` (3-5 words), `prompt` (the brief
 
 Parameter `model` on the `Agent` call. It takes the aliases listed in the tool's schema (for example `opus`, `sonnet`, `haiku`, `fable`). Omit it only when the role has no model per `references/config.md#models`: the subagent then inherits the lead's model.
 
-Strip the skill's `:effort` suffix before passing an alias. Inspect the actual schema for a per-child effort control; if absent, preserve native effort and report the limitation per `references/config.md#effort`. Do not change the lead's effort to simulate a child override.
+Strip the skill's `:effort` suffix from the alias and pass it as the `effort` parameter when the schema lists that level; otherwise omit `effort`, keeping the native default, and report the limitation per `references/config.md#effort`. Do not change the lead's effort to simulate a child override.
 
 ## 3. List available models
 

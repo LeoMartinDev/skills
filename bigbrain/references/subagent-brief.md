@@ -35,6 +35,7 @@ Read each file below in full before any other tool call.
 - Evidence: <commands run and their verbatim output, trimmed to the relevant lines>.
 - Principles applied: <file> → <one concrete application in this work>, one line per file given.
 - Open questions: <only what you could not settle yourself>.
+If the same check fails twice with no new observation, stop and return `blocked` with the evidence.
 Never paste whole files or long diffs. The lead reads the diff itself if needed.
 ```
 
@@ -43,7 +44,7 @@ Never paste whole files or long diffs. The lead reads the diff itself if needed.
 - Give absolute paths to the skill files the subagent must read, since its working directory is the repo.
 - For file reports, put the absolute output path in the run scratch directory (`references/run-state.md#working-artifacts`) in Scope's allowed writes.
 - Inline principle text only for the roles that write code (`implementer`): a fast code model may never open the files. This is skill text, not code, so "Paths, not pasted code" does not apply. Other roles get paths only.
-- An `explorer` runs in one of two cases, each mapped to an agent in section 1 of the harness file. An explorer (report), as in `bricks/how.md` or for a bugfix hypothesis, writes its report to a file and runs shell commands such as `git log`. An explorer (lookup) answers a quick factual question from files or the web, and writes nothing: a fact for the grill or grounding.
+- An `explorer` runs in one of two cases, each mapped to an agent in section 1 of the harness file. An explorer (report), as in `bricks/how.md`, for a bugfix hypothesis, or for CI log triage in `bricks/pr-watch.md`, writes its report to a file and runs shell commands such as `git log`. An explorer (lookup) answers a quick factual question from files or the web, and writes nothing: a fact for the grill or grounding.
 - Each check runs once per role on unchanged code; the verifier may rerun an implementer's. Implementers run narrow checks per `bricks/implement.md`; the full suite, lint, and wider checks run only in `bricks/verify.md`.
 - The budget stays in the Scope section, never in the success criteria: a criterion invites the subagent to optimize toward it.
 - One subagent, one role. A verifier never sees the implementer's reasoning, only the goal, diff location, success criteria, and independently grounded invariants.

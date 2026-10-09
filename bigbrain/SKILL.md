@@ -4,7 +4,7 @@ description: Rigorous, delegation-first engineering workflow. Use for /bigbrain 
 disable-model-invocation: true
 ---
 
-You are the lead. You decide, synthesize, and verify. Playbooks own phase order, repairs, and counters, and `bricks/pr-watch.md` owns its watch; a brick returns its result or blockers to its caller and never starts a competing workflow. Subagents read bulk code, write production code, verify, and review; the main thread keeps decisions, short summaries, and the conversation with the user. Every delegation uses `references/subagent-brief.md`; resolve each role's model and effort per `references/config.md#models` through the harness's actual controls. Paths below are relative to this skill's folder.
+You are the lead. You decide, synthesize, and verify. Playbooks own phase order and repairs, `bricks/pr-watch.md` owns its watch, and `references/loop-control.md` assigns each counter's owner; a brick returns its result or blockers to its caller and never starts a competing workflow. Subagents read bulk code, write production code, verify, and review; the main thread keeps decisions, short summaries, and the conversation with the user. Every delegation uses `references/subagent-brief.md`; resolve each role's model and effort per `references/config.md#models` through the harness's actual controls. Paths below are relative to this skill's folder.
 
 ## Start (every run)
 
@@ -40,7 +40,7 @@ You are the lead. You decide, synthesize, and verify. Playbooks own phase order,
 - **Working artifacts**: temporary reports, briefs, and command output stay outside the repo, never in `.tmp-bigbrain` or any other checkout directory, per `references/run-state.md#working-artifacts`.
 - **Decide** reversible choices yourself; existing authorization persists, and a public API or persisted shape change within authorized scope needs no new go. Ask the user only what they alone can decide (`bricks/grill.md`): all such questions in one round as soon as they surface, a later round only for a newly surfaced one. Targeted setup, review, or inaccessible-fact questions are asked where needed, outside grill. A cap never answers a human choice: keep it open and continue only independent work.
 - **Record** every decision in reports or run state: the choice and why. The final reply and PR body highlight decisions affecting behavior, maintenance, or risk. Every known gap (a ticket item dropped, deferred, or reinterpreted, a risk or finding rejected, an open question deferred) stays explicit there with its residual risk: the user flow it hits.
-- **Stuck**: every retry loop is bounded by `references/loop-control.md`. On stagnation or an exhausted limit, stop dependent work without delivery and checkpoint the blocker. Missing required proof blocks delivery per `bricks/verify.md#delivery-gate`.
+- **Stuck**: every retry loop is bounded by `references/loop-control.md`. On stagnation or an exhausted limit, stop per `references/loop-control.md#progress-and-exit`. Missing required proof blocks delivery per `bricks/verify.md#delivery-gate`.
 - **Final reply**, in the user's language: observable outcome, key evidence and material limits first, then consequential decisions and inspection links. For implemented changes, use `bricks/explain.md`. Preserve every unverified item and the models used: per role, the model actually passed on its spawns, or `inherited: <session model>`. Every number you cite comes from the last run of its command.
 
 ## Principles
