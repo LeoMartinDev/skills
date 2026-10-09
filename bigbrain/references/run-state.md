@@ -6,7 +6,7 @@ Run state records a task's progress and evidence. It is neither configuration no
 
 Use the adapter's run-state tool when present. Otherwise keep a JSON checkpoint in `~/.agents/runs/bigbrain/<repo>/<run-id>/state.json`, outside the repo. Resolve a safe repo identity as in `references/memory.md`; generate a unique run ID and report its location. Update via a temporary file and atomic rename. Only the lead writes the checkpoint. If durable writes are unavailable, retain a compact conversation checkpoint and disclose that it will not survive session loss.
 
-Create state only for feature, bugfix, maintenance, plan, or watch work that spans phases. A small factual answer or setup needs no run. Never write user secrets, raw private logs, or entire code files into state.
+When creating a run, delete this repo's run directories whose state is `done` and `updatedAt` is over 30 days old; never touch other statuses. Create state only for feature, bugfix, maintenance, plan, or watch work that spans phases. A small factual answer or setup needs no run. Never write user secrets, raw private logs, or entire code files into state.
 
 ## Working artifacts
 

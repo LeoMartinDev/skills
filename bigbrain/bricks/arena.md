@@ -12,7 +12,7 @@ Apply the arena gate in `references/config.md#selection-and-fallback` for `arena
 - **Rubric**: 3 to 6 gradeable criteria for this task. Only you and the judge see it. Candidates see the task.
 - **Angles**: give each candidate one distinct stance, for example "smallest diff that reuses what exists" versus "the right domain model, even if the diff grows".
 - **Constraints**: every candidate sees the same applicable principle file paths, criteria, scope, and preserved contracts. Angles cannot relax them; rubric scores never offset a violation.
-- **Output paths**: `candidate-<n>.md` in a unique scratch directory allocated by the lead outside the repo per `references/run-state.md#working-artifacts`. Pass absolute paths in briefs. Candidates share the source checkout and write only their report; see the harness file, section 5.
+- **Output paths**: `candidate-<n>.md` in a unique scratch directory allocated by the lead outside the repo per `references/run-state.md#working-artifacts`. Pass absolute paths in briefs. Candidates share the source checkout and change no project files or Git state, so they need no separate worktrees; apply read-only tool controls where available, allowing only their report write.
 
 ## 2. Fan out
 

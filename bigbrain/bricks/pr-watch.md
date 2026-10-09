@@ -8,7 +8,7 @@ Resolve the PR's repo, number, URL, actual base/head branches and SHAs, and matc
 
 Use GitHub tools or `gh pr view`, `gh pr checks`, and `gh api` for details, failed-job logs, and paginated review threads. Establish the branch's ownership and current remote head before writing. Work in its matching clean checkout or a separate worktree; preserve unrelated changes. A fork without push rights or inaccessible CI logs is a concrete blocker.
 
-For a reusable one-pass observation, run `scripts/watch-pr.sh <number> --repo <owner/name> --previous <snapshot-file>` (omit `--previous` initially); see `references/pr-watch-script.md` for JSON, replay and safe snapshot storage. Its read-only verdict supports triage; this brick remains the readiness policy. The agent owns waits, repairs, verification, pushes, replies and all saved limits. Investigate UNKNOWN and unsupported policy rather than treating them as green.
+For a reusable one-pass observation, run `scripts/watch-pr.sh <number> --repo <owner/name> --previous <snapshot-file>` (omit `--previous` initially), per `references/pr-watch-script.md`. Its verdict supports triage; this brick remains the readiness policy. The agent owns waits, repairs, verification, pushes, replies and all saved limits. Investigate UNKNOWN and unsupported policy rather than treating them as green.
 
 Load the watch limits from configuration and charge them per `references/loop-control.md`. Set the deadline only when a watch run starts; on resume keep the saved one. Save the deadline, `watch.fixRounds`, observed head, and handled thread IDs per `references/run-state.md`.
 

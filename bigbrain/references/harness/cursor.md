@@ -30,19 +30,15 @@ There is no in-agent tool for this. Try, in order:
 
 Tool `AskQuestion`. It renders several multiple-choice questions in one form. Batch the independent questions of a round in one call. Put the recommended option first and mark it "(Recommended)".
 
-## 5. Scope an arena candidate
-
-Design candidates share the source checkout and write only their own report at the path in the brief. They do not change project files or Git state; separate worktrees are unnecessary. Apply read-only tool controls where available, allowing only the report write when needed.
-
-## 6. Native config written by setup
+## 5. Native config written by setup
 
 Setup also writes `~/.cursor/rules/bigbrain-models.mdc`, with frontmatter `description: bigbrain model choices` and `alwaysApply: true`, and one line per tier (`smart: <slug>`, `code: <slug>`, `fast: <slug>`), plus any per-role override. The configuration stays the source of truth: the rule mirrors it for Cursor sessions that do not load this skill.
 
-## 7. Limits
+## 6. Limits
 
 - Parallel agents beyond 2 to 4 cost more in review than they gain.
 - If `AskQuestion` fails to render, fall back to the text format in `bricks/grill.md`.
 
-## 8. Additional capabilities
+## 7. Additional capabilities
 
-Apply `references/capabilities.md`. Core delegation, parallelism, model selection, choice UI, and arena scope follow sections 1–5; continuation uses a fresh child. Use semantic/symbol tools only when exposed, not inferred from editor indexing. State and memory use file fallbacks; inspect wake-up support.
+Apply `references/capabilities.md`. Core delegation, parallelism, model selection, and choice UI follow sections 1–4; continuation uses a fresh child. Use semantic/symbol tools only when exposed, not inferred from editor indexing. State and memory use file fallbacks; inspect wake-up support.

@@ -23,7 +23,7 @@ When the user states a lasting execution preference ("from now on", "remember", 
 | `pr.max-lines` | `none` or a positive integer of changed lines per PR, tests included | `none` |
 | `grill.max-rounds` | `feature=<n> bugfix=<n> maintenance=<n> plan=<n> grill=<n>` | `feature=3 bugfix=3 maintenance=3 plan=5 grill=5` |
 | `grill.max-questions` | same shape, per round | `feature=4 bugfix=4 maintenance=4 plan=8 grill=4` |
-| `verify.max-rounds` | integer | `3` |
+| `verify.max-rounds` | positive integer, repair rounds (batches and inconclusive probes) per run | `3` |
 | `loop.max-replans` | positive integer, structural returns per run | `3` |
 | `repro.max-rounds` | positive integer, reproduction passes including the first | `3` |
 | `watch.after-ship` | `true`, `false` | `false` |

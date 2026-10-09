@@ -26,20 +26,14 @@ Only if the harness exposes a list (a CLI command, a settings file, a tool schem
 
 Without a choice UI, use the text format in `bricks/grill.md`: numbered questions, each with its options and your recommendation.
 
-## 5. Scope an arena candidate
-
-Design candidates share the source checkout and write only their own report at the path in the brief. They do not change project files or Git state; separate worktrees are unnecessary. Apply read-only tool controls where available, allowing only the report write when needed.
-
-Without subagents, skip the arena and say so in one line: `architect` drafts one design itself and still runs its challenge step. With subagents, apply the arena gate in `references/config.md`.
-
-## 6. Native config written by setup
+## 5. Native config written by setup
 
 None.
 
-## 7. Limits
+## 6. Limits
 
 - Without subagents, the context window fills faster. Keep summaries short and never re-read large files you already summarized.
 
-## 8. Additional capabilities
+## 7. Additional capabilities
 
 Apply `references/capabilities.md`. Determine each optional capability from actual tools. Use the fallbacks in the shared contract; do not infer retrieval, durable resume, or background wake-up from the presence of shell or child-agent tools.

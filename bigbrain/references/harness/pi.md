@@ -8,7 +8,9 @@ Vanilla Pi does not provide built-in subagents. With Everyx (`@everyx/pi-subagen
 
 Independent `agent_spawn` calls can run concurrently; dispatch in bounded waves (start with at most 4) because Everyx has no concurrency cap. Use foreground calls for dependencies; background calls return an `agent_id` and deliver completion notifications. There is no result/wait tool: do not poll. Set `timeoutMs` to the remaining phase/run deadline when bounded execution is required.
 
-Use `persistent: true` for an implementer expected to receive review corrections. Continue its resident context with `agent_send({to: agent_id, message: ...})`; delivery is not completion, so await the result notification before verification. Stop unneeded residents with `agent_stop({agent_id})`. After stop, reload, or exit, start a fresh child with the checkpoint and brief: saved transcripts do not restore the live handle. For another extension inspect its actual schema; without one execute roles sequentially per `generic.md`.
+Use `persistent: true` for an implementer expected to receive review corrections. Continue its resident context with `agent_send({to: agent_id, message: ...})`; delivery is not completion, so await the result notification before verification. Stop unneeded residents with `agent_stop({agent_id})`. After stop, reload, or exit, start a fresh child with the checkpoint and brief: saved transcripts do not restore the live handle. For another extension inspect its actual schema; without one execute roles sequentially per `references/harness/generic.md`.
+
+Everyx inherits the parent's cwd. Give read-only tools to candidates that return their report inline; the lead can save each returned report at its assigned path.
 
 ## 2. Pick the model
 
@@ -22,21 +24,15 @@ Use an exposed model-list tool, or inspect the installed CLI's help for its mode
 
 Use a question tool only if an installed extension exposes it. Pi extension UI APIs are not themselves agent tools. Otherwise use the text question format in `bricks/grill.md`.
 
-## 5. Scope an arena candidate
-
-Design candidates share the source checkout and write only their own report at the path in the brief. They do not change project files or Git state; separate worktrees are unnecessary. Apply read-only tool controls where available, allowing only the report write when needed.
-
-Everyx inherits the parent's cwd. Give read-only tools to candidates that return their report inline; the lead can save each returned report at its assigned path.
-
-## 6. Native config written by setup
+## 5. Native config written by setup
 
 bigbrain choices live in `~/.agents/config/bigbrain.md`. Everyx needs no role profile files: send role instructions and resolved model/effort pairs at launch. This does not change Pi's main-session `defaultThinkingLevel`. Its installation is a separate, user-authorized runtime task (`pi install npm:@everyx/pi-subagent`); setup does not install packages. Do not add speculative Pi settings.
 
-## 7. Limits
+## 6. Limits
 
 The skill owns playbook ordering and gates; Pi extensions supply mechanisms. Everyx background children depend on the parent process; they are not a scheduler and do not survive its exit. Keep an interactive or RPC parent alive for follow-ups: `pi --print` can exit after delivery acknowledgement, before the child's notification. Session transcripts are not structured bigbrain checkpoints. Persist phase, evidence and artifacts per `references/run-state.md` independently of live agent IDs.
 
-## 8. Additional capabilities
+## 7. Additional capabilities
 
 Apply `references/capabilities.md`. Loaded Everyx tools support `spawnAgent`, `parallelAgents`, `modelPerRole`, and `continueAgent` for resident children. They provide neither `choiceUI` nor `wakeUp`. Built-in shell/file access can store run state and project memory via the shared file fallbacks; confirm additional capabilities from actual tools.
 

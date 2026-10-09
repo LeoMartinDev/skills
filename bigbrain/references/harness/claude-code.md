@@ -8,6 +8,7 @@ Tool `Agent`, with the parameters `description` (3-5 words), `prompt` (the brief
 
 - Explorer (lookup): `subagent_type: "Explore"`. It has no Edit or Write and is built for search, not judgment.
 - Every other role (explorer (report), designer, implementer, verifier, reviewer, judge, arena candidate): `subagent_type: "general-purpose"`. The brief's scope line keeps the read-only roles read-only.
+- Separate worktrees (parallel implementers, a bugfix hypothesis needing temporary instrumentation): pass `isolation: "worktree"`. The child works on an isolated copy of the repo; a worktree it changed is kept and its path and branch come back with the result. The designated implementer integrates kept commits; remove probe worktrees once their verdict is recorded. The verifier's base-comparison worktree still follows `bricks/verify.md#rules`.
 - Parallel: put several `Agent` calls in one message. Subagents run in the background by default and notify you on completion. Never poll them.
 - Continue a subagent that already returned with `SendMessage`, addressed to its agent ID. Its context stays intact.
 - The user does not see a subagent's report. Relay what matters.
@@ -26,23 +27,19 @@ Read the `model` enum in the `Agent` tool schema. That enum is the list. Map eac
 
 Tool `AskUserQuestion`: 1 to 4 questions per call, 2 to 4 options each, a `header` of 12 characters max, `multiSelect` when choices combine. "Other" is added automatically. Put the recommended option first, with " (Recommended)" at the end of its label. A round with more than 4 questions takes several calls.
 
-## 5. Scope an arena candidate
-
-Design candidates share the source checkout and write only their own report at the path in the brief. They do not change project files or Git state; separate worktrees are unnecessary. Apply read-only tool controls where available, allowing only the report write when needed.
-
-## 6. Native config written by setup
+## 5. Native config written by setup
 
 None needed: the model is chosen per call. Setup writes only `models.claude-code` in configuration.
 
-## 7. Limits
+## 6. Limits
 
 - Do not use the `Workflow` tool. It needs an explicit user opt-in and exists only in Claude Code.
 - Only the lead spawns subagents. Do not rely on nested spawning.
 - A background subagent keeps running after you reply. Wait for its notification before using its result.
 
-## 8. Additional capabilities
+## 7. Additional capabilities
 
-Apply `references/capabilities.md`. Core delegation, continuation, parallelism, model selection, choice UI, and arena scope follow sections 1–5. Retrieval extensions and wake-up support must be inspected; file state and memory use the shared fallbacks.
+Apply `references/capabilities.md`. Core delegation, continuation, parallelism, model selection, and choice UI follow sections 1–4. Retrieval extensions and wake-up support must be inspected; file state and memory use the shared fallbacks.
 
 **PR watch waits.** Foreground `sleep` is blocked. Start one `Bash` call per PR with `run_in_background: true` that reruns `scripts/watch-pr.sh` against the saved snapshot every `watch.poll-seconds` and exits on a change (0), a script failure, or the saved deadline (3). Set every variable in that same command; `DEADLINE` is the saved deadline in epoch seconds:
 

@@ -16,7 +16,7 @@ Tool `task`, batch shape: `{ context, tasks[] }`. One subagent per item. Each it
 
 ## 2. Pick the model
 
-The `task` tool has no `model` parameter. The model is fixed by the agent, so bigbrain keeps one agent per role in `~/.omp/agent/agents/` (section 6). Set `agent` to:
+The `task` tool has no `model` parameter. The model is fixed by the agent, so bigbrain keeps one agent per role in `~/.omp/agent/agents/` (section 5). Set `agent` to:
 
 | Role | Agent |
 |---|---|
@@ -40,11 +40,7 @@ Run `omp models` in the shell. It lists every model of the authenticated provide
 
 Tool `ask`: one call with several `questions`. Each has an `id`, a `question`, 2 to 5 `options` (each with a short `label` and an optional `description`), `multi` when choices combine, and `recommended` (a 0-based index; the tool appends "(Recommended)"). Never add an "Other" option: the UI adds it.
 
-## 5. Scope an arena candidate
-
-Design candidates share the source checkout and write only their own report at the path in the brief. They do not change project files or Git state; separate worktrees are unnecessary. Apply read-only tool controls where available, allowing only the report write when needed.
-
-## 6. Native config written by setup
+## 5. Native config written by setup
 
 Setup writes one agent file per role in `~/.omp/agent/agents/`. It never writes to a project's `.omp/agents/`, which would override the user-level file. Files:
 
@@ -68,13 +64,13 @@ There is no `tools` line: the child gets the default tool set, and the brief's s
 
 Configuration stays the source of truth. Whenever a model or effort in `models.omp` changes, rewrite the affected agent files in the same step. A new file works at once: OMP rediscovers agents on every spawn.
 
-## 7. Limits
+## 6. Limits
 
 - `task.agentModelOverrides[<agent>]` in the user's `config.yml` outranks the agent's `model`. If a `bigbrain-*` agent runs on another model than configuration says, look there.
 - Only the lead spawns. The agent files declare no `spawns`, and `task.maxRecursionDepth` defaults to 2.
 - `task.maxConcurrency` bounds the fan-out: extra subagents queue.
 - `task.disabledAgents` can disable a `bigbrain-*` agent. It then fails as unknown: fall back per section 2.
 
-## 8. Additional capabilities
+## 7. Additional capabilities
 
-Apply `references/capabilities.md`. Delegation, continuation, parallelism, model profiles, choice UI, and arena scope follow sections 1–5. Inspect retrieval and wake-up tools; state and memory use file fallbacks.
+Apply `references/capabilities.md`. Delegation, continuation, parallelism, model profiles, and choice UI follow sections 1–4. Inspect retrieval and wake-up tools; state and memory use file fallbacks.

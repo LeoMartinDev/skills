@@ -10,7 +10,7 @@ Copy these steps into your todo list verbatim.
 4. **Propose.** Show a compact table: tier or design arena, model, effort, alternatives, and why. Explain the relevant quality, latency, and cost tradeoffs qualitatively; include numbers only when verified. Confirm model and effort together rather than adding separate effort questions.
 5. **Confirm.** One question per tier and for the design arena through the choice tool: the pick first, marked "(Recommended)", then the alternatives. Batch the questions per the harness's limits.
 6. **Offer PR size configuration.** Ask whether to keep no limit (`pr.max-lines: none`) or set a maximum of changed lines per PR, tests included. Show any existing global setting as the current choice and preserve it unless the user changes it. If they choose a limit, ask for a positive integer; do not preselect a numeric cap. Explain the 5 % tolerance and that repo caps still apply per `references/config.md#pr-budget`. Batch this with the model questions when the harness allows it. If unanswered, preserve the existing setting or leave the key absent.
-7. **Write** `models.<harness>` and `setup.<harness>: done <YYYY-MM-DD>` in the global section of configuration, plus `pr.max-lines` when the user confirmed that choice. Then write the harness-native config (section 6 of its file), showing it before writing.
+7. **Write** `models.<harness>` and `setup.<harness>: done <YYYY-MM-DD>` in the global section of configuration, plus `pr.max-lines` when the user confirmed that choice. Then write the harness-native config (section 5 of its file), showing it before writing.
 8. **Reply** with the confirmed choices and where they were stored.
 
 ## Tier rules

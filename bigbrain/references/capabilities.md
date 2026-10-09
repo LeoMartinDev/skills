@@ -4,7 +4,7 @@ Read with the selected harness adapter. Adapters map mechanisms; playbooks and b
 
 | Capability | Contract | Fallback |
 |---|---|---|
-| `spawnAgent` | Fresh role context, explicit brief and scope, short result | Execute roles sequentially per `harness/generic.md`; disclose lack of independent verification |
+| `spawnAgent` | Fresh role context, explicit brief and scope, short result | Execute roles sequentially per `references/harness/generic.md`; disclose lack of independent verification |
 | `continueAgent` | Address a returned child with targeted follow-up | Fresh child with original brief, current state, and follow-up |
 | `parallelAgents` | Independent children launched together, within concurrency limits | Sequential execution; keep dependency order |
 | `modelPerRole` | Selectable model or profile for a role | Inherited model; report actual selection, not configured intent |
@@ -15,6 +15,6 @@ Read with the selected harness adapter. Adapters map mechanisms; playbooks and b
 | `projectMemory` | Scoped durable facts with source and deduplication | Markdown store per `references/memory.md` |
 | `wakeUp` | Scheduler or event can resume this task and its checkpoint | Bounded live polling; if the session ends, report paused monitoring, never promise background work |
 
-Each adapter's section 8 specifies extension dependencies and extra mechanisms. Unlisted optional capabilities require inspecting tools before use. Read-only roles' scopes still apply when a tool or profile does not enforce them.
+Each adapter's section 7 specifies extension dependencies and extra mechanisms. Unlisted optional capabilities require inspecting tools before use. Read-only roles' scopes still apply when a tool or profile does not enforce them.
 
 Never install extensions, add model access, or create scheduler jobs just to satisfy a missing capability. Use a supported fallback; scheduled continuation must have user authorization and must preserve the watch limits and notification intent.
