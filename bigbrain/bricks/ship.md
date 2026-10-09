@@ -1,10 +1,10 @@
 # Brick: ship
 
-Branch, commit, and deliver as a ready PR, per the repo's conventions. Git safety follows `SKILL.md`.
+**Deliver a PR a teammate can review in a minute.** Branch, commit, and open a ready PR the way the repo already does it. Git safety follows `SKILL.md`.
 
 ## Change reference
 
-Before measuring or delegating work on a diff, resolve `baseBranch` (the PR's actual target, the stack parent, or the default branch when it is the intended target), its tip `baseCommit`, and the examined `headCommit`. Every diff for review, size, and comments is `git diff <baseCommit>...<headCommit>`, and the PR targets `baseBranch`. Evidence counts only for the reference it checked: when the reference moves, rerun the affected checks.
+Every diff for review, size, and comments is `git diff <baseCommit>...<headCommit>`. `baseBranch` is the PR's target (the stack parent, or the default branch), `baseCommit` its tip, and `headCommit` the commit under review. Resolve them before measuring or delegating work on a diff. Evidence holds only for the reference it checked: when either end moves, rerun the affected checks.
 
 ## Branch
 

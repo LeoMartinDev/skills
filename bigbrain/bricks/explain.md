@@ -1,6 +1,6 @@
 # Brick: explain
 
-Make the completed work easy to inspect. The lead composes the PR explanation and final reply from the final diff and recorded evidence; this is presentation, not another verification round.
+**Make the work easy to inspect.** Compose the PR explanation and the final reply from the final diff and the recorded evidence. This is presentation, not another verification round.
 
 ## Inputs
 
@@ -14,7 +14,7 @@ Choose the smallest format that makes the behavior and evidence clear:
 - **Changed flow, boundaries, or architecture:** add one diagram when it clarifies what changed. Prefer Mermaid supported by the destination; distinguish the previous and resulting behavior.
 - **Complex migration or several interacting changes:** optionally add a local interactive HTML explanation when exploring modules, flows, or proof details materially helps review and the harness can create and show it. Otherwise use text and a diagram.
 
-A visual is optional, not a completion gate. No mandatory controlled-English vocabulary or video. Use plain language, concrete examples, and the reader's language; respect the repo's PR language and template.
+A visual is optional, never a completion gate. Use plain language, concrete examples, and the reader's language, and respect the repo's PR language and template.
 
 ## Compose
 

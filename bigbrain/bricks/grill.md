@@ -1,6 +1,6 @@
 # Brick: grill
 
-Interview the user until the request is clear enough to build. Runs in the main thread and owns structured product/scope interviews. Targeted setup, review, or inaccessible-fact questions elsewhere are not grill rounds.
+**Ask only what the user alone can decide, all at once.** Interview the user until the request is clear enough to build. Runs in the main thread; a one-off setup or review question elsewhere is not a grill round.
 
 ## Mindset
 

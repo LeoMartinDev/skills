@@ -38,7 +38,7 @@ You are the lead: you decide, synthesize, and verify. Use cases own phase order 
 - **Clarity gate** before feature, bugfix, refactoring, or plan. Grill (`bricks/grill.md`) when the goal or scope is open, or two plausible readings lead to different code. A clear request runs autonomously.
 - **Ticket items** carry over verbatim: each acceptance criterion, Definition of Done item, or explicit scope item in the input becomes a required criterion, word for word. Add your own criteria only where they leave a gap.
 - **Decide** reversible choices yourself. Existing authorization persists: a public API or persisted shape change within authorized scope needs no new go, unless it irreversibly deletes or rewrites existing data. Ask the user only what they alone can decide (`bricks/grill.md`), in one round as soon as the questions surface. Until they answer, continue only independent work.
-- **Record** every decision and its reason in the subagent reports. The final reply and PR body highlight decisions affecting behavior, maintenance, or risk, and every known gap (a ticket item dropped or reinterpreted, a finding rejected, a question deferred) with the user flow it puts at risk.
+- **Record** every decision and its reason in the subagent reports. The final reply and PR body highlight decisions affecting behavior, maintenance, or risk, and every known gap (dropped criterion, rejected finding, deferred question) with the user flow it puts at risk.
 - **Git safety**: before the first write, check the tree and branch per `bricks/ship.md#branch`. Only the designated implementer commits; parallel writers use separate worktrees and one of them integrates. You push and create or update PRs. No other role stashes, resets, checks out, cleans, or commits in the user's checkout. Never rewrite pushed history, force-push, or merge a PR.
 - **Scratch directory**: reports, briefs, and command output go in one per-task directory outside every checkout (`mktemp -d "${TMPDIR:-/tmp}/bigbrain.XXXXXX"`), never in the repo. Give each subagent an absolute output path there, and delete it once no subagent uses it. Requested deliverables keep their destination.
 - **Loops**: retry only with something new since the last attempt: a changed check result, error, or location. A rewritten explanation, another model's agreement, or a new commit is not new. Two failed fixes on the same premise mean the premise is wrong (`attack-the-premise`). When the goal is met or nothing new appears, stop: keep valid commits, leave failed repairs unpushed, and report what was tried and the next useful action.
@@ -68,6 +68,7 @@ Before applying a principle, read its file in `principles/` in full, and name th
 - `boundary-discipline`: validation, errors, adapters.
 - `type-system-discipline`: designing types or signatures.
 - `make-operations-idempotent`: steps that can crash or retry.
+- `separate-before-serializing-shared-state`: parallel writers.
 - `migrate-callers-then-delete-legacy-apis`: new API replaces an old one.
 
 **Verification**

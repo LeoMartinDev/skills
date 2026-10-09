@@ -1,46 +1,42 @@
 # Brick: arena
 
-N candidates propose designs for the same task in parallel. A judge scores them. You pick a base and graft the best ideas of the others into it. Used by `bricks/architect.md` before implementation.
+**Several models design the same thing; keep the best and graft the rest.** Candidates propose designs in parallel, a judge scores them, and you pick a base and fold in the best ideas of the others. Called by `bricks/architect.md`.
 
 ## Gate
 
-The single place that decides whether an arena runs; at most once per run, and only when all hold:
+Run it at most once per run, and only when both hold:
 
-- a named structural decision has several viable shapes with consequential tradeoffs (coupling, maintenance, migration, operations) that the request, conventions, and grounded facts do not settle; size or available models alone never qualify;
-- the harness has subagents and `arena.design` is not `none` (`references/config.md#models`). Each listed model runs one candidate, at least two; with a single model or none listed, run two candidates on the resolved model with distinct angles.
+- a named structural decision has several viable shapes with real tradeoffs (coupling, maintenance, migration, operations) that the request, conventions, and facts don't settle. Size or available models alone don't qualify;
+- the harness has subagents and `arena.design` is not `none` (`references/config.md#models`).
 
-Otherwise return to architect, which uses one designer. Say in one line why the arena was skipped, or that it ran on one model.
+Each listed model runs one candidate, at least two. With a single model listed, or `arena.design` unset, run two candidates on the resolved model with distinct angles. When the gate fails, architect uses one designer. Say in one line why the arena was skipped, or that it ran on one model.
 
 ## 1. Frame
 
-- **Artifact**: one design package per candidate (see `bricks/architect.md`), addressing the same observable behavior, constraints, and invariants.
-- **Rubric**: 3 to 6 gradeable criteria for this task. Only you and the judge see it. Candidates see the task.
-- **Angles**: give each candidate one distinct stance, for example "smallest diff that reuses what exists" versus "the right domain model, even if the diff grows".
-- **Constraints**: every candidate sees the same applicable principle file paths, criteria, scope, and preserved contracts. Angles cannot relax them; rubric scores never offset a violation.
-- **Output paths**: `candidate-<n>.md` in the scratch directory, as absolute paths. Candidates share the source checkout and change no project files or Git state, so they need no separate worktrees; apply read-only tool controls where available, allowing only their report write.
+- **Artifact.** One design package per candidate, per `references/prompts/designer.md`, for the same behavior, constraints, and invariants.
+- **Rubric.** 3 to 6 gradeable criteria for this task. Only you and the judge see it.
+- **Angles.** One distinct stance per candidate, for example "smallest diff that reuses what exists" against "the right domain model, even if the diff grows". An angle never relaxes a principle, criterion, or contract.
+- **Output paths.** `candidate-<n>.md` in the scratch directory. Candidates only read the checkout, so they need no worktree.
 
 ## 2. Fan out
 
-Spawn all candidates at once, in parallel, with the same brief (see `references/subagent-brief.md`) except for the angle and the output path. Each candidate returns its artifact location and a rationale that names the alternatives it rejected. If one fails, continue with the rest and note the dropout.
+Spawn every candidate at once with the same brief, except the angle and output path. Each returns its design path and the alternatives it rejected. If one fails, continue with the rest and note the dropout.
 
 ## 3. Judge
 
-After every candidate has returned, spawn one read-only `judge`, on a different vendor from the candidates when possible. It gets the rubric, shared constraints and principle file paths, and candidates by label. First flag constraint violations for correction or rejection; score only viable candidates and recommend a base with its reason.
+Once all have returned, one read-only `judge`, on another vendor when possible, gets the rubric, the shared constraints, and the candidates by label. It flags violations first, scores only viable candidates, and recommends a base with its reason.
 
 ## 4. Pick
 
-Read every candidate design in full.
-
-Reject or revise candidates violating an applicable principle, criterion, or preserved contract before comparing scores. If none is viable, return the concrete blockers to the caller; never pick a violating base. Score viable designs against the rubric yourself, then compare with the judge. If you disagree, read both rationales before deciding. Pick the base that a future maintainer extends most easily. When tied, pick the smaller surface.
+Read every design in full. Drop or revise any that violates a principle, criterion, or contract; scores never offset a violation. Score the rest yourself, then compare with the judge. If you disagree, read both rationales before deciding. Pick the base a future maintainer extends most easily; on a tie, the smaller surface. If none is viable, return blockers.
 
 ## 5. Graft
 
-Take at most one or two ideas per losing candidate that are worth porting, and fold them into the base so it stays one coherent design. Never paste mechanically.
-Recheck the whole synthesis against the shared constraints and applicable principles after grafting. Return concrete blockers if no viable synthesis can satisfy them; never return a violating design.
+Port at most one or two ideas per losing candidate, folded into the base so it stays one coherent design. Never paste mechanically. Recheck the result against the shared constraints.
 
-- All candidates converged: keep the consensus shape, no graft needed.
-- Candidates diverged wildly: the frame was underspecified; pick a viable design or return blockers.
+- Candidates converged: keep the consensus, no graft.
+- Candidates diverged wildly: the frame was underspecified. Pick a viable design or return blockers.
 
 ## Output
 
-Either a viable synthesized design, plus a note for the final reply (the base, each graft and its source, what you rejected and why, and any dropouts), or concrete blockers. Return to architect, which settles remaining design decisions or stops dependent work before implementation.
+A synthesized design plus a note for the final reply (the base, each graft and its source, what you rejected and why, dropouts), or concrete blockers. Return to architect.

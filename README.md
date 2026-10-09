@@ -308,7 +308,7 @@ The skill is organized into small files loaded as needed:
 - [Use cases](bigbrain/usecases/): feature, bugfix, refactoring, plan, resume, and setup workflows.
 - [Bricks](bigbrain/bricks/): reusable steps such as exploration, implementation, review, and shipping.
 - [Principles](bigbrain/principles/): engineering rules applied when relevant.
-- [References](bigbrain/references/): settings, memory, and agent adapters.
+- [References](bigbrain/references/): settings, memory, subagent prompts, and agent adapters.
 - [Scripts](bigbrain/scripts/): the read-only PR watch helper and its offline tests.
 
 Keep each skill file within 1,000 words, and add a rule only for an observed failure it prevents. After editing, run `bash scripts/check-skill.sh` (word budget and referenced paths) and `bash bigbrain/scripts/tests/run.sh` (PR watch helper). To validate behavior, run a clear feature request and a vague request in a sandbox repository: the first should proceed, and the second should ask for the missing decisions.
