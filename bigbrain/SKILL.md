@@ -1,6 +1,6 @@
 ---
 name: bigbrain
-description: Rigorous, delegation-first engineering workflow. Use for /bigbrain followed by a feature, bugfix, refactor, chore, plan, how/why code explanation, review, idea to grill, setup, watch-pr, or resume. Accepts free text, a GitHub issue, or a Notion page.
+description: Rigorous, delegation-first engineering workflow. Use for /bigbrain followed by a feature, bugfix, refactor, chore, plan, how/why code explanation, PR review or critique, idea to grill, setup, watch-pr, or resume. Accepts free text, a GitHub issue, or a Notion page.
 disable-model-invocation: true
 ---
 
@@ -11,7 +11,7 @@ You are the lead: you decide, synthesize, and verify. Use cases own phase order 
 1. Identify your harness from your tools. Read `references/harness/<harness>.md` (`claude-code`, `cursor`, `delta`, `omp`, `opencode`, `pi`, `zed`), or `references/harness/generic.md` if none matches, and apply `references/capabilities.md`.
 2. Read configuration (`references/config.md`) and the project's learned knowledge (`references/memory.md`).
 3. Unless the request is setup, resume, or watch-pr: if `setup.<harness>` is unset or `later`, ask once: setup now, later, or never. On "now", run `usecases/setup.md`, then continue.
-4. Fetch the input: `gh issue view` for a GitHub issue, the Notion tool for a Notion page, the named slice for a plan. Also fetch its parent and linked issues. A subagent summarizes any long input.
+4. Fetch the input (`gh issue view`, the Notion tool, or the named plan slice) with its parent and linked issues. A subagent summarizes any long input.
 5. Route with the table below. Open a todo list whose first items are the use case's numbered steps, verbatim; a step you skip stays with `skip: <reason>`.
 
 ## Route
@@ -26,7 +26,8 @@ You are the lead: you decide, synthesize, and verify. Use cases own phase order 
 | Setup, configure models | `usecases/setup.md` |
 | How code works or where something belongs | `bricks/how.md`, then present |
 | Why something exists or whether its reason still holds | `bricks/why.md`, then present |
-| Review a PR, branch, or diff | `bricks/interrogate.md`, then present |
+| Review a PR, branch, or diff for a human | `usecases/review.md` |
+| Critique a change yourself | `bricks/interrogate.md`, then present |
 | Grill or challenge an idea | `bricks/grill.md`, then recap and stop |
 | Watch an existing PR | `bricks/pr-watch.md` |
 | Resume earlier work on a branch or PR | `usecases/resume.md` |
@@ -36,7 +37,7 @@ You are the lead: you decide, synthesize, and verify. Use cases own phase order 
 ## Lead rules
 
 - **Clarity gate** before feature, bugfix, refactoring, or plan. Grill (`bricks/grill.md`) when the goal or scope is open, or two plausible readings lead to different code. A clear request runs autonomously.
-- **Ticket items** carry over verbatim: each acceptance criterion, Definition of Done item, or explicit scope item in the input becomes a required criterion, word for word. Add your own criteria only where they leave a gap.
+- **Ticket items** carry over verbatim: each acceptance criterion, Definition of Done item, or explicit scope item becomes a required criterion, word for word. Add your own criteria only where they leave a gap.
 - **Decide** reversible choices yourself. Existing authorization persists: a public API or persisted shape change within authorized scope needs no new go, unless it irreversibly deletes or rewrites existing data. Ask the user only what they alone can decide (`bricks/grill.md`), in one round as soon as the questions surface. Until they answer, continue only independent work.
 - **Record** every decision and its reason in the subagent reports. The final reply and PR body highlight decisions affecting behavior, maintenance, or risk, and every known gap (dropped criterion, rejected finding, deferred question) with the user flow it puts at risk.
 - **Git safety**: before the first write, check the tree and branch per `bricks/ship.md#branch`. Only the designated implementer commits; parallel writers use separate worktrees and one of them integrates. You push and create or update PRs. No other role stashes, resets, checks out, cleans, or commits in the user's checkout. Never rewrite pushed history, force-push, or merge a PR.

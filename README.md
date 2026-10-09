@@ -2,7 +2,7 @@
 
 **Give your coding agent a task. It coordinates the work and checks the result.**
 
-bigbrain is a personal engineering skill for building features, fixing bugs, refactoring code, handling chores, planning changes, and reviewing code. The main agent acts as the lead: it makes decisions and delegates exploration, implementation, verification, and review to subagents.
+bigbrain is a personal engineering skill for building features, fixing bugs, refactoring code, handling chores, planning changes, and reviewing code, including guided pull request reviews in your browser. The main agent acts as the lead: it makes decisions and delegates exploration, implementation, verification, and review to subagents.
 
 **Heavily inspired by [pstack](https://github.com/cursor/plugins/tree/main/pstack) by poteto (Lauren Tan).** Its engineering principles, delegation approach, and workflows are the foundation of bigbrain. See [what differs](#inspired-by-pstack) below.
 
@@ -48,7 +48,8 @@ Write a request after `/bigbrain`. You can also pass a GitHub issue URL, a Notio
 | [Implement part of a plan](#saved-plan-slices) | `/bigbrain implement slice 2 of plans/numbering.md` |
 | [Understand code](#code-explanations) | `/bigbrain how does invoice numbering work?` |
 | [Investigate rationale](#why-investigations) | `/bigbrain why does invoice numbering retry at most three times?` |
-| [Review changes](#code-reviews) | `/bigbrain review this branch` |
+| [Review a pull request](#guided-reviews) | `/bigbrain review PR 123` |
+| [Critique changes](#critiques) | `/bigbrain critique this branch` |
 | [Challenge an idea](#idea-discussions) | `/bigbrain grill my idea: cache VAT rates per org` |
 | [Watch a pull request](#pr-watch) | `/bigbrain watch-pr 123` |
 | [Continue earlier work](#resume) | `/bigbrain resume feat/csv-export` |
@@ -160,9 +161,35 @@ flowchart LR
     N --> O["Facts, inferences, unknowns"]
 ```
 
-### Code reviews
+### Guided reviews
 
-The [review brick](bigbrain/bricks/interrogate.md) reviews the exact PR, branch, or diff from distinct angles. The lead checks each finding against the code and ranks them by severity.
+The [review use case](bigbrain/usecases/review.md) prepares a pull request, branch, or diff for you to review, then opens it as a page in your browser. You do the review; the agent explains and points at doubts, and never posts anything itself.
+
+```mermaid
+flowchart LR
+    C["Collect the diff"] --> I["Intent from the description, issues, commits"]
+    I --> P["Parallel: module, history, risks"]
+    P --> T["Map the flow, split, write the tour"]
+    T --> K["Critic checks the tour against the code"]
+    K --> O["Open the page"]
+```
+
+Three read-only subagents read the change in its context: the modules it touches read whole, the history of the changed regions, and the ways it could break. The lead maps where the change runs, splits it into steps along that path, and writes the tour. A critic that never saw the lead's notes then checks every claim against the code at the PR head, and the lead fixes what it finds before opening the page.
+
+A sidebar switches between two modes:
+
+- **Tour:** what the PR does in ten lines at most, then the reading path, which follows where the change runs (screen, component, store, API) and shows under each step the places it covers. Each step says how it follows from the previous one, explains the part in a few sentences, and puts the matching diffs or files next to it, with numbered pins on the lines it hinges on that open a short comment in a bubble. A step that deserves a close reading says so, and one or two questions per step point at real doubts, such as how it could break or what the diff leaves out. Badges in the text open any file, changed or not, at the cited lines.
+- **Files:** the classic review, with a filterable file tree, full diffs, a "viewed" checkbox per file, and links back to the steps that explain each file.
+
+Keyboard: `←` `→` move between steps, `t` switches modes, `j` `k` move between files, `v` marks a file viewed, and `[` hides the sidebar.
+
+For a pull request, the page comes from a small local server. Hover a line number in a diff and click **+** to write a comment under that line; the **Review** button then submits your line comments and an overall comment as Comment, Approve, or Request changes, through your `gh` login. GitHub refuses Approve and Request changes from the pull request's author. The server listens on 127.0.0.1 only, behind a random token, and stops 15 minutes after the page is closed.
+
+A [helper script](bigbrain/scripts/guided-review.mjs) collects the diff, validates the [tour](bigbrain/references/tour-format.md), and builds one self-contained HTML file outside your checkout, which also works offline as a read-only page. Code is shown with [CodeMirror](https://codemirror.net/): unified or side-by-side diffs, word-level changes, and collapsed unchanged lines you can expand. Requires Node 18+ and `git`, plus `gh` for pull requests.
+
+### Critiques
+
+The [interrogate brick](bigbrain/bricks/interrogate.md) looks for the change's defects itself, from distinct angles. The lead checks each finding against the code and ranks them by severity.
 
 ```mermaid
 flowchart LR
@@ -171,7 +198,7 @@ flowchart LR
     S --> O["Present the verdict; stop"]
 ```
 
-A direct review applies no changes unless requested. Inside a write workflow, its findings return to the caller's shared repair batch.
+A direct critique applies no changes unless requested. Inside a write workflow, its findings return to the caller's shared repair batch.
 
 ### Idea discussions
 
@@ -302,16 +329,17 @@ ln -s "$PWD/bigbrain" ~/.agents/skills/bigbrain
 ln -s ~/.agents/skills/bigbrain ~/.claude/skills/bigbrain
 ```
 
-The skill is organized into small files loaded as needed:
+bigbrain is organized into small files loaded as needed:
 
 - [SKILL.md](bigbrain/SKILL.md): entry point, routing, and lead rules.
-- [Use cases](bigbrain/usecases/): feature, bugfix, refactoring, plan, resume, and setup workflows.
+- [Use cases](bigbrain/usecases/): feature, bugfix, refactoring, plan, review, resume, and setup workflows.
 - [Bricks](bigbrain/bricks/): reusable steps such as exploration, implementation, review, and shipping.
 - [Principles](bigbrain/principles/): engineering rules applied when relevant.
 - [References](bigbrain/references/): settings, memory, subagent prompts, and agent adapters.
-- [Scripts](bigbrain/scripts/): the read-only PR watch helper and its offline tests.
+- [Scripts](bigbrain/scripts/): the read-only PR watch helper, the guided review builder and server, and their offline tests.
+- [Viewer](bigbrain/viewer/): the guided review page.
 
-Keep each skill file within 1,000 words, and add a rule only for an observed failure it prevents. After editing, run `bash scripts/check-skill.sh` (word budget and referenced paths) and `bash bigbrain/scripts/tests/run.sh` (PR watch helper). To validate behavior, run a clear feature request and a vague request in a sandbox repository: the first should proceed, and the second should ask for the missing decisions.
+Keep each skill file within 1,000 words, and add a rule only for an observed failure it prevents. After editing, run `bash scripts/check-skill.sh` (word budget and referenced paths), `bash bigbrain/scripts/tests/run.sh` (PR watch helper), and `bash bigbrain/scripts/tests/guided-review.sh` (guided review collect, build, and review server). The guided review embeds a prebuilt CodeMirror bundle, `bigbrain/viewer/vendor/codemirror.js`; after changing a version in its `package.json`, rebuild it with `bash bigbrain/viewer/vendor/build.sh`. To validate behavior, run a clear feature request and a vague request in a sandbox repository: the first should proceed, and the second should ask for the missing decisions.
 
 ## Inspired by pstack
 
