@@ -41,7 +41,7 @@ None needed: the model is chosen per call. Setup writes only `models.claude-code
 
 Apply `references/capabilities.md`. Core delegation, continuation, parallelism, model selection, and choice UI follow sections 1–4. Retrieval extensions and wake-up support must be inspected; memory uses the shared fallback.
 
-**PR watch waits.** Foreground `sleep` is blocked. Start one `Bash` call per PR with `run_in_background: true` that reruns `scripts/watch-pr.sh` against the saved snapshot every `watch.poll-seconds` and exits on a change (0), a script failure, or the saved deadline (3). Set every variable in that same command; `DEADLINE` is the saved deadline in epoch seconds:
+**PR watch waits.** Foreground `sleep` is blocked. Start one `Bash` call per PR with `run_in_background: true` that reruns `scripts/watch-pr.sh` against the saved snapshot every `POLL=60` seconds and exits on a change (0), a script failure, or the saved deadline (3). Set every variable in that same command; `DEADLINE` is the saved deadline in epoch seconds:
 
 ```bash
 for v in "$DEADLINE" "$POLL"; do case "$v" in ''|*[!0-9]*) exit 2;; esac; done

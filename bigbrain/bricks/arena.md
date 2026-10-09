@@ -7,8 +7,7 @@ N candidates propose designs for the same task in parallel. A judge scores them.
 The single place that decides whether an arena runs; at most once per run, and only when all hold:
 
 - a named structural decision has several viable shapes with consequential tradeoffs (coupling, maintenance, migration, operations) that the request, conventions, and grounded facts do not settle; size or available models alone never qualify;
-- `arena.design` is not `never` and the harness has subagents;
-- `arena.candidates` distinct models are configured (`references/config.md#models`), from different vendors when possible. With a single model, give each candidate a distinct angle instead.
+- the harness has subagents and `arena.design` is not `none` (`references/config.md#models`). Each listed model runs one candidate, at least two; with a single model or none listed, run two candidates on the resolved model with distinct angles.
 
 Otherwise return to architect, which uses one designer. Say in one line why the arena was skipped, or that it ran on one model.
 

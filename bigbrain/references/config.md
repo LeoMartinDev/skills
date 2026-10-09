@@ -17,21 +17,16 @@ When the user states a lasting preference ("from now on", "always", "never"), wr
 | Key | Values | Default |
 |---|---|---|
 | `plan.destination` | `none`, `repo:<path>`, `home` (`~/.agents/plans/<repo slug>/`), `github-issue` | `none` |
-| `finish` | `pr`, `draft-pr`, `stop` | `pr` |
-| `arena.design` | `auto`, `never` | `auto` |
-| `arena.candidates` | integer >= 2 | `2` |
 | `pr.max-lines` | `none` or changed lines per PR, tests included | `none` |
 | `watch.after-ship` | `true`, `false` | `false` |
-| `watch.timeout-minutes` | positive integer, total watch duration | `30` |
-| `watch.poll-seconds` | integer >= 15 | `60` |
 | `setup.<harness>` | `done <YYYY-MM-DD>`, `later`, `never` | unset (ask) |
 | `models.<harness>` | `tier-or-role=model:effort, ...` (see below) | unset |
 
 ## PR budget
 
-A cap applies when `pr.max-lines` sets one or the repo documents one (agent docs, `CONTRIBUTING.md`, a bot config); the lower wins. Without one, never check or slice for size.
+`pr.max-lines` caps the changed lines per PR, tests included. Without it, never check or slice for size.
 
-With a cap, measure `git diff --shortstat` on the change reference, tests included, after each implementation or repair. Up to the cap plus 5 %, continue. Beyond it, do not verify, review, or push: switch to `playbooks/plan.md` and slice, reusing the work done. The cap is a stop condition, never a target: nobody compacts or reflows code to fit. A non-blocking review fix that would cross it stays unapplied and is listed in the PR body.
+With a cap, measure `git diff --shortstat` on the change reference after each implementation or repair. Over the cap, do not push: switch to `usecases/plan.md` and slice, reusing the work done. The cap is a stop condition, never a target: nobody compacts code to fit.
 
 ## Models
 
@@ -45,7 +40,7 @@ Tiers: `smart`, `code`, `fast`. Roles map to tiers:
 
 A value is a native model slug, or a profile for Delta, optionally followed by `:effort`; `none` disables the role, and for `arena.design`, the arena. Each arena entry carries its own effort, e.g. `[provider/model-a:high, provider/model-b:medium]`.
 
-Resolve a role's model: its role key in `models.<harness>` (e.g. `reviewer=...`), else its tier key, else the harness-native config named in its adapter, else your judgment per `playbooks/setup.md#tier-rules`. Model and effort always come from the same entry.
+Resolve a role's model: its role key in `models.<harness>` (e.g. `reviewer=...`), else its tier key, else the harness-native config named in its adapter, else your judgment per `usecases/setup.md#tier-rules`. Model and effort always come from the same entry.
 
 The `:effort` suffix is never part of the model ID: translate it through section 2 of the adapter, using only levels the harness and model support. Without a suffix, or with `:inherit`, keep the native default. If effort cannot be applied, keep the model and say so once.
 

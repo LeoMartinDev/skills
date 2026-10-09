@@ -30,7 +30,7 @@ bigbrain choices live in `~/.agents/config/bigbrain.md`. Everyx needs no role pr
 
 ## 6. Limits
 
-The skill owns playbook ordering and gates; Pi extensions supply mechanisms. Everyx background children depend on the parent process; they are not a scheduler and do not survive its exit. Keep an interactive or RPC parent alive for follow-ups: `pi --print` can exit after delivery acknowledgement, before the child's notification.
+The skill owns use case ordering and gates; Pi extensions supply mechanisms. Everyx background children depend on the parent process; they are not a scheduler and do not survive its exit. Keep an interactive or RPC parent alive for follow-ups: `pi --print` can exit after delivery acknowledgement, before the child's notification.
 
 ## 7. Additional capabilities
 

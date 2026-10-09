@@ -1,6 +1,6 @@
 # Harness capabilities
 
-Read with the selected harness adapter. Adapters map mechanisms; playbooks and bricks remain the only workflow policy. Determine support from actual tools and configuration, not from the product name alone.
+Read with the selected harness adapter. Adapters map mechanisms; use cases and bricks remain the only workflow policy. Determine support from actual tools and configuration, not from the product name alone.
 
 | Capability | Contract | Fallback |
 |---|---|---|

@@ -8,7 +8,7 @@ Resolve the PR's repo, number, base and head (`bricks/ship.md#change-reference`)
 
 Observe with `scripts/watch-pr.sh` per `references/pr-watch-script.md`, or with GitHub tools when it is unavailable. Its verdict supports triage; this brick decides readiness, and the agent owns waits, repairs, pushes, and replies. Investigate `UNKNOWN` rather than treating it as green.
 
-The watch ends at a deadline set from `watch.timeout-minutes` when it starts.
+The watch ends 30 minutes after it starts, unless the user asks for another duration.
 
 ## Triage
 
@@ -29,7 +29,7 @@ When the watch includes replies, answer each thread with the verified reason and
 
 ## Wait and exit
 
-Wait with the harness's primitive at `watch.poll-seconds`, in blocking slices of at most 60 seconds, staying responsive to the user. Poll quietly; notify on progress, failure, completion, or a needed user action. Never claim a watch outlives the session unless an authorized scheduler is registered.
+Wait with the harness's primitive, polling every 60 seconds in blocking slices of at most 60 seconds, staying responsive to the user. Poll quietly; notify on progress, failure, completion, or a needed user action. Never claim a watch outlives the session unless an authorized scheduler is registered.
 
 **READY** needs a fresh observation on the same head: PR open, required checks satisfied, no failing or pending relevant check, no unresolved bot finding or review thread, no outstanding changes request, and known, conflict-free mergeability. Draft status or a missing approval is the user's action: report CI-ready, not merge-ready. READY describes the current moment only.
 

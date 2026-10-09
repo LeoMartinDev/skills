@@ -6,13 +6,13 @@ Settle the shape before any code: data shape, types, signatures, and module boun
 
 Only for a named open structural decision with a concrete consequence: data shape, module responsibilities, state ownership, or dependency direction that the request, grounded contracts, and an inspected precedent do not settle. Verify a missing fact with a lookup or probe before calling a decision open, and never manufacture alternatives. Size, crossing module boundaries, naming, a signature change, a function extraction, or slicing a plan never qualify alone.
 
-Otherwise the lead writes a compact brief instead: precedent, allowed paths, intended behavior, invariants, sourced assumptions, and checks. Independent verification and review still run.
+Otherwise the lead writes a compact brief instead: precedent, allowed paths, intended behavior, invariants, sourced assumptions, and checks. Independent verification still runs.
 
 The same test applies when implementation or a repair surfaces a new decision: it revises only the affected part of the brief or sketch, keeping valid work.
 
 ## Input
 
-The goal, the mental model from `bricks/how.md`, the user's decisions, and for maintenance the transformation brief, baseline, and preserved contracts. Reuse settled choices; propose no unrelated architecture.
+The goal, the mental model from `bricks/how.md`, the user's decisions, and for a refactor the target shape, baseline, and preserved contracts. Reuse settled choices; propose no unrelated architecture.
 
 Design backward compatibility (a migration, grandfathering) only for what is live: a released flag or stored data already in that shape. When nothing is, design none and record that decision. When an unclear rationale affects a choice, apply `bricks/why.md` first.
 
@@ -21,7 +21,7 @@ Design backward compatibility (a migration, grandfathering) only for what is liv
 - When `bricks/arena.md#gate` passes, run the arena. It returns a viable synthesized design or blockers.
 - Otherwise one `designer` subagent produces one design package.
 
-Brief designers with `foundational-thinking`, `model-the-domain`, `type-system-discipline`, `boundary-discipline`, `redesign-from-first-principles`, and `exhaust-the-design-space`, plus the task's core principles; maintenance commonly adds `laziness-protocol`, `follow-local-conventions`, `subtract-before-you-add`, and `minimize-reader-load`.
+Brief designers with `foundational-thinking`, `model-the-domain`, `type-system-discipline`, `boundary-discipline`, `redesign-from-first-principles`, and `exhaust-the-design-space`, plus the task's core principles; a refactor commonly adds `laziness-protocol`, `follow-local-conventions`, `subtract-before-you-add`, and `minimize-reader-load`.
 
 ## 2. Design package
 

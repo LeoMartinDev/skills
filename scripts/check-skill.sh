@@ -10,7 +10,7 @@ for f in $(find . -name '*.md' | sort); do
   [ "$words" -le "$max_words" ] || { echo "over budget: ${f#./} has $words words (max $max_words)"; status=1; }
 done
 slugs() { grep -E '^#+ ' "$1" | sed -E 's/^#+ //' | tr 'A-Z' 'a-z' | sed -E 's/[^a-z0-9 -]//g; s/ /-/g'; }
-for ref in $(grep -rohE '`(bricks|playbooks|references|principles|scripts)/[A-Za-z0-9_./-]+(#[a-z0-9-]+)?`' . | tr -d '`' | sort -u); do
+for ref in $(grep -rohE '`(bricks|usecases|references|principles|scripts)/[A-Za-z0-9_./-]+(#[a-z0-9-]+)?`' . | tr -d '`' | sort -u); do
   path=${ref%%#*}
   if [ ! -e "$path" ]; then echo "missing: $ref"; status=1; continue; fi
   [ "$path" != "$ref" ] || continue

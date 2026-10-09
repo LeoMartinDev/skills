@@ -4,7 +4,7 @@ Prove the change works on the real artifact. A `verifier` subagent does it: it s
 
 ## Brief
 
-Role `verifier`, principle file `prove-it-works`. Include the goal; the criteria with the ticket items verbatim; the invariants with source pointers; the branch and change reference (`bricks/ship.md#change-reference`); the repo's obligatory checks; and the entry point to drive (route, command, job, tool), never a function behind it. A bugfix adds the original repro command and its failing output; maintenance adds the baseline results and pre-existing failures.
+Role `verifier`, principle file `prove-it-works`. Include the goal; the criteria with the ticket items verbatim; the invariants with source pointers; the branch and change reference (`bricks/ship.md#change-reference`); the repo's obligatory checks; and the entry point to drive (route, command, job, tool), never a function behind it. A bugfix adds the original repro command and its failing output; a refactor adds the baseline results and pre-existing failures.
 
 ## Checks, in order
 
@@ -34,5 +34,5 @@ The single definition of done.
 
 - Every criterion and check is required unless marked `optional`. Ticket items, the requested outcome, preserved contracts, and the repo's obligatory checks are always required. An optional check that reveals a broken required behavior is a required failure.
 - A flow is complete, and may ship, only when every required item has `PASS` evidence on the current change reference and no accepted blocking finding remains. `FAIL`, `INCONCLUSIVE`, missing, or stale evidence blocks; `unverified` discloses a gap but never waives it. Optional gaps stay visible without blocking.
-- On a required gap, keep the local work and report `blocked` with the missing proof and next action; `finish` never waives this. Only the user can drop a required item, recorded with its residual risk.
+- On a required gap, keep the local work and report `blocked` with the missing proof and next action, without pushing. Only the user can drop a required item, recorded with its residual risk.
 - Every `unverified` item appears in the final reply and the PR body.

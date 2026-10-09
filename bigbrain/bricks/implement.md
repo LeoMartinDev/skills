@@ -4,7 +4,7 @@ Turn a settled brief, sketch, or confirmed fix into a small idiomatic diff, for 
 
 ## Input
 
-The goal, grounding, brief or sketch, allowed paths, criteria with the ticket items, and invariants. A bugfix adds the repro and confirmed cause; maintenance, the baseline; a repair, the accepted findings, counterexamples, and current commit.
+The goal, grounding, brief or sketch, allowed paths, criteria with the ticket items, and invariants. A bugfix adds the repro and confirmed cause; a refactor, the baseline; a repair, the accepted findings, counterexamples, and current commit.
 
 One `implementer` owns coupled code and continues for repairs when the harness allows it. Parallel implementers need disjoint files and no shared state.
 

@@ -34,5 +34,5 @@ A finding with no concrete failure scenario is a nit at most.
 
 Merge the duplicates. Rank by severity and evidence first; agreement strengthens a finding only where both reviewers examined the same coverage. Check each blocker yourself against matching source, with one targeted read, before accepting it. Give the same read to any finding you would reject on a factual claim (already handled, out of scope, fixed by an existing contract) before rejecting it. Then accept or reject each finding with a one-line reason; report the reviewed head/base and coverage gaps.
 
-- **In a playbook**: return findings and dispositions to the caller, which repairs per `bricks/verify.md#rounds`. A `should` whose fix adds more than about 30 lines needs a failure scenario in normal use; otherwise it stays unapplied and is listed in the PR body.
+- **In a use case**: return findings and dispositions to the caller, which repairs per `bricks/verify.md#rounds`. A `should` whose fix adds more than about 30 lines needs a failure scenario in normal use; otherwise it stays unapplied and is listed in the PR body.
 - **In the review route**: present the verdict: accepted findings, most severe first, then rejected findings with their reasons. Apply nothing unless the user asks.

@@ -1,6 +1,6 @@
 # Brick: ship
 
-Branch, commit, and deliver per the repo's conventions and the `finish` setting. Git safety follows `SKILL.md`.
+Branch, commit, and deliver as a ready PR, per the repo's conventions. Git safety follows `SKILL.md`.
 
 ## Change reference
 
@@ -33,13 +33,7 @@ With no convention: Conventional Commits (`type(scope): subject`, imperative, no
 
 ## Finish
 
-Before pushing, fetch the remote head and base. If either moved, update the change reference and have the caller re-verify what it affects. Push only past `bricks/verify.md#delivery-gate` and within the PR budget (`references/config.md#pr-budget`). Then act on `finish`:
-
-- `stop`: leave the commits on the branch, do not push, and report.
-- `pr`: push, then open a ready PR.
-- `draft-pr`: push, then open a draft PR.
-
-Create with `gh pr create --base <baseBranch>` or update with `gh pr edit --base <baseBranch>`, and confirm the PR's head and base match the change reference. When `watch.after-ship` is true and a PR was pushed, run `bricks/pr-watch.md`. Report the URL and the watch result.
+Before pushing, fetch the remote head and base. If either moved, update the change reference and have the caller re-verify what it affects. Push only past `bricks/verify.md#delivery-gate` and within the PR budget (`references/config.md#pr-budget`). Then open the PR ready, never as a draft: create with `gh pr create --base <baseBranch>` or update with `gh pr edit --base <baseBranch>`, and confirm the PR's head and base match the change reference. When `watch.after-ship` is true and a PR was pushed, run `bricks/pr-watch.md`. Report the URL and the watch result.
 
 ## PR body
 

@@ -4,7 +4,7 @@ Interview the user until the request is clear enough to build. Runs in the main 
 
 ## Mindset
 
-- **Called from a playbook**: lean toward deciding alone. Ask only what the user alone can decide: a product or business call, a preference, an irreversible choice, a scope boundary. Decide the rest and record it.
+- **Called from a use case**: lean toward deciding alone. Ask only what the user alone can decide: a product or business call, a preference, an irreversible choice, a scope boundary. Decide the rest and record it.
 - **In the grill route**: the goal is to challenge the user's idea. Put every open decision to them, and push back on weak answers with a concrete counterexample.
 
 Facts are your job, never the user's. When a question needs a fact (how the code works, what exists, a convention), send an `explorer (lookup)` subagent to find it. Only the questions downstream of that fact wait for it.
@@ -39,7 +39,7 @@ Without a choice tool, use this text format:
 
 Recap one line per decision: the decision, then who took it (user or you); name unresolved choices explicitly.
 
-- Called from a playbook: present the recap and continue authorized work without a confirmation round; work depending on an unresolved choice stays paused, and in a plan its slices are marked blocked.
+- Called from a use case: present the recap and continue authorized work without a confirmation round; work depending on an unresolved choice stays paused, and in a plan its slices are marked blocked.
 - In the grill route: present the recap, then stop. Suggest the next step in one line (plan or feature), without starting it. Do not ask for approval of decisions the user already made.
 
 When the input came from a ticket (GitHub issue, Notion page): after the recap is settled, append it to the ticket as a comment (`gh issue comment`, Notion comment), never by rewriting the original request. The comment lists each decision, who took it, and the open points still flagged. Give its link in the final reply.

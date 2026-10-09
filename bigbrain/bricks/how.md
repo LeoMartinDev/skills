@@ -31,7 +31,7 @@ For a direct simple lookup, synthesize the inspected facts and pointers yourself
 
 When an explorer flags an unclear rationale that affects a decision, apply `bricks/why.md` with the evidence collected, and carry its constraints and gaps in the mental model.
 
-- **In a playbook**: keep a mental model of at most 20 lines (entry points, flow, key types, conventions, templates, test commands, gotchas, known risks) plus the report paths. Pass both to every later brief; a subagent that doubts the digest re-reads the file.
+- **In a use case**: keep a mental model of at most 20 lines (entry points, flow, key types, conventions, templates, test commands, gotchas, known risks) plus the report paths. Pass both to every later brief; a subagent that doubts the digest re-reads the file.
 - **In the how route**: present the explanation to the user with the sections Overview, Key concepts, How it works, Where things live, and Gotchas. Drop any that are empty. Give `path:line` references, not code dumps.
 
 ## Rules

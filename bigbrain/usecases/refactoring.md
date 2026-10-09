@@ -1,0 +1,15 @@
+# Use case: refactoring
+
+**You own the contract. The structure changes; the behavior does not.** Distinct from feature, which adds behavior, and bugfix, which corrects it. For a saved plan slice, first apply `usecases/plan.md#execute-a-saved-slice`.
+
+If the cleanup reveals a missing feature or a real bug, split it out: ship the structural change first against the pinned contract, and route the rest to its use case. If the goal cannot be met without changing behavior or a public contract, ask before dependent work; never broaden silently.
+
+1. Clarify. Run `bricks/grill.md` when the intended simplification or its scope is open, per the clarity gate in `SKILL.md`. Infer existing behavior from the repo; ask only about intent or scope.
+2. Pin the contract. Run `bricks/how.md` over the affected code, callers, and tests, and record the observable behavior, public contracts, and persisted formats to preserve, with source pointers. Run the relevant checks before editing; a pre-existing failure is evidence to keep apart from regressions, not permission for an unrelated fix. Where coverage is thin, write a characterization test that captures current behavior before any structure moves. Type check and lint are not a pin.
+3. Name the target shape. State the structure the code is missing (`principles/model-the-domain.md`) and what the modules, types, and call graph would be if built today (`principles/redesign-from-first-principles.md`). Boring code stays when its shape is already clear and local. The reshape must delete branches or invalid states, not add indirection. Run `bricks/architect.md` only when its When to run section applies. Over the PR budget or several slices, switch to `usecases/plan.md`.
+4. Delegate the moves with `bricks/implement.md`: allowed paths, the names being moved, and the behavior to hold. Subtract first: dead code, one-caller wrappers, redundant validators, orphan references (`principles/subtract-before-you-add.md`). Then move in small behavior-preserving steps, each keeping the pin green. An API reshape migrates every caller and deletes the old API in the same wave (`principles/migrate-callers-then-delete-legacy-apis.md`). Use a script or codemod for repetitive edits, and spot-check renames in strings and docs. Commits go subtraction, then reshape, then follow-on cleanup.
+5. Prove behavior is unchanged on the real artifact with `bricks/verify.md`, given the baseline and the contracts: the pin passes before and after, and the affected entry points behave the same. "It compiles" is not proof. If the reshape is contested, run `bricks/interrogate.md` alongside. Repair per `bricks/verify.md#rounds`.
+6. Confirm it is worth keeping. A refactor succeeds when reader load drops (`principles/minimize-reader-load.md`); if the diff lowers it nowhere, revert it.
+7. Run `bricks/ship.md`.
+
+**Reply:** the structure that changed, the pin it held against, the equivalence proof, the reader-load change, and what shipped or was reverted. No new behavior.
