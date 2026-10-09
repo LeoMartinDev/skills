@@ -31,7 +31,7 @@ When the invoked watch includes review replies, reply on the PR with the verifie
 
 ## Wait and exit
 
-Wait using the harness's supported primitive at the configured interval; split waits into at most 60 seconds and remain responsive to new user input. Poll unchanged state quietly. Notify on meaningful progress, failure, completion, or required user action. Do not end the session claiming a background watch remains active unless an authorized scheduler is actually registered. Without a wake-up mechanism, monitoring lasts only for the live bounded run.
+Wait using the harness's supported primitive at the configured interval; split blocking waits into at most 60 seconds and remain responsive to new user input. Poll unchanged state quietly. Notify on meaningful progress, failure, completion, or required user action. Do not end the session claiming a background watch remains active unless an authorized scheduler is actually registered. Without a wake-up mechanism, monitoring lasts only for the live bounded run.
 
 **READY** requires a fresh snapshot on the same head SHA: PR open, all required checks satisfied (or explicit evidence the repo requires none), no active failed or pending checks relevant to the change, no unresolved substantive bot finding or human review thread, no outstanding changes request, and no conflict or unknown mergeability. Draft status or a missing required approval remains a human action; report CI-ready separately rather than claiming merge-ready. Read branch policy when determining approval requirements; if it is inaccessible, say readiness is unverified.
 
