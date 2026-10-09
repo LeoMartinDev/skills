@@ -49,7 +49,7 @@ Never paste whole files or long diffs. The lead reads the diff itself if needed.
 - One subagent, one role. A verifier never sees the implementer's reasoning, only the goal, diff location, success criteria, and independently grounded invariants.
 - Guardrails are never in the allowed paths unless the task is about them: lint, type, format, test, and CI config, and disable comments (`eslint-disable`, `@ts-expect-error`, `# noqa`). When a guardrail blocks the code, change the code to satisfy it. If that is truly impossible, the subagent reports it as an open question, and the lead asks the user: a repo rule is the team's call.
 - Each write brief names the implementer that owns branch and commit changes; parallel writers use separate worktrees, and one designated implementer integrates their commits. The lead pushes and updates PRs, never recommitting returned commits. No other role runs `git stash`, `reset`, `checkout`, `switch`, `clean`, or `commit` in the user's checkout, and no role pops or drops another's stash.
-- A verifier's Scope may allow only its own proof worktree under the run scratch, with the tests it needs copied in: no fixes, commits, or changes to the source checkout.
+- A verifier's Scope may allow only its own proof worktree under the run scratch, with the tests it needs copied in, removed with `git worktree remove` before it returns: no fixes, commits, or changes to the source checkout.
 - Independent subagents launch together, in parallel, when the harness allows it.
 - A returned report that breaks the format gets one retry with the format restated, then the lead extracts what it needs.
 

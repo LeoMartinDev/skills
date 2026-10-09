@@ -27,7 +27,7 @@ When the user states a lasting execution preference ("from now on", "remember", 
 | `loop.max-replans` | positive integer, structural returns per run | `3` |
 | `repro.max-rounds` | positive integer, reproduction passes including the first | `3` |
 | `watch.after-ship` | `true`, `false` | `false` |
-| `watch.max-rounds` | positive integer, repair batches per watch run | `5` |
+| `watch.max-rounds` | positive integer, watch rounds (repair batches, inconclusive probes, CI reruns) per watch run | `5` |
 | `watch.timeout-minutes` | positive integer, total watch duration | `30` |
 | `watch.poll-seconds` | integer >= 15 | `60` |
 | `setup.<harness>` | `done <YYYY-MM-DD>`, `later`, `never` | unset (ask) |

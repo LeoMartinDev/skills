@@ -45,6 +45,8 @@ Use this small schema, omitting irrelevant fields:
   "verifyRound": 0,
   "replanCount": 0,
   "reproRound": 0,
+  "arenaRuns": 0,
+  "grillRound": 0,
   "reviewCommit": null,
   "lastPassingCommit": null,
   "evidence": [],

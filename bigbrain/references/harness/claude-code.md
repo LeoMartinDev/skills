@@ -44,14 +44,16 @@ None needed: the model is chosen per call. Setup writes only `models.claude-code
 
 Apply `references/capabilities.md`. Core delegation, continuation, parallelism, model selection, choice UI, and arena scope follow sections 1–5. Retrieval extensions and wake-up support must be inspected; file state and memory use the shared fallbacks.
 
-**PR watch waits.** Foreground `sleep` is blocked. Start one `Bash` call per PR with `run_in_background: true` that reruns `scripts/watch-pr.sh` against the saved snapshot every `watch.poll-seconds` and exits on a change, a script failure, or the saved deadline:
+**PR watch waits.** Foreground `sleep` is blocked. Start one `Bash` call per PR with `run_in_background: true` that reruns `scripts/watch-pr.sh` against the saved snapshot every `watch.poll-seconds` and exits on a change (0), a script failure, or the saved deadline (3). Set every variable in that same command; `DEADLINE` is the saved deadline in epoch seconds:
 
 ```bash
+for v in "$DEADLINE" "$POLL"; do case "$v" in ''|*[!0-9]*) exit 2;; esac; done
 until [ "$(date +%s)" -ge "$DEADLINE" ]; do
   bash "$SKILL/scripts/watch-pr.sh" "$PR" --repo "$REPO" --previous "$SNAP" > "$NEXT" || exit
   jq -e '.changes != []' "$NEXT" >/dev/null && exit
   sleep "$POLL"
 done
+exit 3
 ```
 
 Its exit notifies you, and the user can keep talking meanwhile. Promote `$NEXT` to the snapshot once handled. This is live polling that ends with the session, not `wakeUp`: `CronCreate` and `ScheduleWakeup` are schedulers and need user authorization per `references/capabilities.md`.

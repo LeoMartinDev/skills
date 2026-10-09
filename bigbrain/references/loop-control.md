@@ -16,7 +16,7 @@ A repair that reopens the approach charges both its repair counter and one struc
 
 ## Structural returns
 
-A structural return reopens the cause, grounding, design, or transformation approach because implementation or repair exposed a contradiction or a newly necessary structural decision, or because a root-cause wave confirmed no mechanism. The initial approach, a factual lookup within it, a repair that keeps it, and a changed HEAD alone do not count.
+A structural return reopens the cause, grounding, design, or transformation approach because implementation or repair exposed a contradiction or a newly necessary structural decision, or because a root-cause wave confirmed no mechanism. The initial approach, a factual lookup within it, a repair that keeps it, and a changed HEAD alone do not count; a return counts even when a lookup settles it.
 
 Before the return, record the current reference, the blocking fact or failed assumption with its evidence, what is new since the previous attempt, and the next discriminating probe. Keep valid work.
 
@@ -32,4 +32,4 @@ On stagnation or an exhausted limit, stop dependent work, keep valid commits and
 
 ## Persistence
 
-Counters and attempt records live in run state (`artifacts.loop`). Without durable storage, keep them in the conversation and disclose the resume limit. Resume restores them before any retry. For an older checkpoint, reconstruct consumed attempts from artifacts and history; if that is impossible, keep dependent retries blocked rather than granting a new budget. Only an explicit new watch run starts a new watch budget.
+Counters live in run-state fields (`reproRound`, `replanCount`, `verifyRound`, `watch.fixRounds`, `arenaRuns`, `grillRound`) and attempt records in the `artifacts.loop` report. Without durable storage, keep them in the conversation and disclose the resume limit. Resume restores them before any retry. For an older checkpoint, reconstruct consumed attempts from artifacts and history; if that is impossible, keep dependent retries blocked rather than granting a new budget. Only an explicit new watch run starts a new watch budget.

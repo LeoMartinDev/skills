@@ -53,7 +53,7 @@ The single definition of done; other files point here.
 
 ## Rules
 
-- Any comparison with the base (a pre-existing error, a baseline count, a test that must fail) runs in a temporary worktree at the base, as in step 3. Never through `git stash` or a checkout in the user's tree.
+- Any comparison with the base (a pre-existing error, a baseline count, a test that must fail) runs in a unique worktree under the run scratch at `baseCommit`: copy the needed tests in, run them, then `git worktree remove` it. Never through `git stash` or a checkout in the user's tree.
 - An inconclusive check, or a check run on the wrong surface, is not a pass. Say so.
 - "It compiles" and "the tests I wrote pass" are not enough when a real run is cheap.
 - The lead re-reads every verdict with its exact command, and reruns one targeted check where a verdict lacks its evidence or the ticket's core behavior stays unverified.
