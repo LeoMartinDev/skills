@@ -233,12 +233,42 @@ function commitsBetween(repo, base, head) {
   });
 }
 
-function recentHistory(repo, mergeBase, files) {
-  const paths = new Set(files.filter(f => f.status !== 'A').map(f => f.oldPath));
-  files.filter(f => f.status === 'A').forEach(f => paths.add(posix.dirname(f.path)));
-  const list = [...paths].filter(p => p !== '.').sort().slice(0, 200);
-  if (!list.length) return '';
-  return git(repo, 'log', '--format=%h %ad %an  %s', '--date=short', '-n', '25', mergeBase, '--', ...list);
+// The commits that last wrote each line the PR changes or deletes: where to look for why that code was there.
+function lineOrigins(repo, mergeBase, files) {
+  const out = [];
+  for (const f of files.filter(f => !'AC'.includes(f.status) && !f.binary).slice(0, 100)) {
+    const ranges = [];
+    f.hunks.forEach((h, i) => h.lines.forEach(([kind, oldLine]) => {
+      if (kind !== '-') return;
+      const last = ranges.at(-1);
+      if (last && last.end === oldLine - 1) last.end = oldLine;
+      else ranges.push({ start: oldLine, end: oldLine, hunk: i });
+    }));
+    if (!ranges.length) continue;
+    const args = ranges.flatMap(r => ['-L', `${r.start},${r.end}`]);
+    const result = run('git', ['blame', '-w', '--line-porcelain', ...args, mergeBase, '--', f.oldPath], repo, { check: false });
+    if (result.status !== 0) continue;
+    const commits = new Map();
+    let current;
+    for (const line of result.stdout.split('\n')) {
+      const header = line.match(/^([0-9a-f]{40}) \d+ (\d+)/); // sha, line in that commit, line at the merge base
+      if (header) {
+        const oldLine = Number(header[2]);
+        current = commits.get(header[1]) ?? { sha: header[1], lines: 0, hunks: new Set() };
+        current.lines++;
+        current.hunks.add(ranges.find(r => r.start <= oldLine && oldLine <= r.end)?.hunk);
+        commits.set(header[1], current);
+      } else if (line.startsWith('author ')) current.author = line.slice(7);
+      else if (line.startsWith('author-time ')) current.date = new Date(Number(line.slice(12)) * 1000).toISOString().slice(0, 10);
+      else if (line.startsWith('summary ')) current.subject = line.slice(8);
+    }
+    out.push(`- ${f.oldPath}`);
+    [...commits.values()].sort((a, b) => b.lines - a.lines).slice(0, 8).forEach(c => {
+      const hunks = [...c.hunks].filter(h => h !== undefined).sort((a, b) => a - b).join(', ');
+      out.push(`    ${c.sha.slice(0, 8)} ${c.date} ${c.author}  ${c.subject} (hunks ${hunks}, ${c.lines} line${c.lines > 1 ? 's' : ''})`);
+    });
+  }
+  return out.join('\n');
 }
 
 function repoName(repo, remote, pr) {
@@ -258,7 +288,7 @@ function hunkSpan(hunk, side) {
   return count ? [start, start + count - 1] : [start, start];
 }
 
-function overview(data, history, codeAt) {
+function overview(data, origins, codeAt) {
   const { pr, files } = data;
   const out = [`# ${data.title}`, ''];
   if (pr) out.push(`PR #${pr.number} by ${pr.author} (${pr.state.toLowerCase()}${pr.isDraft ? ', draft' : ''}): ${pr.url}`);
@@ -288,7 +318,8 @@ function overview(data, history, codeAt) {
       out.push(`- hunk ${i}: lines ${first}-${last}${context}: \`${changed.slice(0, 90)}\`${long}`);
     });
   }
-  if (history.trim()) out.push('', '## Recent history of the touched paths (before this change)', '', '```', history.trimEnd(), '```');
+  if (origins.trim()) out.push('', '## Origin of the changed and deleted lines (git blame at the merge base)', '',
+    'Per file, the commits that last wrote the lines this PR changes or deletes, most lines first.', '', origins);
   return out.join('\n') + '\n';
 }
 
@@ -337,7 +368,7 @@ function collect(target, opts) {
     ? `this checkout, ${repo}`
     : `not checked out here; run \`git -C ${repo} worktree add --detach ${join(folder, 'head')} ${headSha}\`, `
       + `read it there, and remove it with \`git -C ${repo} worktree remove ${join(folder, 'head')}\` once done`;
-  writeFileSync(join(folder, 'overview.md'), overview(data, recentHistory(repo, mergeBase, files), codeAt));
+  writeFileSync(join(folder, 'overview.md'), overview(data, lineOrigins(repo, mergeBase, files), codeAt));
   console.log(folder);
 }
 

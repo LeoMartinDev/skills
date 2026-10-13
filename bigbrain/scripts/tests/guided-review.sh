@@ -70,6 +70,8 @@ ok(d.pr === null && d.head.ref === "feature", "branch target");
 ' "$out/data.json" "collected data is wrong"
 grep -q "hunk 1: lines" "$out/overview.md" || fail "overview lists hunks"
 grep -q "long line: read it in diff.words.patch" "$out/overview.md" || fail "overview flags long changed lines"
+grep -A1 -- "- src/numbers.txt" "$out/overview.md" | grep -q "initial (hunks 0, 1, 2 lines)" || fail "overview names the commit behind changed lines"
+grep -A1 -- "- legacy.txt" "$out/overview.md" | grep -q "initial (hunks 0, 1 line)" || fail "overview names the commit behind deleted lines"
 grep -qF '[-return-]' "$out/diff.words.patch" || fail "word diff marks removed words"
 range=$(node "$script" collect main..feature | tail -1)
 check 'process.exit(JSON.parse(require("fs").readFileSync(process.argv[1] + "/data.json", "utf8")).files.length === 6 ? 0 : 1)' "$range" "range target"
