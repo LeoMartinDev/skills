@@ -15,7 +15,7 @@ Commands below run `node scripts/guided-review.mjs`, which needs Node 18+, `git`
 4. **Map, split, and order** (below), from the digests. Before turning a finding into a check, confirm it with one targeted read.
 5. **Write** `tour.json` in the review folder per `references/tour-format.md` and `references/tour-writing.md`, in the user's language.
 6. **Build.** Run `build FOLDER`. Fix every error; act on warnings unless you have a reason not to.
-7. **Critique, every time.** A `verifier` with `references/prompts/tour-critic.md` and `references/tour-writing.md` to read first, given the review folder and the code at head, never the reports or your notes. Fix each `wrong` finding once one targeted read confirms it, and each `unclear` or `missing` one unless you record why not; then rebuild. Run a second critique only if you rewrote a whole step.
+7. **Critique, every time.** A `verifier` with `references/prompts/tour-critic.md`, `references/tour-writing.md`, and `principles/plain-prose.md` to read first, given the review folder and the code at head, never the reports or your notes. Fix each `wrong` finding once one targeted read confirms it, and each `unclear` or `missing` one unless you record why not; then rebuild. Run a second critique only if you rewrote a whole step.
 8. **Open.** For a PR, start `serve FOLDER` in the background: the reviewer comments on diff lines or ranges, as on GitHub, and submits the review through `gh`, and it stops 15 minutes after the page is closed. Otherwise run `build FOLDER --open`. Remove the head worktree if you created one.
 
 **Reply:** the page link, the step titles, the one or two points most worth a look, and what the critique corrected. No verdict.

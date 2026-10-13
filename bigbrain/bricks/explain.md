@@ -14,7 +14,7 @@ Choose the smallest format that makes the behavior and evidence clear:
 - **Changed flow, boundaries, or architecture:** add one diagram when it clarifies what changed. Prefer Mermaid supported by the destination; distinguish the previous and resulting behavior.
 - **Complex migration or several interacting changes:** optionally add a local interactive HTML explanation when exploring modules, flows, or proof details materially helps review and the harness can create and show it. Otherwise use text and a diagram.
 
-A visual is optional, never a completion gate. Use plain language, concrete examples, and the reader's language, and respect the repo's PR language and template.
+A visual is optional, never a completion gate. Write per `principles/plain-prose.md`, with concrete examples, and respect the repo's PR language and template.
 
 ## Compose
 

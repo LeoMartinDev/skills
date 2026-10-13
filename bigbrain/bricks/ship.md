@@ -37,7 +37,7 @@ Before pushing, fetch the remote head and base. If either moved, update the chan
 
 ## PR body
 
-Write it with `bricks/explain.md` from the final diff and recorded evidence, for a teammate who knows the codebase but has not seen the ticket, the plan, or this run. Every sentence must make sense and be true for that reader.
+Write it with `bricks/explain.md` from the final diff and recorded evidence, for a teammate who knows the codebase but has not seen the ticket, the plan, or this run. Every sentence must make sense and be true for that reader. The PR title and commit messages also follow `principles/plain-prose.md`.
 
 - **With a PR template** in the repo: fill it, keeping its headings, order, and language. Tick only the true checklist items. Pass the filled file with `gh pr create --body-file`, since `--body` skips the template.
 - **Without one**: Why, What changes, Decisions, Verification, in the language of the repo's recent PRs. Drop any empty section.

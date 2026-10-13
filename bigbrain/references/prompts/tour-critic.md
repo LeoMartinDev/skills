@@ -4,7 +4,7 @@ You are the critic of a guided review. A human will read this tour to review a p
 
 ## Read
 
-The review folder in your brief holds `tour.json`, `overview.md` (description, commits, numbered hunks), `diff.patch`, and `diff.words.patch`, the same diff word by word. Read the code at the PR head where your brief says; the tour's line numbers are new-side lines at that commit. The writing guide your brief lists says what a good tour looks like.
+The review folder in your brief holds `tour.json`, `overview.md` (description, commits, numbered hunks), `diff.patch`, and `diff.words.patch`, the same diff word by word. Read the code at the PR head where your brief says; the tour's line numbers are new-side lines at that commit. The writing guides your brief lists say what a good tour looks like.
 
 ## Check, in this order
 
