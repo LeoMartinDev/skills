@@ -6,15 +6,13 @@
 
 **Give your coding agent a task. It coordinates the work and checks the result.**
 
-bigbrain is a personal engineering skill for building features, fixing bugs, refactoring code, handling chores, planning changes, and reviewing code, including guided pull request reviews in your browser. The main agent acts as the lead: it makes decisions and delegates exploration, implementation, verification, and review to subagents.
-
-**Heavily inspired by [pstack](https://github.com/cursor/plugins/tree/main/pstack) by poteto (Lauren Tan).** Its engineering principles, delegation approach, and workflows are the foundation of bigbrain. See [what differs](#inspired-by-pstack) below.
+bigbrain is a skill for coding agents. The main agent acts as the lead: it makes the decisions and hands exploration, implementation, verification, and review to subagents. For a feature, fix, refactor, or chore, you get an open pull request with the decisions and the proof that it works.
 
 ```text
 /bigbrain add a CSV export to the invoices list
 ```
 
-For features, fixes, refactors, and chores, the default outcome is an open pull request with the decisions and verification evidence. If the request is clear, the agent works through it autonomously. If a product or scope decision needs your input, it asks.
+Heavily inspired by [pstack](https://github.com/cursor/plugins/tree/main/pstack) by poteto (Lauren Tan).
 
 ## Install
 
@@ -22,343 +20,63 @@ For features, fixes, refactors, and chores, the default outcome is an open pull 
 npx skills add LeoMartinDev/skills -g
 ```
 
-To update to the latest version:
-
-```bash
-npx skills update bigbrain -g
-```
-
-Then run this once in each coding agent to choose models for the different roles:
+Then, optionally, choose models for each role:
 
 ```text
 /bigbrain setup
 ```
 
-Setup is optional. You can defer it or keep the agent's model choices.
-
-Supported agents: Claude Code, Cursor, Delta, omp, opencode, Pi, and Zed. Other agents use a generic fallback and report unavailable capabilities. In omp, use `/skill:bigbrain` instead of `/bigbrain`.
+Works with Claude Code, Cursor, Delta, omp, opencode, Pi, and Zed. In omp, use `/skill:bigbrain`. Update with `npx skills update bigbrain -g`.
 
 ## Use it
 
-Write a request after `/bigbrain`. You can also pass a GitHub issue URL, a Notion page, or a saved plan.
+Write a request after `/bigbrain`. It also accepts a GitHub issue URL, a Notion page, or a saved plan.
 
 | What you want | Example |
 |---|---|
-| [Build a feature](#features) | `/bigbrain add a CSV export to the invoices list` |
-| [Fix a bug](#bugfixes) | `/bigbrain the dashboard total is off by one cent` |
-| [Refactor or simplify code](#refactoring) | `/bigbrain simplify invoice calculation while preserving its behavior` |
-| [Handle a chore](#features) | `/bigbrain update the lint configuration to the repo's new rules` |
-| [Plan a larger change](#planning) | `/bigbrain plan the migration to the new numbering` |
-| [Implement part of a plan](#saved-plan-slices) | `/bigbrain implement slice 2 of plans/numbering.md` |
-| [Understand code](#code-explanations) | `/bigbrain how does invoice numbering work?` |
-| [Investigate rationale](#why-investigations) | `/bigbrain why does invoice numbering retry at most three times?` |
-| [Review a pull request](#guided-reviews) | `/bigbrain review PR 123` |
-| [Critique changes](#critiques) | `/bigbrain critique this branch` |
-| [Challenge an idea](#idea-discussions) | `/bigbrain grill my idea: cache VAT rates per org` |
-| [Watch a pull request](#pr-watch) | `/bigbrain watch-pr 123` |
-| [Continue earlier work](#resume) | `/bigbrain resume feat/csv-export` |
-
-Plans, explanations, reviews, and idea discussions stop at their result. A PR watch checks CI and reviews, repairs verified findings, and stops when ready or when its limits are reached. The skill never merges pull requests.
-
-## How it works
-
-The lead follows the selected use case and keeps only decisions and short summaries in its context. Subagents handle exploration, implementation, verification, and review.
-
-Before changing code, the agent checks the working tree and clarifies open goals or scope. Decisions only you can make pause the work that depends on them; everything else proceeds. There are no retry counters: an attempt is retried only when something new has appeared since the last one, otherwise the agent stops and reports what it tried.
-
-### Features
-
-The [feature use case](bigbrain/usecases/feature.md) sets observable criteria and names the data shape, then implements. When existing code already settles the shape, the lead writes a short brief; an open structural decision goes through a design step first, sometimes with competing designs from several models. A contested or risky change also gets an adversarial review. Chores (tooling, dependencies, configuration) follow the same use case, proven by exercising what changed. Large changes move to [planning](#planning).
-
-```mermaid
-flowchart TD
-    H["Understand code and criteria"] --> A["Compact brief or architect when needed"]
-    A --> Q{"Design settled?"}
-    Q -->|Yes| I["Implement"]
-    Q -->|No| B["Return blockers"]
-    I --> V["Verify; review if contested or risky"]
-    V --> S["Delivery after required repairs"]
-```
-
-### Bugfixes
-
-The [bugfix use case](bigbrain/usecases/bugfix.md) requires a faithful repro before fixing anything, then binary-searches the cause with competing hypotheses tested in parallel until one mechanism is confirmed. Two failed fixes on the same hypothesis reopen the investigation.
-
-```mermaid
-flowchart TD
-    H["Understand the symptom"] --> R{"Failure reproduced?"}
-    R -->|No, after investigation| B["Stop with remaining hypotheses"]
-    R -->|Yes| C["Establish the root cause"]
-    C --> I["Fix; design first when needed"]
-    I --> V["Verify original repro"]
-    V --> S["Delivery after required repairs"]
-```
-
-### Refactoring
-
-The [refactoring use case](bigbrain/usecases/refactoring.md) pins the contracts to preserve, names the target shape, subtracts before reshaping, and keeps a refactor only if it lowers reader load. Behavior does not change: a missing feature or a bug found on the way is split out, and a change that would break a contract comes back to you.
-
-```mermaid
-flowchart TD
-    H["Pin the contract"] --> B["Name the target shape"]
-    B --> Q{"Open structural decision<br/>necessary for the goal?"}
-    Q -->|Yes| A["Architect"]
-    Q -->|No| I["Implement"]
-    A -->|Settled design| I
-    A -->|Unresolved| X["Return blockers"]
-    I --> V["Prove behavior unchanged"]
-    V --> S["Delivery after required repairs"]
-```
-
-### Planning
-
-The [plan use case](bigbrain/usecases/plan.md) produces independently verifiable slices, each one PR, with prerequisites and checks. A reviewer challenges the plan before it is saved.
-
-```mermaid
-flowchart TD
-    Q{"Plan needed?"} -->|No| N["Offer the direct workflow; stop"]
-    Q -->|Yes| H["Clarify + understand"]
-    H --> A["Feature design or refactoring brief"]
-    A --> S["Define verifiable slices"]
-    S --> R["Review and revise the plan"]
-    R --> O["Save or present; stop"]
-```
-
-Planning stops at the plan. A small change with an obvious, low-risk approach needs no plan; a consequential unknown can justify even a one-slice plan.
-
-### Saved plan slices
-
-[Executing a slice](bigbrain/usecases/plan.md#execute-a-saved-slice) first checks that its prerequisites hold in the current code. A stale plan is refreshed where it drifted before proceeding.
-
-```mermaid
-flowchart TD
-    L["Load the selected slice"] --> C["Check current prerequisites"]
-    C --> Q{"Ready to execute?"}
-    Q -->|Yes| F["Run its feature or refactoring flow"]
-    Q -->|No| R["Refresh affected plan and review it"]
-    R --> U{"Blockers settled?"}
-    U -->|Yes| F
-    U -->|No| B["Keep dependent work blocked"]
-```
-
-### Code explanations
-
-The [how brick](bigbrain/bricks/how.md) answers how code works or where something belongs, with `path:line` sources. A wide question is split into parallel exploration angles.
-
-```mermaid
-flowchart TD
-    Q{"Question size?"} -->|Narrow| E["Targeted lookup or one explorer"]
-    Q -->|Wide| P["Parallel exploration angles"]
-    E --> S["Synthesize source-backed findings"]
-    P --> S
-    S --> O["Explain or recommend placement; stop"]
-```
-
-### Why investigations
-
-The [why brick](bigbrain/bricks/why.md) separates the historical reason from whether it still applies, starting from code, Git history, and PRs. Claims carry sources and confidence; missing rationale stays unknown and never justifies a removal. It also runs inside a change when an unexplained workaround or limit affects the design.
-
-```mermaid
-flowchart LR
-    C["Current behavior"] --> H["Targeted history and related sources"]
-    H --> N["Check present necessity"]
-    N --> O["Facts, inferences, unknowns"]
-```
-
-### Guided reviews
-
-The [guided review use case](bigbrain/usecases/guided-review.md) prepares a pull request, branch, or diff for you to review, then opens it as a page in your browser. You do the review; the agent explains and points at doubts, and never posts anything itself.
-
-```mermaid
-flowchart LR
-    C["Collect the diff"] --> I["Intent from the description, issues, commits"]
-    I --> P["Parallel: module, history, risks"]
-    P --> T["Map the flow, split, write the tour"]
-    T --> K["Critic checks the tour against the code"]
-    K --> O["Open the page"]
-```
-
-Three read-only subagents read the change in its context: the modules it touches read whole, the history of the changed regions, and the ways it could break. The lead maps where the change runs, splits it into steps along that path, and writes the tour. A critic that never saw the lead's notes then checks every claim against the code at the PR head, and the lead fixes what it finds before opening the page.
-
-A sidebar switches between two modes:
-
-- **Tour:** what the PR does in ten lines at most, then the reading path, which follows where the change runs (screen, component, store, API) and shows under each step the places it covers. Each step says how it follows from the previous one, explains the part in a few sentences, and puts the matching diffs or files next to it, with numbered pins on the lines it hinges on that open a short comment in a bubble. A step that deserves a close reading says so, and one or two questions per step point at real doubts, such as how it could break or what the diff leaves out. Badges in the text open any file, changed or not, at the cited lines.
-- **Files:** the classic review, with a filterable file tree, full diffs, a "viewed" checkbox per file, and links back to the steps that explain each file.
-
-Keyboard: `←` `→` move between steps, `t` switches modes, `j` `k` move between files, `v` marks a file viewed, and `[` hides the sidebar.
-
-For a pull request, the page comes from a small local server and you review it as on GitHub. Hover a line of a diff and click **+** to comment on it, or drag over the line numbers (or shift-click a second line) to comment on a range in the same hunk; deleted lines take comments too. **Suggestion** puts the commented lines in a `suggestion` block that the author can commit from GitHub. Comments stay drafts in the page until the **Review** button sends them, with an overall comment, as Comment, Approve, or Request changes, through your `gh` login. GitHub refuses Approve and Request changes from the pull request's author. The server listens on 127.0.0.1 only, behind a random token, and stops 15 minutes after the page is closed.
-
-A [helper script](bigbrain/scripts/guided-review.mjs) collects the diff, validates the [tour](bigbrain/references/tour-format.md), and builds one self-contained HTML file outside your checkout, which also works offline as a read-only page. Code is shown with [CodeMirror](https://codemirror.net/): unified or side-by-side diffs, word-level changes, and collapsed unchanged lines you can expand. Requires Node 18+ and `git`, plus `gh` for pull requests.
-
-### Critiques
-
-The [interrogate brick](bigbrain/bricks/interrogate.md) looks for the change's defects itself, from distinct angles. The lead checks each finding against the code and ranks them by severity.
-
-```mermaid
-flowchart LR
-    A["Anchor the change"] --> R["Parallel reviewers"]
-    R --> S["Assess and rank findings"]
-    S --> O["Present the verdict; stop"]
-```
-
-A direct critique applies no changes unless requested. Inside a write workflow, its findings return to the caller's shared repair batch.
-
-### Idea discussions
-
-The [grill brick](bigbrain/bricks/grill.md) asks you the open decisions in rounds, looking up facts itself rather than asking you.
-
-```mermaid
-flowchart TD
-    F["Map open decisions"] --> Q["Ask the current frontier"]
-    Q --> A["Use answers and looked-up facts"]
-    A --> M{"Decisions still open?"}
-    M -->|Yes| Q
-    M -->|No| O["Recap decisions and gaps; stop"]
-```
-
-Called directly, it ends with a recap and a suggested next step. Inside a workflow, the recap feeds back into that workflow.
-
-### PR watch
-
-The [watch brick](bigbrain/bricks/pr-watch.md) runs a bounded loop. A [shell helper](bigbrain/references/pr-watch-script.md) takes one read-only snapshot of the PR; the agent verifies findings, repairs, and pushes.
-
-```mermaid
-flowchart TD
-    O["Observe current head, CI and reviews"] --> Q{"State and action?"}
-    Q -->|Verified repair needed| I["Batch repairs"]
-    I --> V["Verify; fresh review when required"]
-    V -->|Passing, fresh, within budget| P["Push normally"]
-    P --> O
-    Q -->|Pending or unknown| W["Wait or investigate within limits"]
-    W --> O
-    Q -->|Ready| R["Report current readiness; stop"]
-    Q -->|Human action, closed, or limit reached| S["Report state and blockers; stop"]
-```
-
-Only verified repairs are pushed. A watch stops after 30 minutes (or the duration you ask for) or when repairs stop making progress, and never merges; draft status and missing approvals are left to you.
-
-### Resume
-
-[Resume](bigbrain/usecases/resume.md) picks up earlier work from its branch or PR, like pstack's session pickup. There is no saved state file: git, the PR, and the previous conversation when available are the trail. The agent reuses what is done and verified instead of redoing it.
-
-```mermaid
-flowchart TD
-    L["Read the branch, PR, and previous conversation"] --> D["Compare what landed with the goal"]
-    D --> V["Verify the inherited claims the rest depends on"]
-    V --> F["Continue at the resume point"]
-```
-
-### Setup
-
-The [setup use case](bigbrain/usecases/setup.md) configures supported model/effort choices and offers an optional PR size limit. Confirmed choices are stored in the skill configuration and the harness-native configuration when supported.
-
-```mermaid
-flowchart LR
-    A["Available capabilities"] --> P["Propose supported choices"]
-    P --> C["User confirms preferences"]
-    C --> S["Save choices and report"]
-```
-
-### Shared verification and repair
-
-Feature, bugfix, and refactoring run an independent verifier, plus reviewers on the same commit when the change is contested or risky, then send all fixes in one repair batch.
-
-```mermaid
-flowchart TD
-    H["Fixed change reference"] --> V["Independent verifier"]
-    H -.->|Contested or risky| R["Reviewers"]
-    V --> L["Lead collects reports and decides"]
-    R --> L
-    L -->|Repair needed; something new| I["One repair batch"]
-    I --> N["Reverify the affected behavior"]
-    N --> L
-    L -->|Passing; no required fixes| S["Delivery"]
-    L -->|Nothing new to try| B["Stop and report blockers"]
-```
-
-Verification runs the repo's CI checks, the tests, and a real run through the affected entry point when feasible. The [delivery gate](bigbrain/bricks/verify.md#delivery-gate) defines done: every required criterion (ticket items, requested outcome, preserved contracts, CI checks) needs passing evidence on the current commit, or nothing ships.
-
-### Delivery and stacked branches
-
-[Ship](bigbrain/bricks/ship.md) measures, verifies, and targets the PR against the same base. A child branch in a stack targets its parent, and only its own changes count.
-
-```mermaid
-flowchart LR
-    M["main"] --> A["Parent branch"]
-    A --> B["Child branch"]
-    B -. "Child PR targets parent" .-> A
-```
-
-Before delivery, the agent refreshes the remote head and base and reruns the proofs a late change affects. It never rewrites pushed history or force-pushes.
-
-```mermaid
-flowchart TD
-    R["Refresh head and effective base"] --> Q{"Reference changed?"}
-    Q -->|Yes| V["Refresh affected proofs and review"]
-    V --> B["Confirm fresh evidence and budget"]
-    Q -->|No| B
-```
-
-Once the evidence and budget permit delivery, the agent pushes and opens the PR ready, never as a draft:
-
-```mermaid
-flowchart TD
-    P["Push and create or update the ready PR"] --> W{"Watch after ship enabled?"}
-    W -->|Yes| O["Run PR watch"]
-    W -->|No| S["Report; stop"]
-```
+| [Build a feature or a chore](bigbrain/usecases/feature.md) | `/bigbrain add a CSV export to the invoices list` |
+| [Fix a bug](bigbrain/usecases/bugfix.md) | `/bigbrain the dashboard total is off by one cent` |
+| [Refactor](bigbrain/usecases/refactoring.md) | `/bigbrain simplify invoice calculation` |
+| [Plan a larger change](bigbrain/usecases/plan.md) | `/bigbrain plan the migration to the new numbering` |
+| [Implement part of a plan](bigbrain/usecases/plan.md#execute-a-saved-slice) | `/bigbrain implement slice 2 of plans/numbering.md` |
+| [Understand code](bigbrain/bricks/how.md) | `/bigbrain how does invoice numbering work?` |
+| [Find out why code is the way it is](bigbrain/bricks/why.md) | `/bigbrain why does numbering retry three times?` |
+| [Review a pull request](bigbrain/usecases/guided-review.md) | `/bigbrain review PR 123` |
+| [Critique changes](bigbrain/bricks/interrogate.md) | `/bigbrain critique this branch` |
+| [Challenge an idea](bigbrain/bricks/grill.md) | `/bigbrain grill my idea: cache VAT rates per org` |
+| [Watch a pull request](bigbrain/bricks/pr-watch.md) | `/bigbrain watch-pr 123` |
+| [Continue earlier work](bigbrain/usecases/resume.md) | `/bigbrain resume feat/csv-export` |
+
+Plans, explanations, reviews, and idea discussions stop at their result. Each link leads to the full workflow.
+
+## What to expect
+
+- **It asks only what it must.** A clear request runs on its own. A product or scope decision that only you can make pauses the work that depends on it.
+- **Every change is proven.** A separate verifier runs the CI checks, the tests, and the real entry point when it can. A risky change also gets reviewers. Nothing ships without passing evidence on the current commit.
+- **It never merges and never force-pushes.** The PR opens ready for review. Large changes become a plan of smaller PRs.
+- **It stops instead of looping.** It retries only when something new has come up since the last attempt. Otherwise it reports what it tried.
+
+## Guided review
+
+`/bigbrain review PR 123` opens the pull request as a page in your browser. You do the review; the agent explains the change and points out its doubts. It never posts anything by itself.
+
+- **Tour:** the change in ten lines, then a reading path that follows the code from screen to API, with comments on the key lines and questions worth asking.
+- **Files:** the classic view, with a file tree, full diffs, and a "viewed" checkbox.
+
+You can comment on lines, suggest changes, and submit the review to GitHub from the page through your `gh` login. Keys: `←` `→` steps, `t` mode, `j` `k` files, `v` viewed, `[` sidebar. Requires Node 18+, `git`, and `gh`.
 
 ## Preferences
 
-Change lasting preferences in plain language:
+Set lasting preferences in plain language:
 
 ```text
 /bigbrain from now on, save plans as GitHub issues here
 ```
 
-Settings live in `~/.agents/config/bigbrain.md`, with global defaults and optional overrides per repository. Project knowledge is stored separately, outside your checkout.
+They are saved in `~/.agents/config/bigbrain.md`. See [configuration](bigbrain/references/config.md) for every setting.
 
-For the exact settings and defaults, see [configuration](bigbrain/references/config.md).
+## Credits
 
-## Develop locally
+bigbrain builds on [pstack](https://github.com/cursor/plugins/tree/main/pstack): its engineering principles, its delegation model, and the format of its playbooks. bigbrain is a smaller personal take, packaged as one skill that runs in several coding agents and stops at an open pull request. It does not need pstack to work.
 
-Clone the repository and link the skill so edits apply immediately:
-
-```bash
-git clone git@github.com:LeoMartinDev/skills.git
-cd skills
-mkdir -p ~/.agents/skills ~/.claude/skills
-ln -s "$PWD/bigbrain" ~/.agents/skills/bigbrain
-ln -s ~/.agents/skills/bigbrain ~/.claude/skills/bigbrain
-```
-
-bigbrain is organized into small files loaded as needed:
-
-- [SKILL.md](bigbrain/SKILL.md): entry point, routing, and lead rules.
-- [Use cases](bigbrain/usecases/): feature, bugfix, refactoring, plan, review, resume, and setup workflows.
-- [Bricks](bigbrain/bricks/): reusable steps such as exploration, implementation, review, and shipping.
-- [Principles](bigbrain/principles/): engineering rules applied when relevant.
-- [References](bigbrain/references/): settings, memory, subagent prompts, and agent adapters.
-- [Scripts](bigbrain/scripts/): the read-only PR watch helper, the guided review builder and server, and their offline tests.
-- [Viewer](bigbrain/viewer/): the guided review page.
-
-Keep each skill file within 1,000 words, and add a rule only for an observed failure it prevents. After editing, run `bash scripts/check-skill.sh` (word budget and referenced paths), `bash bigbrain/scripts/tests/run.sh` (PR watch helper), and `bash bigbrain/scripts/tests/guided-review.sh` (guided review collect, build, and review server). The guided review embeds a prebuilt CodeMirror bundle, `bigbrain/viewer/vendor/codemirror.js`; after changing a version in its `package.json`, rebuild it with `bash bigbrain/viewer/vendor/build.sh`. To validate behavior, run a clear feature request and a vague request in a sandbox repository: the first should proceed, and the second should ask for the missing decisions.
-
-## Inspired by pstack
-
-bigbrain owes a lot to [pstack](https://github.com/cursor/plugins/tree/main/pstack) by poteto (Lauren Tan): keeping the lead's context small, grounding decisions in code, designing before implementing, challenging changes with multiple models, and proving results on the real artifact. The `how`, `architect`, `arena`, and `interrogate` bricks adapt those ideas, alongside many of its engineering principles.
-
-The use cases follow the format of pstack playbooks: a one-line stance, imperative steps that each say what to do, and a closing reply line. bigbrain reshapes that foundation into a smaller personal workflow:
-
-| Area | pstack | bigbrain |
-|---|---|---|
-| Packaging | A Cursor plugin with separately invokable skills and subagents. | One `/bigbrain` skill, with internal bricks and principles loaded as needed. |
-| Coding agents | Built around Cursor's tools, rules, and runtime. | Adapters for Claude Code, Cursor, Delta, omp, opencode, Pi, and Zed, plus a generic fallback. |
-| Scope | Broader playbooks, including performance, runtime forensics, prototypes, and multi-day orchestration. | Focused on features and chores, bugs, refactors, plans, explanations, reviews, idea discussions, and bounded PR watches. |
-| Rationale | A dedicated why investigation across engineering context. | A bounded `why` brick, explicitly routed or used for consequential grounding/design questions, with historical rationale and present necessity assessed separately. |
-| Arena | Parallel candidates can produce different kinds of artifacts. | Candidates propose designs before implementation; one implementer builds the settled design. |
-| Review | Each configured reviewer gets the same prompt and rubric. | A fresh verifier proves every change; when the design is contested or the change is risky, two reviewers with assigned angles run alongside it, and repairs are batched and reverified. |
-| Delivery | Includes workflows for landing verified PR stacks and autonomous merges. | Opens a PR by default and never merges; large changes become smaller planned PRs. |
-
-Both share the same emphasis on engineering judgment, small changes, independent scrutiny, and verification. bigbrain is a personal adaptation of that approach, with its own routing and execution rules. It can be installed on its own without pstack.
+To work on bigbrain itself, see [CONTRIBUTING.md](CONTRIBUTING.md).
