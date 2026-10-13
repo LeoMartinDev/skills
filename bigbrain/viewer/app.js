@@ -54,6 +54,7 @@
       openOnGitHub: 'Open on GitHub', needBody: 'Requesting changes needs an overall comment.', needSomething: 'Write a comment first.',
       failed: 'GitHub rejected the review:', offline: 'The local server does not answer. Is serve still running?', done: 'Done',
       path: 'Reading path', readHint: { high: 'read every line', low: 'skim' },
+      partOf: (n, t) => `Part ${n} of ${t}`, seeParts: n => `See the ${n} parts`, thisPr: 'This PR', partState: { done: 'Done', open: 'In progress', planned: 'Planned' },
       skippedHunks: n => (n === 1 ? '1 change' : `${n} changes`),
     },
     fr: {
@@ -104,6 +105,7 @@
       openOnGitHub: 'Voir sur GitHub', needBody: 'Demander des changements nécessite un commentaire général.', needSomething: 'Écrivez d’abord un commentaire.',
       failed: 'GitHub a refusé la review :', offline: 'Le serveur local ne répond pas. serve tourne-t-il encore ?', done: 'Terminé',
       path: 'Parcours de lecture', readHint: { high: 'à lire ligne à ligne', low: 'survol suffisant' },
+      partOf: (n, t) => `Partie ${n} sur ${t}`, seeParts: n => `Voir les ${n} parties`, thisPr: 'Cette PR', partState: { done: 'Terminé', open: 'En cours', planned: 'À venir' },
       skippedHunks: n => (n === 1 ? '1 modification' : `${n} modifications`),
     },
   };
@@ -134,6 +136,7 @@
     eye: '<path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/>',
     flag: '<path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><path d="M4 22v-7"/>',
     home: '<path d="M3 10 12 3l9 7v10a1 1 0 0 1-1 1h-5v-7H9v7H4a1 1 0 0 1-1-1z"/>',
+    layers: '<path d="M12.83 2.18a2 2 0 0 0-1.66 0L2.6 6.08a1 1 0 0 0 0 1.83l8.58 3.91a2 2 0 0 0 1.66 0l8.58-3.9a1 1 0 0 0 0-1.83Z"/><path d="m2 12.65 9.17 4.16a2 2 0 0 0 1.66 0L22 12.65"/><path d="m2 17.65 9.17 4.16a2 2 0 0 0 1.66 0L22 17.65"/>',
     commit: '<circle cx="12" cy="12" r="3"/><path d="M3 12h6"/><path d="M15 12h6"/>',
     unfold: '<path d="m7 15 5 5 5-5"/><path d="m7 9 5-5 5 5"/>',
     pencil: '<path d="M21.17 6.81a1 1 0 0 0-3.99-3.99L3.84 16.17a2 2 0 0 0-.5.83l-1.32 4.35a.5.5 0 0 0 .62.62l4.35-1.32a2 2 0 0 0 .83-.5z"/>',
@@ -590,9 +593,26 @@
       ? `<details class="fold author"><summary>${icon('chevronRight', 'chev')}${S.description}${pr.author ? `<span class="muted">${esc(pr.author)}</span>` : ''}</summary>
         <div class="md">${md(author.text)}${author.hidden ? `<p class="bot-note">${esc(S.botHidden(author.hidden))}</p>` : ''}</div></details>` : '';
     return `<header class="doc-head"><div class="kicker">${kicker}</div><h1>${inline(title)}</h1></header>
+      ${seriesHtml()}
       <div class="md lead">${md(T.summary)}</div>
       <section class="sec"><h3>${S.path}</h3>${readingPathHtml()}</section>
       ${body}`;
+  }
+
+  // A soft note atop the intro when the PR is one part of a larger change: which part, what the whole does, and the parts.
+  function seriesHtml() {
+    const series = T.series;
+    if (!series) return '';
+    const link = (text, url) => (url ? `<a href="${esc(url)}" target="_blank" rel="noopener">${esc(text)}</a>` : esc(text));
+    const parts = series.parts;
+    const rows = parts.map((part, i) => `<li class="${part.current ? 'cur' : esc(part.state)}"><span class="n">${i + 1}</span>
+      <span class="s-label">${part.current ? esc(part.label) : link(part.label, part.url)}</span>
+      <span class="s-state">${esc(part.current ? S.thisPr : S.partState[part.state])}</span></li>`).join('');
+    return `<aside class="series-note">
+      <div class="series-head">${icon('layers')}<span>${S.partOf(parts.findIndex(p => p.current) + 1, parts.length)}</span><span class="sep">·</span>${link(series.label, series.url)}</div>
+      <p>${esc(series.summary)}</p>
+      <details class="series-parts"><summary>${icon('chevronRight', 'chev')}${S.seeParts(parts.length)}</summary><ol class="series">${rows}</ol></details>
+    </aside>`;
   }
 
   // The reading path follows the flow: each step lists, under its title, the places of the flow it explains.

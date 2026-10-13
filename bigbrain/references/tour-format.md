@@ -47,9 +47,10 @@ The tour is the only file you write; `build` checks it against what `collect` pr
 
 | Field | Rule |
 |---|---|
-| `lang` | Language code of the text (`fr`, `en`); sets the interface language. |
+| `lang` | Language of the text (`fr`, `en`), also used by the interface. |
 | `summary` | Required. Why the PR exists and what it does, in 10 non-empty lines at most (an error past that), about 160 words at most, shaped per `references/tour-writing.md`. |
-| `flow` | The 3 to 7 places the change runs through, in execution order, each `{ "label", "step" }`; leave `step` out for a place shown only for context. Shown on the intro as a map and on each step as a "you are here" line. |
+| `series` | For one part of a larger change: `{ "label", "url", "summary", "parts" }`: the epic, what it does, its PRs or tickets in order as `{ "label", "url", "state" }` (`done`, `open`, `planned`), this PR as `{ "label", "current": true }`. |
+| `flow` | The 3 to 7 places the change runs through, in execution order, each `{ "label", "step" }`; leave `step` out for a place shown only for context. Shown on the intro and on each step as "you are here". |
 | `steps[].id` | Short slug, unique. Used by `flow`, `[[step:id]]`. Defaults to `step-N`. |
 | `steps[].title` | Required. What happens, not a file name ("Changes to X"). |
 | `steps[].risk` | Required: `high`, `medium`, or `low`. Shown as a muted reading hint. |
@@ -58,8 +59,6 @@ The tour is the only file you write; `build` checks it against what `collect` pr
 | `steps[].checks` | 1 or 2 plain sentences, usually questions (an error past 2). Only a `low` step may have none. Collected again on the wrap-up page. |
 | `steps[].show` | Code panels on the right, top to bottom; at most 3. |
 | `skipped` | Files, or some of their hunks, left out of the steps, each with a reason. |
-
-Fields of an earlier format (`context`, `scenario`, `evidence`, `glossary`, `order`, a step's `claim`, `depends`, `tag`) are rejected with a hint.
 
 ## Checks run by `build`
 

@@ -9,6 +9,7 @@ The review folder in your brief holds `tour.json`, `overview.md` (description, c
 ## Check, in this order
 
 1. **Truth.** Every factual claim in the summary and in the steps rated `high` or `medium` (bodies, links, notes, highlights, checks) matches the code at head; skim the `low` steps. Open the cited lines. A claim about tests ("covered by", "tested") needs the test read. A claim you cannot confirm and that cites nothing is a finding. For a hunk `overview.md` flags as a long line, compare old and new in `diff.words.patch` before accepting what the tour says it adds or drops.
+   When the tour has `series`, its stacked PRs, their order, and their states match the stack `overview.md` lists, and the summary does not leave to a later part something no listed part names.
 2. **Anchors.** Each highlight's text talks about its own lines, and each badge points at the code it names.
 3. **Followability.** The summary opens on the problem the PR solves, in words someone who does not know the code understands; flag an opening that names code or gives no reason. Read the steps in order as a newcomer. Flag a step that uses a name or idea not yet explained, a `link` that misstates the previous step, a step whose point you cannot state in one sentence, an order whose logic you cannot tell, and a change to what a user sees with no before and after quoted.
 

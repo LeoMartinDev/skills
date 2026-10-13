@@ -50,6 +50,15 @@ const HUNK = /^@@ -(\d+)(?:,(\d+))? \+(\d+)(?:,(\d+))? @@ ?(.*)$/;
 const BADGE = /\[\[([^\]|]+?)(?:\|[^\]]*)?\]\]/g;
 const REF = /^(.*?)(?::(\d+)(?:-(\d+))?)?$/;
 const PR_FIELDS = 'number,title,body,url,author,state,isDraft,baseRefName,headRefName,baseRefOid,headRefOid';
+const STACK_FIELDS = 'number,title,state,isDraft,url,baseRefName,headRefName';
+const MAX_STACK = 10; // stacked PRs listed around the reviewed one
+// Keys such as ABC-123, the shape of Linear and Jira tickets; a few standards share it.
+const TICKET_KEY = /\b([A-Z][A-Z0-9]{1,9}-\d{1,6})\b/g;
+const NOT_TICKET = /^(UTF|SHA|ISO|RFC|CVE|AES|RSA|MD|ES|TLS|HTTP)-/;
+const TRACKER_LINK = /https?:\/\/[^\s)>\]]*(?:linear\.app|atlassian\.net|notion\.so|\/issues\/|\/pull\/)[^\s)>\]]*/g;
+const SERIES_STATES = ['done', 'open', 'planned'];
+const MAX_SERIES = 12;
+const SERIES_SUMMARY_WORDS = 50;
 const EVENTS = ['COMMENT', 'APPROVE', 'REQUEST_CHANGES'];
 const MISSING = Symbol('missing');
 
@@ -116,6 +125,68 @@ function ghPr(repo, selector) {
   const pr = JSON.parse(result.stdout);
   pr.author = pr.author?.login ?? null;
   return pr;
+}
+
+function ghJson(repo, args) {
+  const result = run('gh', args, repo, { check: false });
+  if (!result || result.status !== 0) return null;
+  try {
+    return JSON.parse(result.stdout);
+  } catch {
+    return null;
+  }
+}
+
+// The PRs stacked with pr, from the one closest to the default branch up: the ones it is based on, itself, then the open
+// ones based on it. Empty when pr stands alone.
+function prStack(repo, pr) {
+  const list = (flag, branch, state) => ghJson(repo, ['pr', 'list', flag, branch, '--state', state, '--json', STACK_FIELDS, '--limit', String(MAX_STACK)]) ?? [];
+  const trunk = ghJson(repo, ['repo', 'view', '--json', 'defaultBranchRef'])?.defaultBranchRef?.name;
+  const seen = new Set([pr.number]);
+  const below = [];
+  for (let base = pr.baseRefName; base !== trunk && seen.size < MAX_STACK;) {
+    const found = list('--head', base, 'all').filter(p => !seen.has(p.number));
+    const parent = found.find(p => p.state === 'OPEN') ?? found.find(p => p.state === 'MERGED');
+    if (!parent) break;
+    seen.add(parent.number);
+    below.unshift(parent);
+    base = parent.baseRefName;
+  }
+  const above = [];
+  const climb = branch => {
+    for (const child of list('--base', branch, 'open')) {
+      if (seen.has(child.number) || seen.size >= MAX_STACK) continue;
+      seen.add(child.number);
+      above.push(child);
+      climb(child.headRefName);
+    }
+  };
+  climb(pr.headRefName);
+  if (!below.length && !above.length) return [];
+  const self = Object.fromEntries(STACK_FIELDS.split(',').map(k => [k, pr[k]]));
+  return [...below, { ...self, current: true }, ...above];
+}
+
+// Where to find the feature a change belongs to: ticket keys in the branch name, title, description, and commits, tracker
+// links, the issues the PR closes, and the PRs or issues its description names.
+function references(repo, pr, branch, commits) {
+  const texts = [pr?.title, pr?.body, ...commits.flatMap(c => [c.subject, c.body])].filter(Boolean);
+  const keys = new Set();
+  for (const segment of String(branch ?? '').split('/')) { // Linear names branches like "user/abc-123-short-title"
+    const match = segment.match(/^([a-z][a-z0-9]{1,9}-\d{1,6})(?=-|$)/i);
+    if (match && !NOT_TICKET.test(match[1].toUpperCase())) keys.add(match[1].toUpperCase());
+  }
+  for (const text of texts) for (const m of text.matchAll(TICKET_KEY)) if (!NOT_TICKET.test(m[1])) keys.add(m[1]);
+  const links = new Set(texts.flatMap(t => t.match(TRACKER_LINK) ?? []));
+  const named = new Set([pr?.title, pr?.body].filter(Boolean).flatMap(t => [...t.matchAll(/(?:^|[\s(,])#(\d+)\b/g)].map(m => Number(m[1]))));
+  named.delete(pr?.number);
+  const closes = pr ? ghJson(repo, ['pr', 'view', String(pr.number), '--json', 'closingIssuesReferences'])?.closingIssuesReferences ?? [] : [];
+  return {
+    keys: [...keys],
+    links: [...links],
+    named: [...named],
+    closes: closes.map(i => ({ number: i.number, url: i.url })),
+  };
 }
 
 function fetchCommit(repo, remote, sha, ref) {
@@ -288,6 +359,24 @@ function hunkSpan(hunk, side) {
   return count ? [start, start + count - 1] : [start, start];
 }
 
+function placeInSeries(related) {
+  if (!related) return [];
+  const { stack, keys, links, named, closes } = related;
+  const out = [];
+  if (stack.length) {
+    out.push('Stacked pull requests, from the one closest to the default branch up:');
+    for (const p of stack) {
+      const state = [p.state.toLowerCase(), p.isDraft && 'draft', p.current && 'this PR'].filter(Boolean).join(', ');
+      out.push(`- #${p.number} ${p.title} (${state}): ${p.baseRefName} ← ${p.headRefName}`);
+    }
+  }
+  if (closes.length) out.push(`Issues this PR closes: ${closes.map(i => `#${i.number} ${i.url}`).join(', ')}`);
+  if (keys.length) out.push(`Possible ticket keys, from the branch, title, description, and commits: ${keys.join(', ')}`);
+  if (links.length) out.push(`Tracker and GitHub links in the description and commits: ${links.join(' ')}`);
+  if (named.length) out.push(`Numbers the title or description names (PRs or issues): ${named.map(n => `#${n}`).join(', ')}`);
+  return out.length ? ['', '## Place in a series', '', ...out] : [];
+}
+
 function overview(data, origins, codeAt) {
   const { pr, files } = data;
   const out = [`# ${data.title}`, ''];
@@ -298,6 +387,7 @@ function overview(data, origins, codeAt) {
     + `${files.length} files, +${adds} −${dels}, ${data.commits.length} commits.`);
   out.push(`Head commit: ${data.head.sha}`, `Code at head: ${codeAt}`);
   if (pr?.body?.trim()) out.push('', '## PR description', '', pr.body.trim());
+  out.push(...placeInSeries(data.related));
   out.push('', '## Commits (oldest first)', '');
   for (const c of data.commits) {
     out.push(`- ${c.sha.slice(0, 8)} ${c.subject} (${c.author}, ${c.date.slice(0, 10)})`);
@@ -342,6 +432,7 @@ function collect(target, opts) {
       baseContents[f.path] = text === MISSING ? null : text;
     }
   }
+  const related = { stack: pr ? prStack(repo, pr) : [], ...references(repo, pr, headRef, log) };
   const data = {
     version: 1,
     repo,
@@ -352,6 +443,7 @@ function collect(target, opts) {
     head: { ref: headRef, sha: headSha },
     mergeBase,
     commits: log,
+    related,
     files,
     contents,
     baseContents,
@@ -421,6 +513,34 @@ function parseLines(value) {
 const isText = value => typeof value === 'string' && value.trim() !== '';
 const wordCount = text => String(text ?? '').split(/\s+/).filter(Boolean).length;
 
+const isUrl = value => typeof value === 'string' && /^https?:\/\/\S+$/.test(value);
+
+function validateSeries(tour, data, errors, warnings) {
+  const stacked = data.related?.stack?.length > 1;
+  if (!('series' in tour)) {
+    if (stacked) warnings.push('series: missing; this PR is stacked with others (see overview.md), show where it sits in the feature');
+    return;
+  }
+  const series = tour.series;
+  if (!series || typeof series !== 'object' || !Array.isArray(series.parts)) {
+    return errors.push('series: must be { "label", "url", "summary", "parts": [{ "label", "url", "state" }] }');
+  }
+  if (!isText(series.label)) errors.push('series: label is required, the feature or epic the PR belongs to');
+  if (!isText(series.summary)) errors.push('series: summary is required, what the whole change does and what this part brings');
+  else if (wordCount(series.summary) > SERIES_SUMMARY_WORDS) warnings.push(`series: summary is over ${SERIES_SUMMARY_WORDS} words; two sentences`);
+  if ('url' in series && !isUrl(series.url)) errors.push('series: url must be an http(s) link');
+  if (series.parts.length < 2) warnings.push('series: fewer than 2 parts; leave series out for a standalone PR');
+  if (series.parts.length > MAX_SERIES) warnings.push(`series: ${series.parts.length} parts; keep the ${MAX_SERIES} nearest this PR`);
+  const current = series.parts.filter(part => part?.current === true).length;
+  if (current !== 1) errors.push(`series: ${current} parts marked "current"; mark this PR, and only it`);
+  series.parts.forEach((part, k) => {
+    const where = `series, part ${k + 1}`;
+    if (!part || typeof part !== 'object' || !isText(part.label)) return errors.push(`${where}: label is required`);
+    if ('url' in part && !isUrl(part.url)) errors.push(`${where}: url must be an http(s) link`);
+    if (part.current !== true && !SERIES_STATES.includes(part.state)) errors.push(`${where}: state must be ${SERIES_STATES.join(', ')}`);
+  });
+}
+
 function validate(tour, data) {
   const errors = [];
   const warnings = [];
@@ -441,6 +561,7 @@ function validate(tour, data) {
     if (/`|\[\[/.test(opening)) warnings.push('summary: the opening names code; say the problem and the change in the product\'s words, and keep code names for the next paragraph');
   }
   for (const [key, hint] of Object.entries(REMOVED)) if (key in tour) errors.push(`${key}: no longer part of the tour; ${hint}`);
+  validateSeries(tour, data, errors, warnings);
   const flow = tour.flow ?? [];
   if (!Array.isArray(flow) || !flow.every(node => node && typeof node === 'object' && isText(node.label))) {
     errors.push('flow: must be a list of { "label", "step" }');

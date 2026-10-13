@@ -392,6 +392,29 @@ details.fold .md { padding: 4px 14px 14px; font-size: 13px; border-top: 1px soli
 .p-title code, .p-where code { font-size: 0.88em; background: var(--bg-hover); padding: 0 4px; border-radius: 4px; }
 .path-list li.ctx { padding-top: 2px; font-style: italic; }
 
+/* Series note: a soft callout atop the intro when the PR is one part of a larger change */
+.series-note { margin: -8px 0 28px; padding: 12px 16px; border-radius: 10px; background: var(--accent-soft); }
+.series-head { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; font-size: 12.5px; font-weight: 500; color: var(--accent-text); }
+.series-head .i { width: 14px; height: 14px; }
+.series-head .sep { opacity: 0.5; }
+.series-note a { color: inherit; text-decoration: none; }
+.series-note a:hover { text-decoration: underline; }
+.series-note p { margin: 6px 0 0; font-size: 14px; line-height: 1.6; color: var(--fg); }
+.series-parts summary { display: inline-flex; align-items: center; gap: 4px; margin-top: 8px; font-size: 12.5px; color: var(--fg-2); cursor: pointer; list-style: none; user-select: none; }
+.series-parts summary::-webkit-details-marker { display: none; }
+.series-parts summary:hover { color: var(--fg); }
+.series-parts .chev { width: 13px; height: 13px; transition: transform 0.15s; }
+.series-parts[open] .chev { transform: rotate(90deg); }
+.series { list-style: none; margin: 6px 0 0; padding: 0; }
+.series li { display: flex; align-items: baseline; gap: 10px; padding: 4px 0; font-size: 13.5px; color: var(--fg-2); }
+.series .n { flex: none; width: 14px; font-size: 12.5px; font-weight: 600; color: var(--fg-3); font-variant-numeric: tabular-nums; }
+.series .s-label { flex: 1; min-width: 0; }
+.series .s-state { flex: none; font-size: 12px; color: var(--fg-3); }
+.series a:hover { color: var(--accent-text); }
+.series li.done .s-label { color: var(--fg-3); }
+.series li.cur { color: var(--fg); font-weight: 600; }
+.series li.cur .s-state { color: var(--accent-text); }
+
 .skips { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px; }
 .skips li { display: flex; gap: 8px; align-items: baseline; font-size: 13px; color: var(--fg-2); }
 

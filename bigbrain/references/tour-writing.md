@@ -18,6 +18,8 @@ A short paragraph on how things worked until now and how they work after this PR
 A sentence on how the change is tested, and what no test covers.
 ```
 
+For a part of a larger change, `series.summary` opens the page in a soft note: two plain sentences, under about 50 words, on what the whole change does for the user and what this part brings to it: "Invoices will keep the due date set when they are created. This part stores it; the payment terms already have their own table, and existing invoices get theirs next." The PR's own summary then does not repeat it.
+
 No heading, no paragraph over two lines. A before-and-after quote of what a user sees goes in the summary or the first step: the reviewer judges the result before the mechanism.
 
 ## Where each thing goes

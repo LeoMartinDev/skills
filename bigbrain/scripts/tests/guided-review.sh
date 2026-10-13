@@ -10,10 +10,23 @@ trap '[ -z "$server" ] || { kill "$server"; wait "$server"; } 2>/dev/null; rm -r
 fail() { echo "FAIL: $*"; exit 1; }
 check() { node -e "$1" "$2" || fail "$3"; }
 
-# Fake gh: no PR for a branch during collect; a PR on acme/widgets once served. It records posted reviews.
+# Fake gh: no PR for a branch during collect, unless FAKE_STACK makes it PR #11 in a stack of three; a PR on acme/widgets
+# once served. It records posted reviews.
 mkdir -p "$work/bin"
 cat > "$work/bin/gh" <<'GH'
 #!/bin/sh
+if [ -n "${FAKE_STACK-}" ]; then
+  pr='"title":"Tax","state":"OPEN","isDraft":false'
+  case "$*" in
+    "pr view feature --json "*)
+      echo '{"number":11,'"$pr"',"body":"Part of INV-40 (https://linear.app/acme/issue/INV-40), after #10. UTF-8 safe.","url":"https://github.com/acme/widgets/pull/11","author":{"login":"alice"},"baseRefName":"model","headRefName":"feature","baseRefOid":"x","headRefOid":"y"}'; exit ;;
+    "repo view --json defaultBranchRef") echo '{"defaultBranchRef":{"name":"main"}}'; exit ;;
+    "pr list --head model --state all "*) echo '[{"number":10,"title":"Model","state":"MERGED","isDraft":false,"url":"u10","baseRefName":"main","headRefName":"model"}]'; exit ;;
+    "pr list --base feature --state open "*) echo '[{"number":12,"title":"Email","state":"OPEN","isDraft":true,"url":"u12","baseRefName":"feature","headRefName":"email"}]'; exit ;;
+    "pr list "*) echo '[]'; exit ;;
+    "pr view 11 --json closingIssuesReferences") echo '{"closingIssuesReferences":[{"number":45,"url":"https://github.com/acme/widgets/issues/45"}]}'; exit ;;
+  esac
+fi
 case "$*" in
   "api user --jq .login") echo bob ;;
   "pr view 7 --repo acme/widgets"*) echo '{"headRefOid":"'"$FAKE_HEAD"'","state":"OPEN"}' ;;
@@ -160,6 +173,30 @@ write_tour "$skip" && sed -i.bak 's/"lines": "1"/"lines": "9-12"/' "$out/tour.js
 expect_error "starts past the end"
 write_tour "$skip" && sed -i.bak 's/"file": "src\/tax.js", "view": "diff"/"file": "src\/helper.js", "view": "diff"/' "$out/tour.json"
 expect_error 'view "diff" needs a changed file'
+write_tour "$skip" && sed -i.bak 's#"lang": "fr",#"lang": "fr", "series": { "label": "Taxes", "url": "https://linear.app/acme/project/taxes", "summary": "Les factures gagnent la TVA ; cette partie la calcule.", "parts": [{ "label": "\#10 Le modèle", "state": "done" }, { "label": "\#11 Le total", "current": true }, { "label": "INV-41 Les e-mails", "url": "https://linear.app/acme/issue/INV-41", "state": "planned" }] },#' "$out/tour.json"
+page=$(node "$script" build "$out") || fail "valid series rejected"
+grep -q '"current":true' "$page" || fail "series not embedded"
+sed -i.bak 's/"state": "done"/"current": true/' "$out/tour.json"
+expect_error '2 parts marked "current"'
+write_tour "$skip" && sed -i.bak 's#"lang": "fr",#"lang": "fr", "series": { "label": "Taxes", "parts": [{ "label": "A", "state": "merged" }, { "label": "B", "current": true }] },#' "$out/tour.json"
+expect_error "part 1: state must be done, open, planned"
+grep -q "summary is required" "$work/err" || fail "series without summary accepted"
+
+# A branch whose PR sits in a stack: its neighbours and ticket references reach overview.md.
+stacked=$(FAKE_STACK=1 node "$script" collect --base main | tail -1)
+check '
+const r = JSON.parse(require("fs").readFileSync(process.argv[1] + "/data.json", "utf8")).related;
+const ok = (c, m) => { if (!c) { console.error(m, JSON.stringify(r)); process.exit(1); } };
+ok(r.stack.map(p => p.number).join() === "10,11,12" && r.stack[1].current && !r.stack[0].current, "stack order");
+ok(r.keys.join() === "INV-40", "ticket keys skip UTF-8");
+ok(r.links.join() === "https://linear.app/acme/issue/INV-40" && r.named.join() === "10", "links and named numbers");
+ok(r.closes[0].number === 45, "closed issues");
+' "$stacked" "stack not collected"
+grep -q -- "- #11 Tax (open, this PR): model ← feature" "$stacked/overview.md" || fail "overview lists the stack"
+grep -q "#12 Email (open, draft): feature ← email" "$stacked/overview.md" || fail "overview lists the PR based on this one"
+write_tour "$skip" && cp "$out/tour.json" "$stacked/tour.json"
+node "$script" build "$stacked" 2> "$work/err" >/dev/null || fail "stacked build failed: $(cat "$work/err")"
+grep -q "series: missing; this PR is stacked" "$work/err" || fail "missing series on a stacked PR not warned"
 
 # Serve the page as if it came from PR #7 of acme/widgets.
 write_tour "$skip"
