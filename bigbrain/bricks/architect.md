@@ -4,9 +4,9 @@
 
 ## When to run
 
-Run it for a named structural decision that the request, the contracts, and an existing precedent don't settle: data shape, module responsibilities, state ownership, or dependency direction. Check a missing fact with a lookup before calling a decision open, and never invent alternatives. Size, naming, a signature change, or an extraction alone don't qualify.
+Run it for a named structural decision that the request, the contracts, and an existing precedent don't settle: data shape, module responsibilities, state ownership, or dependency direction. Check a missing fact with a lookup before calling a decision open, and never invent alternatives. Size, naming, a signature change, or an extraction alone don't qualify. When the ticket names its anchor points and you cannot name a competing shape, the decision is settled.
 
-Otherwise write a compact brief: precedent, allowed paths, intended behavior, invariants, sourced assumptions, and checks. Verification still runs.
+Otherwise write a compact brief yourself: precedent, allowed paths, intended behavior, invariants, sourced assumptions, and checks. The challenge of section 3 still runs on it, and so does verification.
 
 If implementation or a repair opens a new decision later, apply the same test and revise only the affected part.
 
@@ -25,7 +25,7 @@ Read each design in full and screen it against `references/prompts/designer.md#r
 
 ## 3. Challenge
 
-A read-only `reviewer`, on a different model from the designers when possible, attacks the sketch. It always runs after a single designer; after an arena, only for an open major decision, a new public surface, or a cross-boundary change. It gets the sketch, mental model, invariants, allowed paths, and principle files, never the designers' reasoning, and returns 15 lines at most: the weakest choice, a concrete failure scenario per risk, and what to change. Accept or reject each point in one line and revise.
+A read-only `reviewer`, on a different model from the designers when possible, attacks the sketch. It always runs after a single designer; after an arena, only for an open major decision, a new public surface, or a cross-boundary change. It gets the sketch, mental model, invariants, allowed paths, and principle files, never the designers' reasoning, and returns 15 lines at most: the weakest choice, a concrete failure scenario per risk, and what to change. Accept or reject each point in one line and revise. Copy each accepted point, verbatim, into the implementer brief.
 
 ## Output
 

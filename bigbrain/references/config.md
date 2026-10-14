@@ -26,7 +26,7 @@ When the user states a lasting preference ("from now on", "always", "never"), wr
 
 `pr.max-lines` caps the changed lines per PR, tests included. Without it, never check or slice for size.
 
-With a cap, measure `git diff --shortstat` on the change reference after each implementation or repair. Over the cap, do not push: switch to `usecases/plan.md` and slice, reusing the work done. The cap is a stop condition, never a target: nobody compacts code to fit.
+With a cap, give the implementer the remaining budget split between code and tests, tests no larger than code unless the criteria need it. It measures `git diff --shortstat` on the change reference after each commit, and you measure again after each implementation or repair. Over the cap, do not push: switch to `usecases/plan.md` and slice, reusing the work done. The cap is a stop condition, never a target: nobody compacts code to fit.
 
 ## Models
 

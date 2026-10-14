@@ -4,7 +4,7 @@
 
 ## Brief
 
-Give the goal, the grounding, the brief or sketch, the allowed paths, the criteria with the ticket items, and the invariants. A bugfix adds the repro and the confirmed cause; a refactor, the baseline; a repair, the accepted findings, the counterexamples, and the current commit.
+Give the goal, the grounding, the brief or sketch, the allowed paths, the criteria with the ticket items, and the invariants. Add the challenge points you accepted, verbatim, the report paths of the explorers and designers, and the test commands that already ran green. A bugfix adds the repro and the confirmed cause; a refactor, the baseline; a repair, the accepted findings, the counterexamples, and the current commit.
 
 One `implementer` owns coupled code and continues for repairs when the harness allows it. Parallel implementers need disjoint files; split any shared state first (`separate-before-serializing-shared-state`).
 
@@ -12,13 +12,15 @@ Writers get `laziness-protocol`, `follow-local-conventions`, `comment-the-why`, 
 
 ## 1. Plan the writes
 
-Start from the closest existing implementation and test of the same kind, and reuse their patterns. If none fits, justify the shape. List the files and the check for each behavior.
+Start from the closest existing implementation and test of the same kind, and reuse their patterns. If none fits, justify the shape. Cut the work into units, and list each unit's files and check. Plan the details of one unit at a time, never the whole diff up front.
 
-Stop and report, keeping valid work, when a structural decision opens (responsibilities, state ownership, dependency direction), the scope or a contract conflicts, or a fact breaks an assumption. Never patch around it. The lead settles it per `bricks/architect.md` and resumes without a restart.
+A fact the brief cites with `path:line` holds until your code or a check disproves it: don't re-verify it before writing. Stop and report, keeping valid work, when a structural decision opens (responsibilities, state ownership, dependency direction), the scope or a contract conflicts, or a fact breaks an assumption. Never patch around it. The lead settles it per `bricks/architect.md` and resumes without a restart.
 
 ## 2. Implement in verifiable units
 
-Make the smallest change that meets the contract, extending local patterns. Each commit delivers one behavior or prerequisite with its proof and leaves the branch working; the bugfix repro is the only allowed red commit. Run narrow checks before each commit and the package typecheck after the last; broad checks belong to the verifier. Remove instrumentation and debug code.
+Work one unit at a time: read only the files that unit touches, edit them, run its checks, commit, then read for the next unit. Make the smallest change that meets the contract, extending local patterns. Each commit delivers one behavior or prerequisite with its proof and leaves the branch working; the bugfix repro is the only allowed red commit.
+
+Run narrow checks before each commit and the package typecheck after the last; broad checks belong to the verifier. Extend an existing test's assertions before adding a test. With a line budget, measure the diff after each commit, and stop and report as soon as the remaining units would cross it. Remove instrumentation and debug code.
 
 A repair fixes only the accepted findings and counterexamples. If evidence refutes the cause or the design, report it instead of growing the patch.
 

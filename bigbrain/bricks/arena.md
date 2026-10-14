@@ -6,7 +6,7 @@
 
 Run it at most once per run, and only when both hold:
 
-- a named structural decision has several viable shapes with real tradeoffs (coupling, maintenance, migration, operations) that the request, conventions, and facts don't settle. Size or available models alone don't qualify;
+- a named structural decision has several viable shapes with real tradeoffs (coupling, maintenance, migration, operations) that the request, conventions, and facts don't settle. Name each competing shape in one line before launching; if you cannot name two, the gate fails. Size or available models alone don't qualify;
 - the harness has subagents and `arena.design` is not `none` (`references/config.md#models`).
 
 Each listed model runs one candidate, at least two. With a single model listed, or `arena.design` unset, run two candidates on the resolved model with distinct angles. When the gate fails, architect uses one designer. Say in one line why the arena was skipped, or that it ran on one model.
@@ -24,7 +24,7 @@ Spawn every candidate at once with the same brief, except the angle and output p
 
 ## 3. Judge
 
-Once all have returned, one read-only `judge`, on another vendor when possible, gets the rubric, the shared constraints, and the candidates by label. It flags violations first, scores only viable candidates, and recommends a base with its reason.
+Once all have returned, read them. If they converged (same data shape, boundaries, and public surface), skip the judge: keep the consensus per step 5 and say so in one line. Otherwise one read-only `judge`, on another vendor when possible, gets the rubric, the shared constraints, and the candidates by label. It flags violations first, scores only viable candidates, and recommends a base with its reason.
 
 ## 4. Pick
 

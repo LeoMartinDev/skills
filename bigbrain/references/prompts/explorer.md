@@ -13,7 +13,7 @@ Use semantic search for concepts, `rg` for exact names, and symbol navigation fo
 - **Key types.** The data shapes that carry the domain, each with an excerpt of its definition or signature, 10 lines at most.
 - **Where things live.** Which package or layer owns what, and the local conventions.
 - **Templates.** The closest existing sibling for each kind of file the task will add (handler, component, test). For each service or data source the new code will call, how existing callers reach it (wrapper, cache, guard), as `path:line`.
-- **Tests.** Where they live and the exact command to run them.
+- **Tests.** Where they live and the exact command to run one test file. Run it once on one file, and report the command that worked, its duration, and any failure that the task did not cause.
 - **Gotchas.** Surprising behavior, invariants, traps.
 - **Known risks.** Each risk, dependency, or caveat your brief lists, mapped to `path:line`, and whether the change must handle it.
 - **Rationale leads.** History you ran into that explains a choice, with pointers. Code and commit subjects show what, not why. If a missing reason could change a decision, return the question instead of chasing it.

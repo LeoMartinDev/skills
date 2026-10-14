@@ -19,7 +19,7 @@ Use your judgment to recommend models appropriate to each role. Favor quality fo
 | Tier | Rule |
 |---|---|
 | `smart` | Strong reasoning for design, judging, review, and verification |
-| `code` | Reliable implementation and tool use in the codebase |
+| `code` | Reliable implementation and tool use in the codebase. The design arrives settled, so prefer `medium` effort: a higher effort mostly lengthens deliberation before the first edit |
 | `fast` | Efficient exploration and factual lookup, with enough capability for the assigned scope |
 
 - **Design arena** (`arena.design`) uses suitable distinct models, from different vendors when useful and available. Propose at least two: each listed model runs one candidate. With a single model, write it anyway: the arena gate in `bricks/arena.md` decides what runs. With no usable model, write `none`, which disables that arena on this harness. Tell the user.
