@@ -19,7 +19,7 @@ Every delegation uses this template. A subagent starts with no context: the brie
 
 ## Read first
 Read each file below in full before any other tool call: your role prompt, when the brick names one, then the principles. Read source files when your current step needs them.
-<Absolute paths. For an implementer, also each file's **Rule** line and **Don't** list, verbatim.>
+<Absolute paths. For an implementer on the `fast` tier's model, also each file's **Rule** line, verbatim.>
 
 ## Success criteria
 <Checkable statements and commands; mark any optional one `optional`.>
@@ -41,7 +41,7 @@ If the same check fails twice with nothing new, stop and return `blocked` with t
 
 - Give absolute paths to skill files: the subagent's working directory is the repo.
 - A role prompt in `references/prompts/` carries the role's method and return format; it replaces the default return format above. Don't restate it in the brief.
-- Inline principle text only for implementers, which may run on a fast model that never opens the files.
+- Inline principle text only for an implementer on the `fast` tier's model, which may never open the files; on the `code` tier, the paths suffice.
 - Read first lists skill files only. Never ask a subagent to read source files in full before it starts: point to `path:line` and let it read when its step needs the file.
 - One subagent, one role. A verifier never sees the implementer's reasoning.
 - An explorer (report) writes a report file and may run shell commands such as `git log`; an explorer (lookup) answers a quick factual question from files or the web and writes nothing. Section 1 of the adapter maps each to an agent.

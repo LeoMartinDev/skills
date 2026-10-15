@@ -4,11 +4,11 @@
 
 ## Brief
 
-Point the verifier to `references/prompts/verifier.md` and the principle `prove-it-works`. Give the goal, the criteria with the ticket items verbatim, the invariants with source pointers, the branch and change reference (`bricks/ship.md#change-reference`), the repo's obligatory checks, and the entry point to drive (route, command, job, tool), never a function behind it. A bugfix adds the original repro and its failing output; a refactor adds the baseline and pre-existing failures.
+Point the verifier to `references/prompts/verifier.md` and the principle `prove-it-works`. Give the goal, the criteria with the ticket items verbatim, the invariants with source pointers, the branch and change reference (`bricks/ship.md#change-reference`), the repo's obligatory checks with the commands that already ran green, the explorer report paths, and the entry point to drive (route, command, job, tool), never a function behind it. It never gets the implementer's report. A bugfix adds the original repro and its failing output; a refactor adds the baseline and pre-existing failures.
 
 ## Rounds
 
-Wait for the verifier and any review on the same change, then send counterexamples and accepted findings to `bricks/implement.md` in one batch. Repeat while each round brings something new (the Loops rule in `SKILL.md`). A required `INCONCLUSIVE` gets a targeted probe or an explicit blocker, never a speculative code change. A material scope or design change also needs a fresh review.
+Wait for the verifier and any review on the same change, then send counterexamples and accepted findings, the design challenge's included when it ran alongside, to `bricks/implement.md` in one batch. Repeat while each round brings something new (the Loops rule in `SKILL.md`). A required `INCONCLUSIVE` gets a targeted probe or an explicit blocker, never a speculative code change. A material scope or design change also needs a fresh review.
 
 Re-verification continues the same verifier, or gives a fresh one the previous report. It reruns its proofs, adds a case per counterexample and applied finding, and reruns the covering tests and obligatory checks on the new head. A verdict counts only for its commit.
 

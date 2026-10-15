@@ -2,6 +2,8 @@
 
 **Attack the change before anyone else does.** Two reviewers challenge a diff from distinct angles, and you synthesize a verdict. Nothing is applied automatically.
 
+In a use case, it runs alongside verification only when the design was contested or the change is risky: it changes or migrates a stored shape, or touches security, money, or concurrency. New optional fields alone are not a risk. Decide from the allowed paths or the diff, never from an impression, and say in one line which signal applied or that none did.
+
 ## 1. Scope
 
 Review the diff on the change reference (`bricks/ship.md#change-reference`). In the critique route, resolve it from the named PR, branch, or paths. For a PR, use its current head and base; never assume the local checkout matches.

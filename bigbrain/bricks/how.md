@@ -6,7 +6,7 @@
 
 If the scope is ambiguous, state your reading in one line and go. The user can redirect.
 
-- **Simple** (one module, one function, one narrow question): answer with targeted reads, or one `explorer (report)` when the reading is substantial. A ticket that names its anchor points in one module is simple.
+- **Simple** (one module, one function, one narrow question): read the named files yourself when they fit in about 300 lines, and take the test command from the package scripts without running it; otherwise one `explorer (report)`. A ticket that names its anchor points in one module is simple.
 - **Complex** (a subsystem across files, packages, or services): split it into 2 to 4 angles, such as the data model, the runtime flow, the entry points, and the tests. Launch one `explorer (report)` per angle, in parallel.
 
 When in doubt, take the simple path.
@@ -17,7 +17,7 @@ Each brief points to `references/prompts/explorer.md`, names its angle, and give
 
 ## 3. Synthesize
 
-Merge the digests. When one is thin or two disagree, ask that explorer a targeted follow-up (`references/subagent-brief.md#continuing`) rather than reading the code yourself. This holds for the rest of the run, design included: you read code only for one targeted check per open decision. When an unclear reason could change a decision, run `bricks/why.md` with the evidence collected.
+Merge the digests, or your own reads on the simple path. When a digest is thin or two disagree, ask that explorer a targeted follow-up (`references/subagent-brief.md#continuing`) rather than reading the code yourself. From here on, design included, you read code only for one targeted check per open decision. When an unclear reason could change a decision, run `bricks/why.md` with the evidence collected.
 
 - **In a use case:** keep a mental model of 20 lines at most (entry points, flow, key types, conventions, templates, test commands, gotchas, risks) plus the report paths. Every later brief gets both.
 - **In the how route:** present Overview, Key concepts, How it works, Where things live, and Gotchas, dropping empty sections. Cite `path:line`, not code. In How it works, name the step that decides the behavior, and keep inferred claims marked as such. A placement question ends with a recommendation and its reason.

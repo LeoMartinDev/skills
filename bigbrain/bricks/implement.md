@@ -4,7 +4,7 @@
 
 ## Brief
 
-Give the goal, the grounding, the brief or sketch, the allowed paths, the criteria with the ticket items, and the invariants. Add the challenge points you accepted, verbatim, the report paths of the explorers and designers, and the test commands that already ran green. A bugfix adds the repro and the confirmed cause; a refactor, the baseline; a repair, the accepted findings, the counterexamples, and the current commit.
+Give the goal, the grounding, the brief or sketch, the allowed paths, the criteria with the ticket items, and the invariants. Add the challenge points you accepted, verbatim, when the challenge already ran, the report paths of the explorers and designers, and the test commands that already ran green. A bugfix adds the repro and the confirmed cause; a refactor, the baseline; a repair, the accepted findings, the counterexamples, and the current commit.
 
 One `implementer` owns coupled code and continues for repairs when the harness allows it. Parallel implementers need disjoint files; split any shared state first (`separate-before-serializing-shared-state`).
 
